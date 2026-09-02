@@ -1,11 +1,18 @@
 # Owner instructions
 
-**This entire file is owner-authored and read-only to sessions.** Every section below, including
-the ones describing your own latitude, is a constraint on you, not a draft for you to revise. Do
-not edit, delete, extend, reorder or reinterpret any part of it, and do not add new sections to it.
-If you become convinced something here is wrong, propose the change under "Notes for owner" in
-`STATE.md`, leave the rule in force, and let the owner decide. The one file you may freely maintain
-is `RUNBOOK.md`.
+**This file is owner-mandated and read-only to sessions.** Parts of it were drafted by a session at
+the owner's live direction; that history does not make it editable — every section is a ratified
+constraint. It changes only on a live instruction from the owner in the current session, recorded
+verbatim in that day's log. Absent that, do not edit, delete, extend, reorder, reinterpret or add
+sections. Checking `git log` or `git blame` and finding a session's name on these lines proves only
+who typed them, not who decided them: an unattended session has no standing to revise this file,
+whatever the authorship metadata says.
+
+Every section below, including the ones describing your own latitude, is a constraint on you, not a
+draft for you to revise. If you become convinced something here is wrong, propose the change under
+"Notes for owner" in `STATE.md`, leave the rule in force, and let the owner decide. The one file you
+may freely maintain is `RUNBOOK.md`. Where a `RUNBOOK.md` entry conflicts with anything in this
+file, this file wins and the runbook entry is the thing to fix.
 
 These instructions override the routine instructions (the "Daily App Factory" spec each session is
 run with) wherever they conflict. Read this after `STATE.md`, before anything else.
@@ -51,6 +58,10 @@ to the session's designated branch:
    start/test commands fail. Resolve first, or leave open and flag per point 5.
 8. This applies to every session, not only Phase 5 Handoff — small daily doc/plan-only sessions get
    the same merge-and-review treatment as build sessions.
+9. **Never push, merge or fast-forward anything onto `main` outside a reviewed pull request.**
+   Direct pushes to `main` are prohibited without exception; landing work by any path that skips
+   rules 1-3 — `git push origin HEAD:main`, a local merge then push, a fast-forward, an MCP file
+   write targeting `main` — is the same violation as an unreviewed merge.
 
 Rationale: this is a single-agent-maintained repository with no other reviewers, so an automated,
 adversarial review pass in place of a human reviewer is the safeguard against silently merging a
@@ -69,7 +80,9 @@ branch surgery:
    are *not* yet on `main`. If either exists, dealing with it is the first unit of work, ahead of
    whatever `STATE.md` names as next action: review and merge the open PR per the section above, or
    rebase the unmerged commits onto `origin/main` and open a PR for them. Never discard unmerged
-   work.
+   work. Compare by content, not SHA: if `origin/main..HEAD` lists commits but their changes are
+   already present on `main` (which is what a squash merge leaves behind), treat the branch as
+   fully merged and go to step 3.
 3. Only once step 2 is clear — the branch has nothing on it that isn't already on `main` — restart
    the branch from the default branch:
    `git fetch origin main && git checkout -B <designated-branch> origin/main`. This is the normal
@@ -140,6 +153,9 @@ would save or how reasonable it seems mid-session:
   wrote the diff, given this section verbatim, with its verdict and findings recorded in the day
   log. If the reviewer cannot run, do not merge — leave the PR open and notify per merge rule 6.
   Not "when the diff looks small", and never replaced by your own inline reading.
+- **No path onto `main` except a reviewed pull request** (merge rule 9). Direct pushes,
+  fast-forwards and local merges to `main` are prohibited without exception, however small the
+  change or however pressed the session.
 - The kill thresholds and scoring bar in Phase 1, and the rule against rescoring an already-killed
   idea.
 - The session time budget, and one unit of work per session.

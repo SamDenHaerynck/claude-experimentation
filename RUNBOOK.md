@@ -9,7 +9,8 @@ recorded fix turns out not to work. Keep entries short: symptom, action, notify-
 
 Two scope notes. First, this file is the *only* process file a session may rewrite, and the
 "wrong twice, change it" rule applies only to procedures recorded here — never to `OWNER.md` or to
-the routine spec. Second, where an entry below restates a rule from the routine spec (which lives
+the routine spec. Where an entry here conflicts with `OWNER.md`, `OWNER.md` wins and the entry is
+what gets fixed; no entry here can authorize a merge to `main` that `OWNER.md` forbids. Second, where an entry below restates a rule from the routine spec (which lives
 in the scheduled-task prompt, outside this repo), it is marked *[from the spec]*. Those
 restatements cannot be verified from inside the repo and are not the source of truth: if one ever
 appears to conflict with the spec you were actually run with, the spec wins — fix the entry.
@@ -59,7 +60,10 @@ Symptom: the session's designated branch is the same one whose PR was merged in 
 so it already carries commits now on `main`.
 Action: this is the normal case under the merge-every-session workflow, but check before you
 rewrite anything. First confirm the branch carries nothing that is not already on `origin/main`
-(`git log --oneline origin/main..HEAD`) and that no PR from it is still open. If it does carry
+(`git log --oneline origin/main..HEAD`) and that no PR from it is still open. Judge by content, not
+by SHA: a squash-merged PR leaves the branch listing commits that look unmerged forever, so check
+whether their changes are already on `main` (`git diff origin/main...HEAD` empty, or the PR shows
+as merged) before concluding there is unmerged work. If it does carry
 unmerged commits, keep them — rebase them onto `origin/main` and open a PR — and do not proceed to
 the restart. Only when the branch is purely merged history, restart it:
 `git fetch origin main && git checkout -B <designated-branch> origin/main`, pushing with
