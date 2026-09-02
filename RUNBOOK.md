@@ -7,6 +7,13 @@ entry when the symptom matches.
 Append an entry whenever a session hits a failure not already listed. Update an entry when its
 recorded fix turns out not to work. Keep entries short: symptom, action, notify-or-not, status.
 
+Two scope notes. First, this file is the *only* process file a session may rewrite, and the
+"wrong twice, change it" rule applies only to procedures recorded here — never to `OWNER.md` or to
+the routine spec. Second, where an entry below restates a rule from the routine spec (which lives
+in the scheduled-task prompt, outside this repo), it is marked *[from the spec]*. Those
+restatements cannot be verified from inside the repo and are not the source of truth: if one ever
+appears to conflict with the spec you were actually run with, the spec wins — fix the entry.
+
 Format:
 
 ```
@@ -25,8 +32,10 @@ Symptom: `git push` fails with `403` and a remote message about the Claude GitHu
 access to the repository. GitHub MCP *read* calls (`get_me`, `list_branches`) still succeed, and
 MCP write calls (`create_branch`, `push_files`) fail with `403 Resource not accessible by
 integration`. This is a permissions failure, not a network failure.
-Action: do not burn the session on retries — the exponential-backoff retry policy is for network
-errors, and one confirming retry is enough here. Commit all work locally so nothing is lost inside
+Action: do not burn the session on retries — the exponential-backoff push-retry guidance *[from the
+spec]* is for network errors, and one confirming retry is enough here. Distinguish the two by the
+message: a 403 naming access or integration permissions will not clear on retry. Commit all work
+locally so nothing is lost inside
 the session, write `STATE.md` and the day log as usual, then notify the owner. Note that the
 container is ephemeral: local commits that never reach `origin` are lost, so the next session may
 need to redo the work. Record in `STATE.md` exactly what was done, so redoing it is cheap.
@@ -48,12 +57,16 @@ failure rather than a missed step.
 First seen: 2026-09-02 (day 001) | Status: recurring by design
 Symptom: the session's designated branch is the same one whose PR was merged in a previous session,
 so it already carries commits now on `main`.
-Action: this is the normal case under the merge-every-session workflow. Restart the branch from the
-current default branch before doing any work:
-`git fetch origin main && git checkout -B <designated-branch> origin/main`. Never add commits on
-top of already-merged history, and never try to reuse the merged PR — each session opens a new one.
-If the branch carries unmerged commits beyond the merged history, keep them: rebase them onto the
-new base rather than discarding them.
+Action: this is the normal case under the merge-every-session workflow, but check before you
+rewrite anything. First confirm the branch carries nothing that is not already on `origin/main`
+(`git log --oneline origin/main..HEAD`) and that no PR from it is still open. If it does carry
+unmerged commits, keep them — rebase them onto `origin/main` and open a PR — and do not proceed to
+the restart. Only when the branch is purely merged history, restart it:
+`git fetch origin main && git checkout -B <designated-branch> origin/main`, pushing with
+`--force-with-lease` if the remote branch is now behind. Never add commits on top of already-merged
+history, and never try to reuse the merged PR — each session opens a new one. A non-fast-forward
+push rejection here means the check above was skipped, not that the loop is blocked: re-check for
+unmerged commits rather than notifying the owner.
 Notify owner: no.
 
 ### Review finds high-severity issues and time has run out
@@ -79,9 +92,20 @@ Symptom: a slice is still incomplete after two sessions of work on it.
 Action: the slice is mis-sized, not unlucky. Split it in `PLAN.md` into pieces that each finish in
 one session, and record the split in `DECISIONS.md`. If splitting does not help because the
 underlying approach is wrong, re-scope the slice or cut the feature. If the projected total for the
-idea now exceeds 12 sessions and scope cannot be cut, kill the idea per the routine and move on —
-sunk sessions are not a reason to continue.
+idea now exceeds the spec's session cap (12 sessions *[from the spec]*) and scope cannot be cut,
+kill the idea and move on — sunk sessions are not a reason to continue.
 Notify owner: no.
+
+### Pre-merge review cannot run
+First seen: not yet observed | Status: open (preventive)
+Symptom: the reviewer subagent errors out, times out, or returns nothing usable, so the PR has no
+independent review.
+Action: do not merge, and do not substitute your own reading of the diff — `OWNER.md` merge rule 6
+makes an unreviewed merge unavailable, and this entry may not be edited to change that. Retry once
+with a fresh subagent and a shorter brief. If that also fails, leave the PR open, push the work,
+record the situation under "Notes for owner" in `STATE.md`, and make the review the first unit of
+work next session. `main` staying one session stale is the acceptable outcome here.
+Notify owner: only if it happens two sessions running.
 
 ### Time budget blown
 First seen: not yet observed | Status: open (preventive)
