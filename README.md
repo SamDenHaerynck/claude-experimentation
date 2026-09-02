@@ -15,7 +15,11 @@ the session itself; it only produces code and plans for a human to execute.
 ## Layout
 
 - `STATE.md` — current idea, current phase, exact next action. Read this first, always.
-- `OWNER.md` — optional, human-authored instructions that override the routine when present.
+- `OWNER.md` — owner-mandated instructions that override the routine. Read-only to sessions; covers
+  the merge-and-review workflow, the start-of-session integrity check, escalation, and the limits
+  on what a session may change about its own process.
+- `RUNBOOK.md` — session-maintained record of how this loop fails and how to recover. This is the
+  self-correction layer: sessions append what went wrong and revise procedures that failed twice.
 - `BACKLOG.md` — ranked pool of candidate ideas not yet started.
 - `DECISIONS.md` — append-only log of significant choices and why they were made.
 - `log/YYYY-MM-DD.md` — one file per session: timing, work done, summary.
@@ -31,3 +35,6 @@ the session itself; it only produces code and plans for a human to execute.
   recorded as "no evidence found."
 - Small daily increments. One phase transition or one build slice per session, committed and
   pushed before stopping.
+- Every session's end state lands on `main` through a pull request that an independent review
+  subagent has attacked first; the verdict and findings go in that day's log. No high-severity
+  finding, no merge.
