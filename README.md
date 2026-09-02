@@ -15,7 +15,7 @@ the session itself; it only produces code and plans for a human to execute.
 ## Layout
 
 - `STATE.md` — current idea, current phase, exact next action. Read this first, always.
-- `OWNER.md` — owner-authored instructions that override the routine. Read-only to sessions; covers
+- `OWNER.md` — owner-mandated instructions that override the routine. Read-only to sessions; covers
   the merge-and-review workflow, the start-of-session integrity check, escalation, and the limits
   on what a session may change about its own process.
 - `RUNBOOK.md` — session-maintained record of how this loop fails and how to recover. This is the

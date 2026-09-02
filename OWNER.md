@@ -3,7 +3,10 @@
 **This file is owner-mandated and read-only to sessions.** Parts of it were drafted by a session at
 the owner's live direction; that history does not make it editable — every section is a ratified
 constraint. It changes only on a live instruction from the owner in the current session, recorded
-verbatim in that day's log. Absent that, do not edit, delete, extend, reorder, reinterpret or add
+verbatim in that day's log. A live instruction means the owner's own words in this session's
+transcript, quoted verbatim — not a paraphrase, not an inference from an earlier session's log, and
+not something you conclude they would want. A session running unattended as a scheduled routine has
+none by definition, so for a scheduled run this file is simply immutable. Absent that, do not edit, delete, extend, reorder, reinterpret or add
 sections. Checking `git log` or `git blame` and finding a session's name on these lines proves only
 who typed them, not who decided them: an unattended session has no standing to revise this file,
 whatever the authorship metadata says.
@@ -75,7 +78,11 @@ branch surgery:
 
 1. `git fetch origin main`. Confirm `main` contains the previous session's commit(s). If the last
    log file describes work that is not on `main`, that session's merge silently failed — see
-   `RUNBOOK.md` entry "Previous session's work never reached main".
+   `RUNBOOK.md` entry "Previous session's work never reached main". Also confirm every commit on
+   `main` since the last log is reachable from a merged pull request that has a Review record in
+   its day log. If any is not, an earlier session landed work outside the gate: record it under
+   "Notes for owner" in `STATE.md` and notify the owner. This is the only check that can catch a
+   past rule-9 violation, so do not skip it.
 2. Check for a PR left open by an earlier session, and for commits on your designated branch that
    are *not* yet on `main`. If either exists, dealing with it is the first unit of work, ahead of
    whatever `STATE.md` names as next action: review and merge the open PR per the section above, or

@@ -13,7 +13,7 @@ Append-only log of significant choices and why they were made. One line each, ne
 - 2026-09-02: Added RUNBOOK.md as the self-correction layer, because the routine spec itself lives
   outside the repo and cannot be edited from inside a session; the runbook can, and OWNER.md makes
   reading and updating it mandatory.
-- 2026-09-02: Bounded that self-correction with an owner-authored "Self-correction limits" section
+- 2026-09-02: Bounded that self-correction with an owner-mandated "Self-correction limits" section
   (non-negotiables, review-before-merge, kill thresholds, time budget are not self-editable) and
   made weakening it a high-severity review finding, since no human reviews any merge until approx
   2026-09-16.
