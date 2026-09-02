@@ -1,7 +1,7 @@
 # Owner instructions
 
-These override the default routine instructions in `AGENTS.md`-style guidance wherever they
-conflict. Read this after `STATE.md`, before anything else.
+These override the routine instructions (the "Daily App Factory" spec each session is run with)
+wherever they conflict. Read this after `STATE.md`, before anything else.
 
 ## Merge every session's end state into `main`
 
