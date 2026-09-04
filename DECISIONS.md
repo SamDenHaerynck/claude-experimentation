@@ -17,3 +17,9 @@ Append-only log of significant choices and why they were made. One line each, ne
   (non-negotiables, review-before-merge, kill thresholds, time budget are not self-editable) and
   made weakening it a high-severity review finding, since no human reviews any merge until approx
   2026-09-16.
+- 2026-09-04: Killed "Dependency deprecation/EOL watcher" (backlog #1) in Phase 1 on real evidence:
+  the core EOL data is already a free public good (`endoflife.date`), the paying SCA-tool audience
+  already gets deprecated-package flagging bundled in (Snyk, Mend/Renovate, FOSSA, Socket.dev), and
+  GitLab is already building EOL data into its own paid dependency dashboard as a bundled feature.
+  Score 15/25 with willingness-to-pay at 2/5, an automatic kill either way. Full record in
+  `killed/dependency-eol-watcher/`.
