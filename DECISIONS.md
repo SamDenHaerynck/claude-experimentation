@@ -23,3 +23,16 @@ Append-only log of significant choices and why they were made. One line each, ne
   GitLab is already building EOL data into its own paid dependency dashboard as a bundled feature.
   Score 15/25 with willingness-to-pay at 2/5, an automatic kill either way. Full record in
   `killed/dependency-eol-watcher/`.
+- 2026-09-05: Killed "Vendor security questionnaire autofill assistant" (backlog #1) in Phase 1 on
+  real evidence: demand and willingness to pay are both genuine (verified pricing $250/mo-$9,600/yr
+  across Conveyor, 1up.ai, AutoRFP.ai), but the category is already saturated — a YC-backed
+  competitor (Stacksi) targets the exact same small-vendor gap claiming 90%+ autofill, several
+  more well-funded AI-native entrants already sell this, and a free DIY substitute (spreadsheet +
+  general-purpose LLM) is already reported as good enough by a practitioner in the target segment.
+  Score 15/25 with "reason to exist" at 1/5. Full record in
+  `killed/vendor-security-questionnaire-autofill/`.
+- 2026-09-05: Two backlog ideas now killed consecutively (dependency EOL watcher, vendor security
+  questionnaire autofill), both partly on differentiation grounds (crowded incumbent category) more
+  than pure lack of demand. Noting the pattern rather than acting on it yet — the routine's
+  "sourcing method" review only triggers at three kills in a row, and three candidates remain in
+  `BACKLOG.md`, so no new idea generation was needed this session.
