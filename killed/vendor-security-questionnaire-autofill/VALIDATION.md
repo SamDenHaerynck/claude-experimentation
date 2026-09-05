@@ -23,9 +23,13 @@
 - **Loopio / RFPIO (Responsive)** — established RFP-response platforms with AI autofill features
   (Loopio "Magic"), pre-dating this idea, already used as fallback answers in the Stacksi HN
   thread above. Same source.
-- **SafeBase** — markets "AI Questionnaire Assistance" explicitly to "eliminate the tedious
-  back-and-forth response process." Source: https://www.g2.com/products/safebase/reviews (search
-  snippet from G2 product page)
+- **SafeBase** — marketed "AI Questionnaire Assistance" explicitly to "eliminate the tedious
+  back-and-forth response process" (phrase confirmed via web search of SafeBase's own product
+  marketing copy, originally at safebase.io/products/ai-questionnaire-assistance; a direct G2
+  fetch of https://www.g2.com/products/safebase/reviews returned 403 and could not independently
+  confirm the phrase appears there too). SafeBase was acquired by Drata for $250M in February 2025
+  and that URL now redirects to drata.com — reinforcing rather than undercutting the point that
+  this is a well-funded, consolidating competitive category.
 - Also observed in market-scan searches but not individually price-verified: Vanta, Secureframe,
   Whistic, Vendict, Thalamus AI, Arphie.ai, Orbiq — all offering AI-drafted questionnaire response
   products as of 2026. Several vendor blog posts about "how startups should handle security
