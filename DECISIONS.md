@@ -36,3 +36,22 @@ Append-only log of significant choices and why they were made. One line each, ne
   than pure lack of demand. Noting the pattern rather than acting on it yet — the routine's
   "sourcing method" review only triggers at three kills in a row, and three candidates remain in
   `BACKLOG.md`, so no new idea generation was needed this session.
+- 2026-09-06: Killed "Rent increase / notice compliance calculator" (backlog #1) in Phase 1 on real
+  evidence: genuine first-person confusion exists (three BiggerPockets threads across MI/CA/ME,
+  2016-2021, plus an adjacent PEI tribunal case), but the exact proposed feature set — jurisdiction
+  cap calculation, notice-period lookup, and letter generation together — is already shipped free by
+  at least eight distinct tools (Rentlane, LeaseBase, and six more single-jurisdiction calculators),
+  and every forum confusion instance found was resolved for free by a peer in the same thread. Score
+  11/25 with willingness-to-pay at 1/5, an automatic kill either way. Full record in
+  `killed/rent-increase-notice-calculator/`.
+- 2026-09-06: Three backlog ideas now killed consecutively (dependency EOL watcher, vendor security
+  questionnaire autofill, rent-increase notice calculator), triggering the routine's rule to spend
+  the next session on sourcing method rather than generating a fourth idea the same way. All three
+  kills so far have found genuine demand/pain but died on "reason to exist alongside what already
+  ships" and/or willingness to pay, specifically because a free substitute (DIY, free adjacent tool,
+  or free peer forum answer) already satisfies the exact moment of need. The pattern to examine next
+  session: is the idea-generation step (Phase 0) systematically picking problems narrow and
+  well-defined enough that a free tool or a knowledgeable peer can already solve them completely,
+  and if so, what kind of idea would not have that property (e.g. one requiring ongoing/updated
+  data no free tool maintains, one requiring integration/workflow embedding a static calculator
+  can't offer, or one where the cost of being wrong is high enough that free/DIY isn't trusted).
