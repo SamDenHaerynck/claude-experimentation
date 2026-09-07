@@ -120,6 +120,28 @@ Action: stop working immediately and go to Close. Commit `wip:`, mark the slice 
 row on the same phase, the units are too big: shrink them in `PLAN.md`.
 Notify owner: no.
 
+### Idea keeps landing on a one-shot free-substitutable output
+First seen: 2026-09-07 (day 005, triggered by three kills in a row) | Status: open (apply and watch)
+Symptom: an idea's entire deliverable is a single generated artifact (a value lookup, a filled
+form, a drafted letter/text) — the kind of thing a free calculator, a free adjacent product, or one
+generic LLM prompt already produces completely, with nothing left for a paid product to keep
+selling after the first output. All three kills so far (`dependency-eol-watcher`,
+`vendor-security-questionnaire-autofill`, `rent-increase-notice-calculator`) died this way, scoring
+low on "reason to exist" and/or "willingness to pay" specifically because of this.
+Action: in Phase 0, prefer ideas with at least one of: (a) value from data that changes on an
+ongoing basis and must be kept current; (b) value from being embedded in a recurring workflow or
+persisted system state (a running check, a scheduled alert, a kept record), not a single generated
+artifact; (c) a cost of being wrong high enough (money owed, legal exposure, a filed document) that
+a free/DIY answer isn't trusted even when one exists. In Phase 1, run this as an explicit early
+check — name the closest free substitute (a specific free tool, or "a generic LLM prompt would
+produce the same output") before scoring the five dimensions — rather than discovering it only
+after a full research pass. See `DECISIONS.md` 2026-09-07 for the full analysis and the re-ranked
+`BACKLOG.md`.
+Notify owner: no. Revisit this entry once a Phase 1 pass has actually applied the (a)/(b)/(c) check
+to a new idea — if the check doesn't discriminate in practice (e.g. an idea with property (a)/(b)/
+(c) still dies the same way, or a demoted idea turns out fine), record that here and adjust rather
+than trusting the theory untested.
+
 ### Web research returns no usable evidence
 First seen: not yet observed | Status: open (preventive)
 Symptom: during Validate, no forum posts, issue threads, review-site complaints or practitioner
