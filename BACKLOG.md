@@ -4,13 +4,56 @@ Ranked pool of candidate ideas not yet started. Phase 0 picks the top entry. Whe
 selected it moves out of this list into `ideas/<slug>/`; when generating replacements, add new
 candidates to the bottom unless evidence gathered during Validate suggests otherwise.
 
-1. **Freelancer SOW/contract generator with e-sign tracking** — a lightweight, freelancer-specific
+Re-ranked 2026-09-07 after the three-kills-in-a-row sourcing-method review (see `DECISIONS.md`).
+All three prior kills were one-shot output generators (a lookup, an autofill, a letter draft) fully
+replaceable by a free calculator, a free adjacent tool, or a generic LLM prompt. Going forward,
+Phase 0/1 selects for at least one of: (a) value from data that changes on an ongoing basis and
+must be kept current, (b) value from embedding in a recurring workflow or persisted system state
+rather than a single generated artifact, or (c) a cost of being wrong high enough that free/DIY
+answers aren't trusted. The three new entries below are ordered first because each is chosen to
+test one of those properties; the two carried-over entries are one-shot generators with the same
+shape as the three kills and are demoted to the bottom pending evidence that a real wedge exists.
+
+1. **CI-embedded migration/rollback safety gate for small teams** — a GitHub Action that inspects
+   PRs touching database migration files and blocks merge unless a corresponding rollback/down
+   migration is present, with a short human-readable diff of what would break on rollback.
+   Rationale: tests property (b) — the value is a persisted, recurring check inside the team's
+   existing CI workflow (every future PR, not a one-time answer), which neither a free calculator
+   nor a one-off LLM prompt can substitute for, since it has to actually run and gate merges.
+
+2. **Contractor-vs-employee (worker classification) risk checker with an audit-trail export** — a
+   short questionnaire against IRS/DOL common-law-factor tests for a specific hire, producing a
+   dated, exportable record of the analysis and reasoning (not just a yes/no) that a small business
+   can keep on file if audited. Rationale: tests property (c) — free tests and forum answers already
+   exist (expect this to surface in Validate, same as the rent-increase idea), but misclassification
+   penalties are large enough that the paid wedge, if any, would be the retained documentation/audit
+   trail rather than the computation itself; Validate must find evidence anyone treats an
+   undocumented free answer as insufficient before this clears "reason to exist."
+
+3. **State/local sales-tax nexus threshold monitor with change alerts** — tracks a small
+   e-commerce seller's revenue/transaction count per state against economic-nexus thresholds that
+   change periodically by state law, and alerts before a new filing obligation is triggered.
+   Rationale: tests property (a) — thresholds change over time across 40+ jurisdictions, which is
+   an ongoing maintenance burden a one-time free calculator doesn't take on; likely paid incumbents
+   exist here too (TaxJar/Avalara), so Validate must specifically check whether a narrow, cheap
+   alternative has room next to them or whether this repeats the EOL-watcher pattern of the
+   category being already bundled into tools the audience already buys.
+
+4. **Freelancer SOW/contract generator with e-sign tracking** — a lightweight, freelancer-specific
    alternative to heavyweight contract platforms: generates scoped statements of work from a short
    intake form, tracks e-signature status, and reminds on renewal/expiry. Rationale: solo
    consultants often use generic templates or expensive all-in-one tools (DocuSign, PandaDoc) built
-   for larger teams; a narrow, cheap, fast tool may fill a gap.
+   for larger teams; a narrow, cheap, fast tool may fill a gap. Demoted: the core deliverable (a
+   generated SOW document) is a one-shot artifact of the same shape as the three kills; not
+   disqualified outright since the e-sign tracking/renewal reminders piece is arguably property
+   (b), but Validate must test whether that piece alone (not the document generation) is what a
+   buyer would pay for, given free-template and incumbent-freemium substitutes likely exist.
 
-2. **Git-history-to-changelog generator for indie SaaS** — ingests merged PRs/commits and drafts a
+5. **Git-history-to-changelog generator for indie SaaS** — ingests merged PRs/commits and drafts a
    customer-facing changelog entry or release-notes email, matching a configurable tone/template.
    Rationale: solo/indie SaaS founders ship frequently but often skip customer communication because
-   writing a polished changelog entry takes more time than the fix itself.
+   writing a polished changelog entry takes more time than the fix itself. Demoted: this is close to
+   a pure one-shot text-generation task, which a general-purpose LLM prompt against pasted commits
+   already does for free today — the same substitute that helped kill the questionnaire-autofill
+   idea. Validate would need to find a real wedge (e.g. persisted per-repo config/workflow
+   automation, property (b)) beyond "nicer prompt" before this clears "reason to exist."

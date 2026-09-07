@@ -55,3 +55,26 @@ Append-only log of significant choices and why they were made. One line each, ne
   and if so, what kind of idea would not have that property (e.g. one requiring ongoing/updated
   data no free tool maintains, one requiring integration/workflow embedding a static calculator
   can't offer, or one where the cost of being wrong is high enough that free/DIY isn't trusted).
+- 2026-09-07: Sourcing-method review (triggered by the three-kills-in-a-row rule). Conclusion: all
+  three kills were single-purpose output generators — a value lookup, a form autofill, a letter
+  draft — where the entire deliverable is a static artifact a free calculator, a free adjacent
+  product, or a generic LLM prompt already produces completely in one shot, so there was never a
+  reason for the user to keep paying after the first output. Re-examined the two ideas already in
+  `BACKLOG.md` (freelancer SOW generator, changelog generator) against that lens and both have the
+  same shape: a SOW/contract is a one-shot document a freelancer already gets from a free template
+  or Bonsai-style incumbent, and a changelog entry is exactly the kind of text a general-purpose LLM
+  already drafts for free from pasted commits — no distinguishing wedge over that substitute is
+  apparent without evidence, so neither is promoted to next automatically; both stay in
+  `BACKLOG.md` for Phase 1 to test properly, but re-ranked below three new candidates chosen to
+  fail this test differently (see `BACKLOG.md`). Decided to select for one of three properties going
+  forward, in Phase 0 idea generation and as an explicit first check early in Phase 1, before
+  spending the rest of the validation budget on the full five-dimension score: (a) the value comes
+  from data that changes on an ongoing basis and must be kept current, not a one-time computation,
+  so a free tool would have to maintain it forever to compete; (b) the value comes from being
+  embedded in a recurring workflow or another system's state (a running check, a scheduled
+  notification, a persisted record), not from a single generated artifact a free tool or an LLM
+  prompt can fully replace; (c) the cost of an individual being wrong is high enough (money owed,
+  legal exposure, a filed document) that a free/DIY answer is not trusted even when one exists, and
+  the paid product's value is the guarantee, not the words. Recorded as a `RUNBOOK.md` entry
+  (`Idea keeps landing on a one-shot free-substitutable output`) so this check runs automatically in
+  future Phase 1 sessions, not just after a triggered review.
