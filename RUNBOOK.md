@@ -137,10 +137,22 @@ check — name the closest free substitute (a specific free tool, or "a generic 
 produce the same output") before scoring the five dimensions — rather than discovering it only
 after a full research pass. See `DECISIONS.md` 2026-09-07 for the full analysis and the re-ranked
 `BACKLOG.md`.
-Notify owner: no. Revisit this entry once a Phase 1 pass has actually applied the (a)/(b)/(c) check
-to a new idea — if the check doesn't discriminate in practice (e.g. an idea with property (a)/(b)/
-(c) still dies the same way, or a demoted idea turns out fine), record that here and adjust rather
-than trusting the theory untested.
+Update 2026-09-08 (day 006, first real Phase 1 application, `ci-migration-rollback-gate`): the
+check partially failed to discriminate, as this entry asked to watch for. Property (b) held
+genuinely — the idea's value only exists by running on every future PR, which no one-shot LLM
+prompt or DIY script can substitute for — but the idea still died (15/25), because the closest free
+substitutes (Squawk, and decisively Bytebase Community's free small-team tier) are not one-shot
+outputs either: they are themselves free, already-recurring, already-CI-embedded tools serving the
+same audience. The (a)/(b)/(c) check rules out one-shot free/DIY/LLM substitutes; it does not by
+itself rule out a competing free tool that is already recurring/embedded for the same audience.
+Widened action: after confirming a proposed (a)/(b)/(c) property holds, also explicitly name the
+closest free tool that is *itself* already recurring/embedded (not a one-shot substitute) serving
+the same audience, and weigh that as a distinct "reason to exist" risk rather than treating a held
+(a)/(b)/(c) property as sufficient on its own.
+Notify owner: no. This is one data point on a widened check, not yet re-tested. Revisit again once
+the widened version has been applied to a second new idea — if it still doesn't discriminate, or a
+demoted idea turns out fine, record that and adjust again rather than trusting this version
+untested either.
 
 ### Web research returns no usable evidence
 First seen: not yet observed | Status: open (preventive)
