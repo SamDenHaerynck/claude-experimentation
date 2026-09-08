@@ -78,3 +78,28 @@ Append-only log of significant choices and why they were made. One line each, ne
   the paid product's value is the guarantee, not the words. Recorded as a `RUNBOOK.md` entry
   (`Idea keeps landing on a one-shot free-substitutable output`) so this check runs automatically in
   future Phase 1 sessions, not just after a triggered review.
+- 2026-09-08: Killed "CI-embedded migration/rollback safety gate for small teams" (backlog #1) in
+  Phase 1 on real evidence: recurring migration/rollback pain exists across five ecosystems (kysely,
+  Supabase, drizzle-orm, EF Core, cookiecutter-django) plus one direct match at enterprise scale
+  (a GitLab internal issue requesting exactly a rollback-procedure requirement), but Bytebase's free
+  Community tier (free for up to 20 users) already bundles equivalent-category SQL review + rollout
+  gating for this idea's exact target audience, and Atlas Pro ($9/dev/mo) shows the general category
+  is monetizable but already claimed. Score 15/25, no single dimension ≤2. Full record in
+  `killed/ci-migration-rollback-gate/`.
+- 2026-09-08: This is the first idea actually scored against the 2026-09-07 (a)/(b)/(c) lens, and it
+  produced a real, worth-recording partial-failure result: property (b) (value from being embedded
+  in a recurring CI workflow, not a one-shot artifact) genuinely held, correctly distinguishing this
+  idea from the three prior one-shot kills — but it still died, because the free substitutes here
+  (Squawk, and decisively Bytebase Community) are not one-shot outputs either; they are themselves
+  free, already-recurring, already-CI-embedded tools serving the same audience. Widened the check:
+  in Phase 1, after confirming a proposed property (a)/(b)/(c) holds, also explicitly name the
+  closest free tool that is *itself* already recurring/embedded (not just a one-shot substitute) for
+  the same audience, and treat that as a distinct risk to weigh in "reason to exist," not something
+  the (a)/(b)/(c) check alone rules out. Updated the `RUNBOOK.md` entry accordingly rather than
+  waiting for a second failure, per that entry's own instruction to revisit after the first real
+  Phase 1 application.
+- 2026-09-08: Four backlog ideas now killed consecutively. The routine's explicit "three in a row"
+  rule already fired and was acted on (2026-09-07 sourcing-method review); no separate rule exists
+  for a fourth, so proceeding directly to validating the next backlog entry next session, using the
+  widened check above, rather than pausing for another full method review. Flagged under "Notes for
+  owner" in `STATE.md` for visibility given the streak length, not as a blocker.

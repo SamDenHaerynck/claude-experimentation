@@ -1,35 +1,38 @@
 # State
-Day: 005
+Day: 006
 Idea: none
 Phase: 0 Select
 Slice: n/a
-Next action: Validate the new backlog #1, "CI-embedded migration/rollback safety gate for small
-teams" (see `BACKLOG.md`), using the normal Phase 1 process plus the sharpened early check recorded
-today: before running the full five-dimension score, name the closest free substitute for the
-*specific* value being proposed (a named free tool, or "a generic LLM prompt would produce the same
-output") and judge whether property (a)/(b)/(c) from `DECISIONS.md` (2026-09-07 entry) actually
-holds up under evidence — for this idea, property (b): the value has to come from being an
-always-on CI check across future PRs, not from one generated answer. If it dies anyway, that is a
-real result (it tests whether the (a)/(b)/(c) lens actually discriminates) — record it plainly per
-the new `RUNBOOK.md` entry rather than reframing the idea to survive.
-Read first: OWNER.md, RUNBOOK.md, BACKLOG.md (top entry and the 2026-09-07 re-ranking note),
-DECISIONS.md (2026-09-07 entry)
+Next action: Validate the new backlog #1, "Contractor-vs-employee (worker classification) risk
+checker with an audit-trail export" (see `BACKLOG.md`), using the normal Phase 1 process plus the
+now-widened early check from today's `RUNBOOK.md` update: (1) name the closest free substitute for
+the *specific* value being proposed and judge whether the relevant (a)/(b)/(c) property (here,
+property (c): the paid wedge is the retained documentation/audit trail, not the computation) holds
+up under evidence; (2) separately, name the closest free tool that is *itself* already
+recurring/embedded for the same audience (not just a one-shot substitute) — e.g. check whether any
+existing free HR/compliance tool already offers a kept, exportable record of a classification
+analysis, not just a one-time quiz. If it dies anyway, that is a real result — record it plainly
+per the `RUNBOOK.md` entry rather than reframing the idea to survive.
+Read first: OWNER.md, RUNBOOK.md (the "Idea keeps landing on a one-shot free-substitutable output"
+entry, 2026-09-08 update), BACKLOG.md (top entry), DECISIONS.md (2026-09-08 entries)
 Notes for owner:
-- Three kills in a row (dependency EOL watcher, vendor security questionnaire autofill, rent
-  increase calculator) triggered the routine's sourcing-method-review rule today instead of a
-  normal validate session. Analysis (full text in `DECISIONS.md` 2026-09-07): all three died as
-  one-shot outputs (a lookup, an autofill, a letter) fully replaceable by a free calculator, a free
-  adjacent tool, or a generic LLM prompt, leaving no reason to keep paying after the first output.
-- Re-ranked `BACKLOG.md`: added three new candidates designed to test one of three properties
-  (ongoing/changing data, workflow/system-state embedding, high cost of being wrong) ahead of the
-  two carried-over one-shot-shaped ideas (freelancer SOW generator, changelog generator), which are
-  demoted but not deleted. Also added a `RUNBOOK.md` entry so this check runs automatically in
-  future Phase 1 sessions.
-- This is a genuinely untested theory — no idea has yet been scored against it. If the new #1
-  (CI migration/rollback gate) also dies on "reason to exist" or "willingness to pay" despite
-  having property (b), that is a real negative result on the lens itself, worth recording plainly
-  rather than rationalizing away. Flagging for visibility, not as a blocker.
+- Four backlog ideas now killed in a row (dependency EOL watcher, vendor security questionnaire
+  autofill, rent increase calculator, CI migration/rollback gate). The routine's explicit "three in
+  a row" rule already fired once (2026-09-07) and was acted on; there is no separate rule for a
+  fourth, so this session proceeded directly to validating the next backlog entry with a widened
+  check rather than pausing for a second full method review. Flagging the streak length for
+  visibility, not as a blocker — full reasoning in `DECISIONS.md` 2026-09-08.
+- The 2026-09-07 (a)/(b)/(c) lens got its first real test today (`ci-migration-rollback-gate`,
+  killed 15/25). Result: property (b) held genuinely, but the idea still died because the closest
+  free substitutes (Squawk, and decisively Bytebase's free Community tier) are themselves already
+  free, recurring, CI-embedded tools for the same audience — not one-shot substitutes. Widened the
+  check accordingly (see `RUNBOOK.md`); this widened version is itself untested and should be
+  revisited after a second application, per that entry.
+- One citation this session (GitLab issue #32255, the closest direct-match evidence found) could
+  not be directly fetched — GitLab returned HTTP 429 on two attempts — so it is sourced from a
+  search engine's indexed summary rather than a direct page fetch. Flagged explicitly in
+  `killed/ci-migration-rollback-gate/VALIDATION.md` rather than treated as fully confirmed.
 - Owner away until approx 2026-09-16; per OWNER.md, decide and record rather than waiting, and
   notify only on hard blockers.
-Consecutive kills: 3
-Last session: 2026-09-07, ended clean
+Consecutive kills: 4
+Last session: 2026-09-08, ended clean
