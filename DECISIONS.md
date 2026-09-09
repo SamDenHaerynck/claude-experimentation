@@ -103,3 +103,32 @@ Append-only log of significant choices and why they were made. One line each, ne
   for a fourth, so proceeding directly to validating the next backlog entry next session, using the
   widened check above, rather than pausing for another full method review. Flagged under "Notes for
   owner" in `STATE.md` for visibility given the streak length, not as a blocker.
+- 2026-09-09: Killed "Contractor-vs-employee classification risk checker with audit-trail export"
+  (backlog #1) in Phase 1. Real evidence: the specific free-and-instant-and-exportable gap the idea
+  targeted does genuinely not exist (three free quizzes checked are on-screen-only; IRS Form SS-8 is
+  free but takes 6-8 months), and no paid platform (Gusto/Rippling/Deel/Justworks) was found bundling
+  the exact documented-memo feature either — so this did not repeat the `ci-migration-rollback-gate`
+  failure mode of a competing free-recurring tool. It died instead because the only three real
+  user-voice posts found (Avvo, Proformative, a Quora thread) each asked only for the classification
+  answer, never for documentation — directly contradicting the idea's own property-(c) thesis. Score
+  12/25, with both demand and willingness-to-pay independently at 2/5 (automatic kill). Reddit, the
+  likely source of the most relevant grassroots discussion, was unreachable from this environment and
+  is recorded as a gap, not treated as supporting evidence. Full record in
+  `killed/contractor-classification-checker/`.
+- 2026-09-09: Widened the Phase 1 check again, in a new `RUNBOOK.md` entry distinct from the
+  2026-09-08 one: a claimed (a)/(b)/(c) property must be checked against real user-voice evidence for
+  the *specific* differentiator claimed, not accepted on plausible architectural or doctrinal
+  reasoning alone (e.g. "penalties are high" is not the same claim as "people want documentation, not
+  just an answer," and only the latter needed checking against real posts). This is a different
+  failure mode from the 2026-09-08 widening (competing free-recurring tool) and is being tracked
+  separately in `RUNBOOK.md` pending a second application.
+- 2026-09-09: Five ideas now killed since Phase 1 began; the count of consecutive kills since the
+  last sourcing-method review (2026-09-07) is 2, not yet 3, so the routine's "three in a row"
+  trigger has not fired. This session's own `RUNBOOK.md` entry initially claimed the trigger
+  requires three consecutive kills *without an intervening `RUNBOOK.md` widening* — that qualifier
+  does not exist in the routine's rule and was invented; the independent pre-merge review (see day
+  007 log) correctly flagged it as an unnecessary and inconsistently-applied gloss that could, if
+  reused, let every future kill "reset the clock" and erode the safeguard. Corrected the
+  `RUNBOOK.md` entry to the plain reading before merging: the count is simply 2 of 3, and the next
+  kill (backlog #1, sales-tax nexus monitor) would make it 3 and fire the trigger without
+  qualification.
