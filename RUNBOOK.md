@@ -165,3 +165,47 @@ vendor marketing copy for evidence of demand, and never fabricate a citation or 
 the gap. If three ideas in a row die this way, the next session goes to sourcing method rather than
 a fourth idea, per the routine.
 Notify owner: no.
+
+### A claimed (a)/(b)/(c) property is plausible but contradicted by real user-voice evidence
+First seen: 2026-09-09 (day 007, `contractor-classification-checker`) | Status: open (apply and
+watch)
+Symptom: the backlog entry's rationale argues a property ((a), (b), or (c)) holds using plausible
+architectural or doctrinal reasoning, but when Validate actually finds real first-person posts from
+the target user, they contradict the specific differentiator the idea depends on. Here: the
+rationale claimed the paid wedge would be "retained documentation/audit trail, not the computation,"
+justified by high misclassification penalties (property (c)) and IRS Section 530 safe-harbor
+doctrine — real and high, but doctrinal, not a demand signal. The only three real user posts found
+(Avvo, Proformative, a Quora thread) each asked only "am I classified correctly," never for
+documentation. Unlike the `ci-migration-rollback-gate` kill (property held, lost to a competing free
+tool), this idea's claimed property itself was not supported by the user-voice evidence found.
+Action: in Phase 1, do not treat a property (a)/(b)/(c) claim as confirmed on architectural or
+doctrinal reasoning alone. After finding real user posts (the three-posts-with-URLs requirement
+already in Phase 1), explicitly check whether any of them evidence the *specific* differentiator the
+idea depends on (e.g. "wants a kept record," not just "wants an answer") — not merely the general
+problem. If the found posts are silent or point the other way, score demand low even if the
+property's architectural logic is sound. If real user-voice evidence for the specific
+differentiator is unreachable (e.g. a platform is blocked from this environment, as Reddit was this
+session), say so explicitly and do not treat that gap as neutral — a claimed differentiator with no
+supporting user-voice evidence found does not clear "reason to exist" on doctrine alone.
+Notify owner: no. One data point; revisit after a second idea is validated against this addition —
+if it still doesn't discriminate well, or unfairly demotes an idea that turns out to have real
+demand via a channel this pass couldn't reach (e.g. Reddit), record that and adjust again.
+
+### Five ideas killed across two "three-in-a-row" cycles
+First seen: 2026-09-09 (day 007) | Status: open (watch, no action yet)
+Symptom: after the 2026-09-07 sourcing-method review (triggered by three kills:
+`dependency-eol-watcher`, `vendor-security-questionnaire-autofill`, `rent-increase-notice-calculator`),
+two more ideas were killed (`ci-migration-rollback-gate`, `contractor-classification-checker`),
+bringing the running total to five, with no repeat of the routine's "three in a row" trigger since
+it only fires on three *consecutive* kills and each of the last two came one at a time with a
+`RUNBOOK.md` widening in between. Each individual kill has been well-evidenced and each widened the
+Phase 1 check in a genuinely new, non-redundant way (competing free-recurring tools, then
+user-voice-vs-differentiator mismatch) rather than repeating the same mistake, so this is not yet
+"three in a row failing the same way" as the routine's trigger defines it.
+Action: no action forced by the routine's rule as literally written. Flagged under "Notes for
+owner" in `STATE.md` given the cumulative streak length. If the *next* validated idea (backlog #1,
+sales-tax nexus monitor, testing property (a)) also dies, that would be three kills since the last
+full method review, at which point treat it as a fresh three-in-a-row trigger per the routine and
+spend a session on sourcing method rather than pulling a fourth candidate.
+Notify owner: no — this is a normal-if-notable kill streak, not a blocked loop, per `OWNER.md`
+escalation criteria.

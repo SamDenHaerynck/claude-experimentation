@@ -21,16 +21,15 @@ see `killed/ci-migration-rollback-gate/REASON.md`. Result widens the (a)/(b)/(c)
 already recurring/CI-embedded (not just a one-shot substitute) already serves the same audience —
 name that risk explicitly too, not just one-shot LLM/DIY substitutes.
 
-1. **Contractor-vs-employee (worker classification) risk checker with an audit-trail export** — a
-   short questionnaire against IRS/DOL common-law-factor tests for a specific hire, producing a
-   dated, exportable record of the analysis and reasoning (not just a yes/no) that a small business
-   can keep on file if audited. Rationale: tests property (c) — free tests and forum answers already
-   exist (expect this to surface in Validate, same as the rent-increase idea), but misclassification
-   penalties are large enough that the paid wedge, if any, would be the retained documentation/audit
-   trail rather than the computation itself; Validate must find evidence anyone treats an
-   undocumented free answer as insufficient before this clears "reason to exist."
+Updated 2026-09-09: killed candidate #1 (contractor-vs-employee classification risk checker) in
+Phase 1 — see `killed/contractor-classification-checker/REASON.md`. This one did not lose to a
+free-recurring competitor (none was found); it failed because the only real user-voice evidence
+found contradicted the idea's own property-(c) thesis — every real forum post asked for the
+classification answer, none asked for documentation/an audit trail. Widens the check again (see
+`RUNBOOK.md`): a claimed (a)/(b)/(c) property needs real user-voice evidence that the specific
+differentiator is wanted, not just a plausible-sounding architectural argument for why it should be.
 
-2. **State/local sales-tax nexus threshold monitor with change alerts** — tracks a small
+1. **State/local sales-tax nexus threshold monitor with change alerts** — tracks a small
    e-commerce seller's revenue/transaction count per state against economic-nexus thresholds that
    change periodically by state law, and alerts before a new filing obligation is triggered.
    Rationale: tests property (a) — thresholds change over time across 40+ jurisdictions, which is
@@ -39,7 +38,7 @@ name that risk explicitly too, not just one-shot LLM/DIY substitutes.
    alternative has room next to them or whether this repeats the EOL-watcher pattern of the
    category being already bundled into tools the audience already buys.
 
-3. **Freelancer SOW/contract generator with e-sign tracking** — a lightweight, freelancer-specific
+2. **Freelancer SOW/contract generator with e-sign tracking** — a lightweight, freelancer-specific
    alternative to heavyweight contract platforms: generates scoped statements of work from a short
    intake form, tracks e-signature status, and reminds on renewal/expiry. Rationale: solo
    consultants often use generic templates or expensive all-in-one tools (DocuSign, PandaDoc) built
@@ -49,7 +48,7 @@ name that risk explicitly too, not just one-shot LLM/DIY substitutes.
    (b), but Validate must test whether that piece alone (not the document generation) is what a
    buyer would pay for, given free-template and incumbent-freemium substitutes likely exist.
 
-4. **Git-history-to-changelog generator for indie SaaS** — ingests merged PRs/commits and drafts a
+3. **Git-history-to-changelog generator for indie SaaS** — ingests merged PRs/commits and drafts a
    customer-facing changelog entry or release-notes email, matching a configurable tone/template.
    Rationale: solo/indie SaaS founders ship frequently but often skip customer communication because
    writing a polished changelog entry takes more time than the fix itself. Demoted: this is close to
