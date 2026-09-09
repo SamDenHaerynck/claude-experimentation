@@ -19,12 +19,13 @@ entry), DECISIONS.md (2026-09-09 entries)
 Notes for owner:
 - Five backlog ideas now killed since Phase 1 began (dependency EOL watcher, vendor security
   questionnaire autofill, rent increase calculator, CI migration/rollback gate, contractor
-  classification checker). The routine's literal "three in a row" trigger has not re-fired because
-  it requires three *consecutive* kills without an intervening process widening, and each of the
-  last two kills widened the Phase 1 check in a genuinely new way rather than repeating the same
-  mistake — see `RUNBOOK.md` "Five ideas killed across two three-in-a-row cycles" and `DECISIONS.md`
-  2026-09-09. Flagging for visibility, not as a blocker; if the next validated idea also dies, that
-  will be treated as a fresh trigger per that runbook entry.
+  classification checker). The count of consecutive kills since the last sourcing-method review
+  (2026-09-07) is 2, not yet 3, so the routine's "three in a row" trigger has not fired — see
+  `RUNBOOK.md` "Five ideas killed total; second three-in-a-row count now at two." This session's
+  own draft of that entry initially invented a nonexistent exception to the trigger (an "unless a
+  `RUNBOOK.md` widening happened in between" qualifier); this session's independent pre-merge review
+  caught it as a process-softening risk and it was corrected before merge — see `DECISIONS.md`
+  2026-09-09. Flagging both the streak length and the caught-and-corrected error for visibility.
 - Today's kill (contractor-classification-checker) died on a new failure mode: not a competing free
   tool, but real user-voice evidence (Avvo, Proformative, Quora) directly contradicting the idea's
   own claimed differentiator (people asked only for the answer, never for documentation). Added a

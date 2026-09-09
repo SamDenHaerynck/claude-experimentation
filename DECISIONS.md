@@ -122,11 +122,13 @@ Append-only log of significant choices and why they were made. One line each, ne
   just an answer," and only the latter needed checking against real posts). This is a different
   failure mode from the 2026-09-08 widening (competing free-recurring tool) and is being tracked
   separately in `RUNBOOK.md` pending a second application.
-- 2026-09-09: Five ideas now killed since Phase 1 began (two full "three kills" spans, with a
-  `RUNBOOK.md` widening after each of the last two individual kills), but the routine's literal
-  "three in a row" trigger has not re-fired because it requires three *consecutive* kills without an
-  intervening widening, which is not what happened here. Decided not to force a full sourcing-method
-  review this session since each kill has been well-evidenced and each widened the check in a
-  genuinely new way; instead flagged the cumulative streak under "Notes for owner" and recorded in
-  `RUNBOOK.md` that killing the next backlog entry (sales-tax nexus monitor) would count as a fresh
-  three-in-a-row trigger.
+- 2026-09-09: Five ideas now killed since Phase 1 began; the count of consecutive kills since the
+  last sourcing-method review (2026-09-07) is 2, not yet 3, so the routine's "three in a row"
+  trigger has not fired. This session's own `RUNBOOK.md` entry initially claimed the trigger
+  requires three consecutive kills *without an intervening `RUNBOOK.md` widening* — that qualifier
+  does not exist in the routine's rule and was invented; the independent pre-merge review (see day
+  007 log) correctly flagged it as an unnecessary and inconsistently-applied gloss that could, if
+  reused, let every future kill "reset the clock" and erode the safeguard. Corrected the
+  `RUNBOOK.md` entry to the plain reading before merging: the count is simply 2 of 3, and the next
+  kill (backlog #1, sales-tax nexus monitor) would make it 3 and fire the trigger without
+  qualification.

@@ -191,21 +191,20 @@ Notify owner: no. One data point; revisit after a second idea is validated again
 if it still doesn't discriminate well, or unfairly demotes an idea that turns out to have real
 demand via a channel this pass couldn't reach (e.g. Reddit), record that and adjust again.
 
-### Five ideas killed across two "three-in-a-row" cycles
+### Five ideas killed total; second three-in-a-row count now at two
 First seen: 2026-09-09 (day 007) | Status: open (watch, no action yet)
-Symptom: after the 2026-09-07 sourcing-method review (triggered by three kills:
+Symptom: after the 2026-09-07 sourcing-method review (triggered by three consecutive kills:
 `dependency-eol-watcher`, `vendor-security-questionnaire-autofill`, `rent-increase-notice-calculator`),
 two more ideas were killed (`ci-migration-rollback-gate`, `contractor-classification-checker`),
-bringing the running total to five, with no repeat of the routine's "three in a row" trigger since
-it only fires on three *consecutive* kills and each of the last two came one at a time with a
-`RUNBOOK.md` widening in between. Each individual kill has been well-evidenced and each widened the
-Phase 1 check in a genuinely new, non-redundant way (competing free-recurring tools, then
-user-voice-vs-differentiator mismatch) rather than repeating the same mistake, so this is not yet
-"three in a row failing the same way" as the routine's trigger defines it.
-Action: no action forced by the routine's rule as literally written. Flagged under "Notes for
-owner" in `STATE.md` given the cumulative streak length. If the *next* validated idea (backlog #1,
-sales-tax nexus monitor, testing property (a)) also dies, that would be three kills since the last
-full method review, at which point treat it as a fresh three-in-a-row trigger per the routine and
-spend a session on sourcing method rather than pulling a fourth candidate.
+bringing the running total to five and the count since the last review to two. The routine's
+"three in a row" trigger is a plain consecutive-kill count with no exception for a `RUNBOOK.md`
+widening in between — an earlier draft of this entry claimed such an exception existed and used it
+to argue the trigger hadn't fired, which was not a correct reading of the rule and is corrected
+here per this session's own review (see `DECISIONS.md` 2026-09-09). The trigger has not fired only
+because the count is genuinely 2, not 3, yet.
+Action: no action needed yet — the count is 2 of 3. If the *next* validated idea (backlog #1,
+sales-tax nexus monitor) also dies, that is the third consecutive kill since the 2026-09-07 review
+and the routine's three-in-a-row trigger fires without qualification: spend that session on
+sourcing method, not on validating a fourth candidate.
 Notify owner: no — this is a normal-if-notable kill streak, not a blocked loop, per `OWNER.md`
 escalation criteria.
