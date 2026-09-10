@@ -1,42 +1,47 @@
 # State
-Day: 007
+Day: 008
 Idea: none
 Phase: 0 Select
 Slice: n/a
-Next action: Validate the new backlog #1, "State/local sales-tax nexus threshold monitor with
-change alerts" (see `BACKLOG.md`), using the normal Phase 1 process plus both widened checks now in
-`RUNBOOK.md`: (1) the 2026-09-08 check — after confirming a claimed (a)/(b)/(c) property holds, name
-the closest free tool that is itself already recurring/embedded (not one-shot) for the same
-audience, since this idea's own rationale already flags TaxJar/Avalara as likely incumbents to check
-specifically for that; (2) the 2026-09-09 check — when real user-voice posts are found, verify they
-actually support the *specific* differentiator claimed (here, property (a): that changing
-thresholds create an ongoing maintenance burden a one-time calculator doesn't take on), not just the
-general problem. If this idea also dies, per `RUNBOOK.md`'s 2026-09-09 entry, treat it as a fresh
-three-in-a-row trigger and spend the next session on sourcing method rather than pulling a fourth
-candidate.
-Read first: OWNER.md, RUNBOOK.md (both 2026-09-08 and 2026-09-09 dated entries), BACKLOG.md (top
-entry), DECISIONS.md (2026-09-09 entries)
+Next action: This is a sourcing-method review session, NOT a normal Validate session — do not pull
+a new backlog candidate. The routine's three-in-a-row kill trigger has fired for the second time
+(`ci-migration-rollback-gate`, `contractor-classification-checker`, `sales-tax-nexus-monitor`, all
+killed since the 2026-09-07 review). Per the routine: "spend the next session on your sourcing
+method instead: which evidence sources you used, which score dimension keeps failing, and what kind
+of idea would actually pass. Write that to `DECISIONS.md` and use it." Starting material for that
+review: across these three kills, "evidence of demand" and "reason to exist" failed most often (all
+three times combined), while "buildability" and "willingness to pay" have consistently scored well
+— the pattern across all three is an idea with a real, well-defined problem that turns out to
+already be served by a free-and-embedded incumbent or a cheap dedicated competitor (`ci-migration-
+rollback-gate` vs. Bytebase Community; `sales-tax-nexus-monitor` vs. Shopify/Stripe/NexusMonitor),
+or where real user-voice evidence asks only for a one-time answer rather than the recurring
+service the idea is built around (`contractor-classification-checker`, `sales-tax-nexus-monitor`).
+A sourcing method that only asks "is this problem real" without first checking "is this exact
+niche already occupied by something free or cheap that ships to this same audience" will keep
+producing this failure mode. Also note: `BACKLOG.md` is down to 2 candidates (below the routine's
+"generate new ones if fewer than three remain" floor) — the sourcing-method session should address
+both the method question and backlog replenishment together, per the pattern set on 2026-09-07.
+Read first: OWNER.md, RUNBOOK.md (the "Six ideas killed total" entry and both widened-check
+entries), BACKLOG.md, DECISIONS.md (2026-09-07 sourcing-method review entry, and all 2026-09-10
+entries), `killed/sales-tax-nexus-monitor/REASON.md`
 Notes for owner:
-- Five backlog ideas now killed since Phase 1 began (dependency EOL watcher, vendor security
-  questionnaire autofill, rent increase calculator, CI migration/rollback gate, contractor
-  classification checker). The count of consecutive kills since the last sourcing-method review
-  (2026-09-07) is 2, not yet 3, so the routine's "three in a row" trigger has not fired — see
-  `RUNBOOK.md` "Five ideas killed total; second three-in-a-row count now at two." This session's
-  own draft of that entry initially invented a nonexistent exception to the trigger (an "unless a
-  `RUNBOOK.md` widening happened in between" qualifier); this session's independent pre-merge review
-  caught it as a process-softening risk and it was corrected before merge — see `DECISIONS.md`
-  2026-09-09. Flagging both the streak length and the caught-and-corrected error for visibility.
-- Today's kill (contractor-classification-checker) died on a new failure mode: not a competing free
-  tool, but real user-voice evidence (Avvo, Proformative, Quora) directly contradicting the idea's
-  own claimed differentiator (people asked only for the answer, never for documentation). Added a
-  new `RUNBOOK.md` check for this; it is one data point and should be revisited after a second
-  application, per that entry.
-- Reddit (r/smallbusiness, r/humanresources, r/Entrepreneur, r/tax) was unreachable from this
-  environment's web tools during today's research pass (both direct fetch and domain-filtered search
-  rejected). This may recur on future Validate passes and is worth the owner's awareness since it's
-  likely where the most relevant grassroots small-business discussion lives; today's kill treated
-  the gap honestly (not filled with invented evidence) rather than as a blocker.
+- Third consecutive kill since the 2026-09-07 review: state/local sales-tax nexus threshold monitor
+  (14/25). Died on the same widened checks added the two prior sessions: a free, already-embedded
+  incumbent (Shopify's own built-in tax-liability dashboard; Stripe Tax's built-in alerts) plus a
+  near-identical $19-69/mo indie competitor already live (NexusMonitor, Shopify App Store) covers
+  this job, and real user-voice evidence found (three Shopify Community posts) asked only one-time
+  factual questions, not for ongoing monitoring. Both widened checks discriminated correctly on
+  their first joint application — no further widening needed from this data point alone.
+- The routine's three-in-a-row trigger has fired a second time (six ideas killed total across the
+  life of the loop). Per the routine, day 009 must not validate a new candidate and must instead
+  review sourcing method — see "Next action" above.
+- Reddit remains unreachable from this environment's web tools, now two sessions running
+  (2026-09-09, 2026-09-10; tried twice more this session with different query patterns, still zero
+  reddit.com results/fetches). This may be systematically understating "evidence of demand" scores
+  since it is likely where the most relevant grassroots small-business discussion lives. Per
+  `OWNER.md`'s escalation bar (same failure blocking three consecutive sessions), this has not yet
+  been notified — it will be if it recurs a third time. Flagged here for visibility now.
 - Owner away until approx 2026-09-16; per OWNER.md, decide and record rather than waiting, and
   notify only on hard blockers.
-Consecutive kills: 5
-Last session: 2026-09-09, ended clean
+Consecutive kills: 6
+Last session: 2026-09-10, ended clean

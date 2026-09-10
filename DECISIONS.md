@@ -132,3 +132,22 @@ Append-only log of significant choices and why they were made. One line each, ne
   `RUNBOOK.md` entry to the plain reading before merging: the count is simply 2 of 3, and the next
   kill (backlog #1, sales-tax nexus monitor) would make it 3 and fire the trigger without
   qualification.
+- 2026-09-10: Killed "State/local sales-tax nexus threshold monitor with change alerts" (backlog #1)
+  in Phase 1 at 14/25 (demand also independently 2/5). Property (a) held genuinely, but two free,
+  already-embedded incumbents (Shopify's built-in tax-liability dashboard, Stripe Tax's built-in
+  alerts) and one near-identical $19-69/mo indie competitor (NexusMonitor on the Shopify App Store)
+  already serve this job, and the only real user-voice evidence found (three Shopify Community
+  posts) asked one-time factual questions rather than for ongoing monitoring — both widened
+  `RUNBOOK.md` checks (2026-09-08, 2026-09-09) discriminated correctly on the first idea they were
+  applied to together.
+- 2026-09-10: This is the third consecutive kill since the 2026-09-07 sourcing-method review
+  (`ci-migration-rollback-gate`, `contractor-classification-checker`, `sales-tax-nexus-monitor`).
+  The routine's "three in a row" trigger has fired for the second time; per the routine, day 009
+  must spend its session on sourcing method rather than validating a new backlog candidate, and
+  must not generate a fourth candidate the same way it has been sourcing them. Recorded in
+  `RUNBOOK.md` and `STATE.md`.
+- 2026-09-10: Flagged (not yet escalated) that Reddit has now been unreachable from this
+  environment's web tools for two sessions running (2026-09-09, 2026-09-10). Per `OWNER.md`'s
+  escalation bar (same failure blocking three consecutive sessions), this will warrant a
+  `PushNotification` if it recurs a third time; recorded as an open `RUNBOOK.md` entry rather than
+  notifying now, since the bar has not yet been met.
