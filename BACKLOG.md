@@ -29,16 +29,16 @@ classification answer, none asked for documentation/an audit trail. Widens the c
 `RUNBOOK.md`): a claimed (a)/(b)/(c) property needs real user-voice evidence that the specific
 differentiator is wanted, not just a plausible-sounding architectural argument for why it should be.
 
-1. **State/local sales-tax nexus threshold monitor with change alerts** — tracks a small
-   e-commerce seller's revenue/transaction count per state against economic-nexus thresholds that
-   change periodically by state law, and alerts before a new filing obligation is triggered.
-   Rationale: tests property (a) — thresholds change over time across 40+ jurisdictions, which is
-   an ongoing maintenance burden a one-time free calculator doesn't take on; likely paid incumbents
-   exist here too (TaxJar/Avalara), so Validate must specifically check whether a narrow, cheap
-   alternative has room next to them or whether this repeats the EOL-watcher pattern of the
-   category being already bundled into tools the audience already buys.
+Updated 2026-09-10: killed candidate #1 (state/local sales-tax nexus threshold monitor) in Phase 1
+— see `killed/sales-tax-nexus-monitor/REASON.md`. Property (a) held genuinely, but Shopify's own
+free built-in dashboard, Stripe Tax's free built-in alerts, and a near-identical $19-69/mo indie
+competitor (NexusMonitor, already on the Shopify App Store) all already serve this exact job; the
+only real user-voice evidence found also asked one-time factual questions, not for ongoing
+monitoring. This is the third consecutive kill since the 2026-09-07 review — the routine's
+three-in-a-row trigger has fired; see `RUNBOOK.md` and `STATE.md`. Remaining entries below are
+renumbered; day 009 must spend its session on sourcing method, not on validating entry #1 below.
 
-2. **Freelancer SOW/contract generator with e-sign tracking** — a lightweight, freelancer-specific
+1. **Freelancer SOW/contract generator with e-sign tracking** — a lightweight, freelancer-specific
    alternative to heavyweight contract platforms: generates scoped statements of work from a short
    intake form, tracks e-signature status, and reminds on renewal/expiry. Rationale: solo
    consultants often use generic templates or expensive all-in-one tools (DocuSign, PandaDoc) built
@@ -48,7 +48,7 @@ differentiator is wanted, not just a plausible-sounding architectural argument f
    (b), but Validate must test whether that piece alone (not the document generation) is what a
    buyer would pay for, given free-template and incumbent-freemium substitutes likely exist.
 
-3. **Git-history-to-changelog generator for indie SaaS** — ingests merged PRs/commits and drafts a
+2. **Git-history-to-changelog generator for indie SaaS** — ingests merged PRs/commits and drafts a
    customer-facing changelog entry or release-notes email, matching a configurable tone/template.
    Rationale: solo/indie SaaS founders ship frequently but often skip customer communication because
    writing a polished changelog entry takes more time than the fix itself. Demoted: this is close to

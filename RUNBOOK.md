@@ -153,6 +153,18 @@ Notify owner: no. This is one data point on a widened check, not yet re-tested. 
 the widened version has been applied to a second new idea — if it still doesn't discriminate, or a
 demoted idea turns out fine, record that and adjust again rather than trusting this version
 untested either.
+Update 2026-09-10 (day 008, second application, `sales-tax-nexus-monitor`): the check discriminated
+correctly this time. Property (a) held genuinely (thresholds vary by state and change over time),
+but two free-and-already-embedded incumbents were found and named before scoring: Shopify's
+built-in "Tax liability insights" dashboard (free, passive — a real nuance: no push alert, dashboard
+only) and Stripe Tax's built-in threshold monitoring (free active email/dashboard alerts for any
+Stripe-processing seller). A third, closer-still finding beyond the check's original scope: a
+dedicated small-SaaS competitor, NexusMonitor, already ships on the Shopify App Store at $19-69/mo
+doing essentially the same product. This version of the check is now confirmed useful on two
+different ideas (one where it found a genuine near-clone, one where it didn't need to fire because
+no such competitor existed) — keep using it as written, no further widening needed from this data
+point.
+Notify owner: no.
 
 ### Web research returns no usable evidence
 First seen: not yet observed | Status: open (preventive)
@@ -190,21 +202,43 @@ supporting user-voice evidence found does not clear "reason to exist" on doctrin
 Notify owner: no. One data point; revisit after a second idea is validated against this addition —
 if it still doesn't discriminate well, or unfairly demotes an idea that turns out to have real
 demand via a channel this pass couldn't reach (e.g. Reddit), record that and adjust again.
+Update 2026-09-10 (day 008, second application, `sales-tax-nexus-monitor`): confirmed useful again.
+Three real first-person posts were found (all Shopify Community); each asked a one-time factual
+question about how a threshold or registration rule works, none asked for ongoing monitoring or
+alerts. Scored demand low on that basis, consistent with the check as written. Two-for-two now —
+keep using this check as written.
 
-### Five ideas killed total; second three-in-a-row count now at two
-First seen: 2026-09-09 (day 007) | Status: open (watch, no action yet)
+### Six ideas killed total; second three-in-a-row trigger has now fired
+First seen: 2026-09-09 (day 007) | Status: closed 2026-09-10 (day 008) — action taken, see below
 Symptom: after the 2026-09-07 sourcing-method review (triggered by three consecutive kills:
 `dependency-eol-watcher`, `vendor-security-questionnaire-autofill`, `rent-increase-notice-calculator`),
-two more ideas were killed (`ci-migration-rollback-gate`, `contractor-classification-checker`),
-bringing the running total to five and the count since the last review to two. The routine's
-"three in a row" trigger is a plain consecutive-kill count with no exception for a `RUNBOOK.md`
-widening in between — an earlier draft of this entry claimed such an exception existed and used it
-to argue the trigger hadn't fired, which was not a correct reading of the rule and is corrected
-here per this session's own review (see `DECISIONS.md` 2026-09-09). The trigger has not fired only
-because the count is genuinely 2, not 3, yet.
-Action: no action needed yet — the count is 2 of 3. If the *next* validated idea (backlog #1,
-sales-tax nexus monitor) also dies, that is the third consecutive kill since the 2026-09-07 review
-and the routine's three-in-a-row trigger fires without qualification: spend that session on
-sourcing method, not on validating a fourth candidate.
+three more ideas were killed in a row (`ci-migration-rollback-gate`, `contractor-classification-checker`,
+`sales-tax-nexus-monitor`), bringing the running total to six and the count since the last review to
+three. The routine's "three in a row" trigger is a plain consecutive-kill count with no exception,
+and it has now fired a second time.
+Action taken: per the routine ("if three ideas in a row are killed, do not generate a fourth the
+same way; spend the next session on your sourcing method instead"), day 009 must not validate a new
+backlog candidate. It must instead review sourcing method: which evidence sources were used across
+this second three-kill run, which score dimension keeps failing (this run: "evidence of demand" and
+"reason to exist" both failed on all three — the last two are architecturally-plausible ideas
+undercut by either a real near-clone competitor or user-voice evidence pointing the other way, not
+lack of a well-defined problem), and what kind of idea would actually pass. See `STATE.md` for the
+specific next action.
 Notify owner: no — this is a normal-if-notable kill streak, not a blocked loop, per `OWNER.md`
 escalation criteria.
+
+### Reddit unreachable from this environment, second session running
+First seen: 2026-09-09 (day 007) | Status: open (recurring, watch)
+Symptom: both direct `WebFetch` to reddit.com and `WebSearch` with `site:reddit.com` fail to return
+any reddit.com content, across two separate sessions now (2026-09-09, and again 2026-09-10, tried
+twice with different query patterns within the same session). This looks like a standing
+environment/tooling restriction rather than a one-off transient failure, and it is the most likely
+place for grassroots small-business/seller discussion to live, which may be systematically
+understating "evidence of demand" scores across every Phase 1 pass.
+Action: keep treating the gap honestly in `VALIDATION.md` ("no evidence found" from this source, not
+filled with invented posts) — this has not changed and should not change. Flagged under "Notes for
+owner" again this session. If a third Phase 1 session hits the identical wall, that meets
+`OWNER.md`'s escalation bar ("the same failure has now blocked three consecutive sessions") and
+should trigger a `PushNotification`, not just a `STATE.md` note.
+Notify owner: not yet (this is the second occurrence, escalation bar is a third) — flagged under
+"Notes for owner" per the recurring-symptom pattern.
