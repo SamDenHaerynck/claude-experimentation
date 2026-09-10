@@ -108,7 +108,7 @@ plausible but unsupported by the only real user-voice evidence this pass could r
 
 - Reddit (r/ecommerce, r/Shopify, r/smallbusiness, r/Etsy) unreachable again from this environment
   (WebFetch to reddit.com explicitly rejected; WebSearch with `site:reddit.com` returned zero
-  reddit.com results both times). This is the third session running this gap has been hit
+  reddit.com results both times). This is the second session running this gap has been hit
   (2026-09-09 and now 2026-09-10) — worth the owner's attention as a possible tooling/network
   limitation rather than a one-off.
 - Avalara Small Business tier pricing and NexusFlag's paid-tier pricing were not found on the

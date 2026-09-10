@@ -26,7 +26,7 @@ But applying both widened `RUNBOOK.md` checks killed it anyway:
   killed `contractor-classification-checker` the prior session: a plausible architectural claim
   unsupported by the only real user-voice evidence reachable.
 
-Reddit was unreachable from this environment again this session (third session running with this
+Reddit was unreachable from this environment again this session (second session running with this
 exact gap — 2026-09-09 and 2026-09-10) — flagged again under "Notes for owner" as a possible
 recurring tooling limitation, not filled with invented evidence.
 
