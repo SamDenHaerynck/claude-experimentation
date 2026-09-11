@@ -1,47 +1,46 @@
 # State
-Day: 008
+Day: 009
 Idea: none
 Phase: 0 Select
 Slice: n/a
-Next action: This is a sourcing-method review session, NOT a normal Validate session — do not pull
-a new backlog candidate. The routine's three-in-a-row kill trigger has fired for the second time
-(`ci-migration-rollback-gate`, `contractor-classification-checker`, `sales-tax-nexus-monitor`, all
-killed since the 2026-09-07 review). Per the routine: "spend the next session on your sourcing
-method instead: which evidence sources you used, which score dimension keeps failing, and what kind
-of idea would actually pass. Write that to `DECISIONS.md` and use it." Starting material for that
-review: across these three kills, "evidence of demand" and "reason to exist" failed most often (all
-three times combined), while "buildability" and "willingness to pay" have consistently scored well
-— the pattern across all three is an idea with a real, well-defined problem that turns out to
-already be served by a free-and-embedded incumbent or a cheap dedicated competitor (`ci-migration-
-rollback-gate` vs. Bytebase Community; `sales-tax-nexus-monitor` vs. Shopify/Stripe/NexusMonitor),
-or where real user-voice evidence asks only for a one-time answer rather than the recurring
-service the idea is built around (`contractor-classification-checker`, `sales-tax-nexus-monitor`).
-A sourcing method that only asks "is this problem real" without first checking "is this exact
-niche already occupied by something free or cheap that ships to this same audience" will keep
-producing this failure mode. Also note: `BACKLOG.md` is down to 2 candidates (below the routine's
-"generate new ones if fewer than three remain" floor) — the sourcing-method session should address
-both the method question and backlog replenishment together, per the pattern set on 2026-09-07.
-Read first: OWNER.md, RUNBOOK.md (the "Six ideas killed total" entry and both widened-check
-entries), BACKLOG.md, DECISIONS.md (2026-09-07 sourcing-method review entry, and all 2026-09-10
-entries), `killed/sales-tax-nexus-monitor/REASON.md`
+Next action: Resume normal Phase 0 selection. Pick backlog #1 (small-manufacturer RFQ / subcontractor-
+quote comparison tool) and run it through Phase 1 Validate. Apply the two method corrections from
+today's `RUNBOOK.md` entry ("Sourcing method: the 'monitor/track/alert' idea shape is structurally
+oversaturated"): (1) this idea already has four disclosed competitors (AuraVMS, QuotesFlow,
+QuoteWerks, Quotable AI) — do not auto-kill on their existence; instead try to name a specific
+underserved sub-segment or a real, specific complaint about one of them (fetch actual review pages,
+not just summarized `WebSearch` results, since a summary-only pass on QuoteWerks this session found
+nothing usable) before scoring "reason to exist"; (2) if that differentiation check comes back
+genuinely empty (a real search, not a shallow one, finds no gap and no complaint), that is itself a
+valid reason to score "reason to exist" low and move to backlog #2 — don't force a pass just because
+the idea fits the preferred multi-party shape. Complete the usual three-competitor-price and
+three-user-post evidence gathering per the routine's Phase 1 spec either way.
+Read first: `RUNBOOK.md` (the new 2026-09-11 entry on the monitor/tracker idea shape, plus the two
+"claimed property" entries it builds on), `BACKLOG.md` (entries #1 and #2 and their disclosed
+competitors), `DECISIONS.md` (the three 2026-09-11 entries)
 Notes for owner:
-- Third consecutive kill since the 2026-09-07 review: state/local sales-tax nexus threshold monitor
-  (14/25). Died on the same widened checks added the two prior sessions: a free, already-embedded
-  incumbent (Shopify's own built-in tax-liability dashboard; Stripe Tax's built-in alerts) plus a
-  near-identical $19-69/mo indie competitor already live (NexusMonitor, Shopify App Store) covers
-  this job, and real user-voice evidence found (three Shopify Community posts) asked only one-time
-  factual questions, not for ongoing monitoring. Both widened checks discriminated correctly on
-  their first joint application — no further widening needed from this data point alone.
-- The routine's three-in-a-row trigger has fired a second time (six ideas killed total across the
-  life of the loop). Per the routine, day 009 must not validate a new candidate and must instead
-  review sourcing method — see "Next action" above.
-- Reddit remains unreachable from this environment's web tools, now two sessions running
-  (2026-09-09, 2026-09-10; tried twice more this session with different query patterns, still zero
-  reddit.com results/fetches). This may be systematically understating "evidence of demand" scores
-  since it is likely where the most relevant grassroots small-business discussion lives. Per
-  `OWNER.md`'s escalation bar (same failure blocking three consecutive sessions), this has not yet
-  been notified — it will be if it recurs a third time. Flagged here for visibility now.
-- Owner away until approx 2026-09-16; per OWNER.md, decide and record rather than waiting, and
-  notify only on hard blockers.
-Consecutive kills: 6
-Last session: 2026-09-10, ended clean
+- Day 009 was a sourcing-method review, not a Validate session, per the routine's three-in-a-row
+  rule (fired for the second time on day 008). Finding: quick-checked five candidate ideas across
+  five unrelated verticals (notary renewal tracking, OSHA 300 log recordkeeping, CE-credit
+  tracking, co-owned vacation-property scheduling, small-manufacturer RFQ comparison) and every one
+  already has a findable free-or-cheap dedicated competitor. Combined with the two Phase-1 kills
+  already recorded this cycle, concluded the "recurring monitor/tracker/alert/comparison tool for a
+  defined professional deadline" idea *shape* is colonized regardless of vertical — a broader claim
+  than "this niche has a competitor." Recorded in `RUNBOOK.md`; not yet re-tested against a real
+  Phase 1 pass, so treat as a hypothesis to watch, not a settled rule.
+- Also tried a natural refinement — searching for real complaints about a specific named competitor
+  before treating its existence as fatal, since the routine's actual Phase 1 wording is "a reason to
+  exist *alongside* what already ships," not "zero competitors." This mostly returned nothing usable
+  at `WebSearch` summary depth (tried on OurSharedPlace/PlumConnect, notary journal apps, and
+  QuoteWerks' G2 rating breakdown). Recorded as inconclusive, not as evidence those competitors have
+  no gap — next session validating backlog #1 should try fetching an actual review page rather than
+  relying on a search summary if it wants this check to be reliable.
+- `BACKLOG.md` replenished from 2 to 4 entries. New #1 and #2 disclose their competitor risk
+  up front rather than presenting a clean field, per the corrected reading above.
+- Reddit was not tested again this session (no Validate work happened), so the "unreachable, second
+  session running" status from day 008 is unchanged — still one session short of `OWNER.md`'s
+  three-in-a-row escalation bar. Next session that actually runs Validate should try it again and
+  update the `RUNBOOK.md` entry either way.
+- Owner away until approx 2026-09-16; per `OWNER.md`, decided and recorded rather than waiting.
+Consecutive kills: 6 (unchanged — no idea was validated or killed this session)
+Last session: 2026-09-11, ended clean

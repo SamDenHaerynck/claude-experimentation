@@ -242,3 +242,46 @@ owner" again this session. If a third Phase 1 session hits the identical wall, t
 should trigger a `PushNotification`, not just a `STATE.md` note.
 Notify owner: not yet (this is the second occurrence, escalation bar is a third) — flagged under
 "Notes for owner" per the recurring-symptom pattern.
+
+### Sourcing method: the "monitor/track/alert" idea shape is structurally oversaturated
+First seen: 2026-09-11 (day 009, sourcing-method review triggered by the second three-in-a-row
+kill) | Status: open (apply and watch)
+Symptom: this session tested five candidate ideas across five unrelated verticals — notary
+commission/journal renewal tracking, OSHA 300 injury-log recordkeeping, professional continuing-
+education credit tracking, co-owned vacation-property scheduling/expense-splitting, and small-
+manufacturer RFQ quote comparison — using only a handful of quick `WebSearch` calls each. Every
+single one already has at least one named, findable, free-or-cheap dedicated competitor: Remindax
+(notary renewal/bond/E&O alerts), a free SmarterRisk PWA plus OSHA's own free forms (OSHA 300 log),
+cetracker.app (free, 50-state CE tracking), OurSharedPlace ($99/property/yr) and PlumConnect
+(co-owned property calendar + bank integration), and AuraVMS/QuotesFlow/QuoteWerks/Quotable AI
+(RFQ comparison, one from $4.99/mo). Combined with the two ideas actually killed in Phase 1 this
+same three-kill cycle for the identical reason (`ci-migration-rollback-gate` vs. Bytebase
+Community; `sales-tax-nexus-monitor` vs. NexusMonitor/Shopify/Stripe), that is 7 for 7: every
+"recurring monitor, tracker, deadline-alert, or quote-comparison tool for a well-defined
+professional requirement" idea checked so far, in any vertical, already has a close incumbent
+findable within minutes. This is a stronger and more general claim than the existing "one-shot
+free-substitutable output" entry above (that one is about single-artifact generation; this one is
+about an entire *recurring-tool* archetype being colonized regardless of audience).
+Action: in Phase 0, deprioritize the "track/monitor/alert/compare for a defined deadline or
+requirement" idea shape specifically for the next several candidates — not a permanent ban (this
+is one review's worth of evidence, not proof no exception exists), but a specific, falsifiable
+claim to keep testing. Prefer shapes that need either (i) multi-party coordination/trust
+infrastructure the incumbents above don't provide (a single-user dashboard is easy to clone; a
+system two or more real-world parties must both trust and use is harder), or (ii) genuine
+domain-specific data-processing or calculation complexity, not a threshold check. Separately: per
+the routine's own Phase 1 wording, the bar is "a reason to exist *alongside* what already ships,"
+not "zero competitors exist" — so a found competitor should trigger one more targeted search for
+real, specific complaints about *that named competitor* (missing feature, price, support) before
+scoring "reason to exist" low, rather than treating bare existence as an automatic kill. Tried this
+refinement twice this session (searching for complaints about OurSharedPlace/PlumConnect and about
+notary journal apps, and separately checking QuoteWerks' G2 review breakdown) and got almost
+nothing usable back — mostly unrelated noise or, in QuoteWerks' case, a well-reviewed product with
+no 1-star complaints at all in the summarized results. Treat that outcome the same way the
+existing "web research returns no usable evidence" entry treats a demand-evidence dead end: as
+inconclusive, not as proof the incumbent has no gap — a deeper pass (fetching actual review pages
+rather than summarized search results) may be needed before concluding either way, and Phase 1
+should budget time for that if it wants this refinement to actually work rather than rubber-stamp
+"no gap found."
+Notify owner: no. One session's evidence across five quick checks; revisit after Phase 1 actually
+applies the multi-party/domain-complexity preference and the competitor-complaint-search
+refinement to a real candidate, and record whether either changes the outcome.
