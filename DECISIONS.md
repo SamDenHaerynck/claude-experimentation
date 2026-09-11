@@ -151,3 +151,41 @@ Append-only log of significant choices and why they were made. One line each, ne
   escalation bar (same failure blocking three consecutive sessions), this will warrant a
   `PushNotification` if it recurs a third time; recorded as an open `RUNBOOK.md` entry rather than
   notifying now, since the bar has not yet been met.
+- 2026-09-11 (day 009, sourcing-method review): rather than generate one more single-vertical idea
+  and validate it the normal way, spent the session testing whether the failure pattern from the
+  last three kills (a real problem already served by a free-and-embedded or cheap dedicated
+  competitor) generalizes across verticals, by running quick competitor checks on five unrelated
+  candidate shapes: notary commission/journal renewal tracking, OSHA 300 log recordkeeping,
+  professional CE-credit tracking, co-owned vacation-property scheduling/expense-splitting, and
+  small-manufacturer RFQ comparison. All five already have a named free-or-cheap dedicated
+  competitor findable within a few `WebSearch` calls (Remindax; a free SmarterRisk PWA plus OSHA's
+  own free forms; cetracker.app; OurSharedPlace/PlumConnect; AuraVMS/QuotesFlow/QuoteWerks/Quotable
+  AI). Combined with the two Phase-1 kills already recorded this cycle for the same reason
+  (`ci-migration-rollback-gate`, `sales-tax-nexus-monitor`), concluded the *idea shape* itself —
+  "recurring monitor/tracker/alert/comparison tool for a well-defined professional deadline or
+  requirement" — is colonized regardless of vertical, which is a broader and more useful claim than
+  "this specific niche has a competitor." Recorded as a new `RUNBOOK.md` entry with the shape to
+  deprioritize (multi-party-coordination and domain-complexity shapes preferred instead) and a
+  correction to how the existing checks should be applied: the routine's Phase 1 bar is "a reason to
+  exist *alongside* what already ships," not "zero competitors," so a found competitor should
+  trigger one more targeted search for real complaints about that named competitor specifically
+  before scoring "reason to exist" low, rather than an automatic kill on bare existence.
+- 2026-09-11: Tried the competitor-complaint-search refinement above twice this session (on
+  OurSharedPlace/PlumConnect and on notary journal apps, plus a review-breakdown check on
+  QuoteWerks) and got back almost nothing usable — mostly unrelated noise, and in QuoteWerks' case
+  a product with a 4.4/5 G2 rating (194 reviews) and no 1-star reviews in the summarized results.
+  Treating this the same way the existing "web research returns no usable evidence" `RUNBOOK.md`
+  entry treats a demand-evidence dead end: as inconclusive (this environment's `WebSearch` returns
+  summarized listicle-depth results, not raw review-page text, so a real gap could exist and
+  simply not surface at this search depth), not as proof the incumbents found today have no gap.
+  Did not add any of
+  the five checked ideas to `BACKLOG.md` on the strength of today's shallow pass alone; the two
+  added below were chosen instead for fitting the multi-party/domain-complexity preference from the
+  new `RUNBOOK.md` entry, each with its own found competitor disclosed rather than omitted.
+- 2026-09-11: Replenished `BACKLOG.md` from 2 entries (below the routine's three-candidate floor) to
+  4. Both new entries disclose a real named competitor found during generation rather than claiming
+  a clean field, consistent with the corrected reading above: existence of a competitor is
+  disclosed context for Phase 1's differentiation check, not a reason to omit the candidate from the
+  backlog outright. Day 009 does not select or validate a new candidate itself — per the routine,
+  this was a sourcing-method session, not a Validate session — so `Consecutive kills` stays at 6 and
+  day 010 resumes normal Phase 0 selection using the corrected method.

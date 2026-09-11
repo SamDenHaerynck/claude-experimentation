@@ -38,7 +38,47 @@ monitoring. This is the third consecutive kill since the 2026-09-07 review — t
 three-in-a-row trigger has fired; see `RUNBOOK.md` and `STATE.md`. Remaining entries below are
 renumbered; day 009 must spend its session on sourcing method, not on validating entry #1 below.
 
-1. **Freelancer SOW/contract generator with e-sign tracking** — a lightweight, freelancer-specific
+Updated 2026-09-11 (day 009, sourcing-method review, see `RUNBOOK.md` and `DECISIONS.md`):
+replenished from 2 entries back up to 4. This review found that the "recurring monitor/tracker/
+alert/comparison tool for a defined professional deadline or requirement" idea shape is colonized
+regardless of vertical (five unrelated candidates quick-checked, five already-existing
+competitors found), which is why both prior kills this cycle died and why no new candidate of that
+shape was added. The two new entries below (#1, #2) instead test the shape this review now
+prefers — multi-party coordination/trust infrastructure, not a single-user dashboard — and each
+discloses the real competitor found for it rather than omitting it; Phase 1 must run the
+competitor-specific-complaint check from the new `RUNBOOK.md` entry before scoring "reason to
+exist," not treat the disclosed competitor's existence alone as a reason to skip validating.
+
+1. **Small-manufacturer RFQ / subcontractor-quote comparison tool** — lets a small manufacturer or
+   contractor send a request-for-quote to multiple suppliers/subs at once and compare responses
+   side by side, instead of the current default of separate emails/calls and a manual spreadsheet.
+   Rationale: property (b) — value comes from being the shared record both the buyer and multiple
+   suppliers touch on every purchasing cycle, not a single generated artifact; multi-party by
+   construction (buyer plus several suppliers must all use it), which is the shape this review now
+   prefers over a single-user tracker. Disclosed competitor risk: AuraVMS, QuotesFlow, QuoteWerks,
+   and Quotable AI all already sell RFQ/quote-comparison tools to this same small-business
+   audience, AuraVMS from $4.99/mo — found via quick `WebSearch`, no traction/complaint evidence
+   checked yet. Phase 1 must find either a specific underserved sub-segment (an industry, region,
+   or supplier-count band these four don't target) or a real documented complaint about one of them
+   before this clears "reason to exist"; a search for QuoteWerks complaints this session (G2:
+   4.4/5 from 194 reviews, no 1-star reviews in the summarized results) found nothing usable, so
+   that check may need to go deeper than a single `WebSearch` call (raw review pages, not
+   summaries) to be conclusive.
+
+2. **Co-owned vacation property scheduling and expense-splitting** — a shared calendar plus
+   expense ledger for a group of relatives or friends who jointly own a cabin, beach house, or
+   timeshare-like property, so booking conflicts and shared costs (utilities, repairs, taxes) don't
+   have to be tracked over group text and a shared spreadsheet. Rationale: property (b) — the value
+   is the persisted shared calendar/ledger state multiple co-owners all rely on continuously, not a
+   one-shot artifact; multi-party by construction like #1. Disclosed competitor risk: this is the
+   most colonized of the two — OurSharedPlace ($99/property/year, unlimited members, fair-use
+   scheduling) and PlumConnect (calendar plus a group bank account integrated with Mercury) both
+   already target this exact audience with close-fit features. A targeted search this session for
+   complaints about either found nothing usable. Ranked below #1 for this reason; Phase 1 should
+   only proceed past a differentiation check if it can name a concrete gap (e.g. a co-ownership
+   structure or price point these two don't serve) rather than "ours would be simpler."
+
+3. **Freelancer SOW/contract generator with e-sign tracking** — a lightweight, freelancer-specific
    alternative to heavyweight contract platforms: generates scoped statements of work from a short
    intake form, tracks e-signature status, and reminds on renewal/expiry. Rationale: solo
    consultants often use generic templates or expensive all-in-one tools (DocuSign, PandaDoc) built
@@ -48,7 +88,7 @@ renumbered; day 009 must spend its session on sourcing method, not on validating
    (b), but Validate must test whether that piece alone (not the document generation) is what a
    buyer would pay for, given free-template and incumbent-freemium substitutes likely exist.
 
-2. **Git-history-to-changelog generator for indie SaaS** — ingests merged PRs/commits and drafts a
+4. **Git-history-to-changelog generator for indie SaaS** — ingests merged PRs/commits and drafts a
    customer-facing changelog entry or release-notes email, matching a configurable tone/template.
    Rationale: solo/indie SaaS founders ship frequently but often skip customer communication because
    writing a polished changelog entry takes more time than the fix itself. Demoted: this is close to
