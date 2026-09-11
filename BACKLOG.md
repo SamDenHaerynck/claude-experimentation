@@ -61,8 +61,9 @@ exist," not treat the disclosed competitor's existence alone as a reason to skip
    checked yet. Phase 1 must find either a specific underserved sub-segment (an industry, region,
    or supplier-count band these four don't target) or a real documented complaint about one of them
    before this clears "reason to exist"; a search for QuoteWerks complaints this session (G2:
-   4.3/5, no 1-star reviews in the summarized results) found nothing usable, so that check may need
-   to go deeper than a single `WebSearch` call (raw review pages, not summaries) to be conclusive.
+   4.4/5 from 194 reviews, no 1-star reviews in the summarized results) found nothing usable, so
+   that check may need to go deeper than a single `WebSearch` call (raw review pages, not
+   summaries) to be conclusive.
 
 2. **Co-owned vacation property scheduling and expense-splitting** — a shared calendar plus
    expense ledger for a group of relatives or friends who jointly own a cabin, beach house, or

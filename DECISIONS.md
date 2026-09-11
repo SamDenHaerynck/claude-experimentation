@@ -173,11 +173,12 @@ Append-only log of significant choices and why they were made. One line each, ne
 - 2026-09-11: Tried the competitor-complaint-search refinement above twice this session (on
   OurSharedPlace/PlumConnect and on notary journal apps, plus a review-breakdown check on
   QuoteWerks) and got back almost nothing usable — mostly unrelated noise, and in QuoteWerks' case
-  a product with a 4.3/5 G2 rating and no 1-star reviews in the summarized results. Treating this
-  the same way the existing "web research returns no usable evidence" `RUNBOOK.md` entry treats a
-  demand-evidence dead end: as inconclusive (this environment's `WebSearch` returns summarized
-  listicle-depth results, not raw review-page text, so a real gap could exist and simply not surface
-  at this search depth), not as proof the incumbents found today have no gap. Did not add any of
+  a product with a 4.4/5 G2 rating (194 reviews) and no 1-star reviews in the summarized results.
+  Treating this the same way the existing "web research returns no usable evidence" `RUNBOOK.md`
+  entry treats a demand-evidence dead end: as inconclusive (this environment's `WebSearch` returns
+  summarized listicle-depth results, not raw review-page text, so a real gap could exist and
+  simply not surface at this search depth), not as proof the incumbents found today have no gap.
+  Did not add any of
   the five checked ideas to `BACKLOG.md` on the strength of today's shallow pass alone; the two
   added below were chosen instead for fitting the multi-party/domain-complexity preference from the
   new `RUNBOOK.md` entry, each with its own found competitor disclosed rather than omitted.
