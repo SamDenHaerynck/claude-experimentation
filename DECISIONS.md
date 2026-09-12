@@ -189,3 +189,19 @@ Append-only log of significant choices and why they were made. One line each, ne
   backlog outright. Day 009 does not select or validate a new candidate itself — per the routine,
   this was a sourcing-method session, not a Validate session — so `Consecutive kills` stays at 6 and
   day 010 resumes normal Phase 0 selection using the corrected method.
+- 2026-09-12 (day 010): Killed "Small-manufacturer RFQ / subcontractor-quote comparison tool"
+  (backlog #1) in Phase 1 at 15/25 (demand also independently 2/5). Applied both 2026-09-11
+  corrections properly: a deeper Capterra fetch did surface a real QuoteWerks complaint (dated UI,
+  workflow friction, slow support), and an underserved-sub-segment search was run rather than
+  auto-killing on bare competitor existence — but the sub-segment search came back negative and
+  instead surfaced two more dedicated competitors beyond the original four (Jiga for manufacturing,
+  SmartBid/Buildr for construction), one in each of this idea's two obvious target verticals. Real
+  user-voice evidence was found (non-Reddit), but checked against the specific buyer-side
+  differentiator, only one of three sources squarely supported it. This is the first kill since the
+  day-009 sourcing-method review, not a third-in-a-row, so the trigger has not fired again.
+  Consecutive kills now 7. Full record in `killed/rfq-quote-comparison/`.
+- 2026-09-12: Reddit has now been unreachable from this environment across three Phase-1 Validate
+  sessions (2026-09-09, 2026-09-10, 2026-09-12), meeting `OWNER.md`'s explicit escalation bar ("the
+  same failure has now blocked three consecutive sessions"). Sent a `PushNotification` this session
+  per that bar, rather than only recording it in `RUNBOOK.md`/`STATE.md` as in the prior two
+  sessions.
