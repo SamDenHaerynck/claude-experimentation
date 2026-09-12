@@ -17,12 +17,21 @@ that report.
 - **QuoteWerks**: Essential $50/mo, Balanced $78/mo, Pinnacle $102/mo per concurrent user, plus a
   separate "VendorRFQ" add-on at $20/mo/user. (https://www.quotewerks.com/pricing.asp) — notably
   higher than the day-009 note's unverified $15-29 figure; the vendor's own page supersedes it.
-- **Quotable AI**: Free tier (1 user, 5-10 orders/mo), Starter $49/mo, Pro Seller $99/mo, Advanced
+- **Quotable AI**: Free tier (1 user, 10 orders/mo), Starter $49/mo, Pro Seller $99/mo, Advanced
   $249/mo, plus 2.9%+$0.30 payment processing. (https://getquotable.ai/seller/pricing)
-- Adjacent, not in the original four: **SmartBid** (construction GC bid-leveling) $250-1,500/mo
-  (https://smartbid.co/construction-bid-software-pricing).
+- Adjacent, not in the original four: **SmartBid** (construction GC bid-leveling) does not publish
+  pricing on its own site (https://smartbid.co/construction-bid-software-pricing — no dollar
+  figures present, sales-contact-only) — a correction to this section's original draft, which had
+  misattributed a $250-1,500/mo figure to that page. Third-party pricing-estimate sites disagree
+  with each other on the real number (downtobid.com estimates roughly $800/user/year; other
+  aggregator sites suggest $250-1,500/mo scaling with team size), so this is recorded as an
+  unconfirmed estimate, not a confirmed price, per the routine's rule against presenting invented
+  or unverifiable figures as fact.
 
-Willingness to pay for this general category is well established across a wide price range.
+Willingness to pay for the four core RFQ/quote-comparison competitors is well established across a
+wide, independently-confirmed price range ($4.99-$102+/mo); SmartBid's adjacent, higher-priced
+category (construction bid-leveling) is directionally corroborative but its own exact price is not
+confirmed.
 
 ## 2. Real complaints about named competitors (deeper pass, per the corrected method)
 
@@ -91,11 +100,15 @@ Checked each named vendor's own stated target market:
 No clean underserved niche emerged from that list. More importantly, this research pass surfaced
 two *additional* dedicated competitors not in the original four, one for each of this idea's two
 most obvious target verticals: **Jiga** (manufacturing custom-parts RFQ/quoting platform,
-https://jiga.io/platform/) for the manufacturing/job-shop side, and **SmartBid** /
-**Buildr** (construction subcontractor bid-comparison,
-https://buildr.com/blog/tools-for-comparing-subcontractor-bids-automatically/) for the construction
-side. Both verticals this idea would most naturally target already have a dedicated, purpose-built
-incumbent, beyond the four general RFQ/CPQ tools already known.
+https://jiga.io/platform/) for the manufacturing/job-shop side, and, for the construction side,
+**SmartBid** (a construction-specific bid-management product; own site confirms it exists and
+targets GCs, but does not publish pricing — see section 1) and **Buildr** (AI-powered
+preconstruction software for general contractors, whose own site confirms bid-leveling —
+"[m]anage invitations, coverage, and leveling in one place" — as a named capability,
+https://buildr.com/ — correcting an earlier draft of this section, which cited a Buildr blog post
+that does not actually mention SmartBid). Both verticals this idea would most naturally target
+already have at least one dedicated, purpose-built incumbent, beyond the four general RFQ/CPQ
+tools already known.
 
 ## 5. Explicit gaps
 
@@ -107,6 +120,12 @@ incumbent, beyond the four general RFQ/CPQ tools already known.
   Notified the owner via `PushNotification` this session rather than only noting it here.
 - Payment/processing terms, AuraVMS's on-premise contract terms, and QuotesFlow's top "Power" tier
   price were not found on the vendors' own pages.
+- **Correction from the mandatory pre-merge review**: the original draft of this file misattributed
+  a $250-1,500/mo SmartBid price to SmartBid's own pricing page (that page publishes no figures at
+  all) and cited a Buildr blog post that does not mention SmartBid. Both are fixed above (sections 1
+  and 4) as of the merge. Neither correction changes the scoring or the verdict: SmartBid and Buildr
+  remain real, independently-confirmed competitors in the construction vertical (confirmed from
+  their own sites), and no dimension score changed.
 
 ## Scoring (1-5 each)
 
