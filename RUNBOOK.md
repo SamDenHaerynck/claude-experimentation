@@ -227,21 +227,25 @@ specific next action.
 Notify owner: no — this is a normal-if-notable kill streak, not a blocked loop, per `OWNER.md`
 escalation criteria.
 
-### Reddit unreachable from this environment, second session running
-First seen: 2026-09-09 (day 007) | Status: open (recurring, watch)
-Symptom: both direct `WebFetch` to reddit.com and `WebSearch` with `site:reddit.com` fail to return
-any reddit.com content, across two separate sessions now (2026-09-09, and again 2026-09-10, tried
-twice with different query patterns within the same session). This looks like a standing
-environment/tooling restriction rather than a one-off transient failure, and it is the most likely
-place for grassroots small-business/seller discussion to live, which may be systematically
-understating "evidence of demand" scores across every Phase 1 pass.
+### Reddit unreachable from this environment, third Validate session running
+First seen: 2026-09-09 (day 007) | Status: open (escalated 2026-09-12, still watch)
+Symptom: both direct `WebFetch` to reddit.com (and old.reddit.com, and the reddit `.json` search
+endpoint) and `WebSearch` with `site:reddit.com` fail to return any reddit.com content, across three
+Phase-1 Validate sessions now (2026-09-09, 2026-09-10, 2026-09-12 — day 009 was a sourcing-method
+review and did not test it). This looks like a standing environment/tooling restriction rather than
+a one-off transient failure, and it is the most likely place for grassroots small-business/seller
+discussion to live, which may be systematically understating "evidence of demand" scores across
+every Phase 1 pass.
 Action: keep treating the gap honestly in `VALIDATION.md` ("no evidence found" from this source, not
-filled with invented posts) — this has not changed and should not change. Flagged under "Notes for
-owner" again this session. If a third Phase 1 session hits the identical wall, that meets
-`OWNER.md`'s escalation bar ("the same failure has now blocked three consecutive sessions") and
-should trigger a `PushNotification`, not just a `STATE.md` note.
-Notify owner: not yet (this is the second occurrence, escalation bar is a third) — flagged under
-"Notes for owner" per the recurring-symptom pattern.
+filled with invented posts) — this has not changed and should not change. This is the third
+occurrence, meeting `OWNER.md`'s escalation bar ("the same failure has now blocked three consecutive
+[Validate] sessions"); sent a `PushNotification` on 2026-09-12 (day 010) rather than only a
+`STATE.md` note. Keep testing it each Validate session and keep using non-Reddit sources (forums,
+industry-specific communities, Substacks) as the fallback, per the day-010 pass which found usable
+non-Reddit evidence (Practical Machinist, an independent Substack) even without Reddit access.
+Notify owner: done 2026-09-12 (day 010). If it keeps recurring, no further notification is needed
+per session — the owner has been told it's a standing limitation — but keep noting each occurrence
+here and in `VALIDATION.md`.
 
 ### Sourcing method: the "monitor/track/alert" idea shape is structurally oversaturated
 First seen: 2026-09-11 (day 009, sourcing-method review triggered by the second three-in-a-row
@@ -285,3 +289,15 @@ should budget time for that if it wants this refinement to actually work rather 
 Notify owner: no. One session's evidence across five quick checks; revisit after Phase 1 actually
 applies the multi-party/domain-complexity preference and the competitor-complaint-search
 refinement to a real candidate, and record whether either changes the outcome.
+Update 2026-09-12 (day 010, first real Phase 1 application, `rfq-quote-comparison`): mixed result.
+The multi-party-shape preference did not by itself prevent a kill — this idea was multi-party by
+construction (buyer plus several suppliers) and still died, because the competitor-complaint-search
+refinement, run properly this time (an actual Capterra fetch, not a search summary), did find a real
+complaint about QuoteWerks, but the underserved-sub-segment search came back negative and instead
+surfaced two *more* dedicated competitors (Jiga, SmartBid/Buildr) than the four already known — one
+in each of the idea's two most obvious target verticals. Takeaway: multi-party shape and a genuine
+competitor complaint are necessary but not sufficient; a sub-segment search can still fail to find a
+gap and instead reveal the field is denser than last known. Keep running the full search (both the
+review-page-complaint check and the sub-segment search) rather than stopping once one comes back
+positive.
+Notify owner: no.
