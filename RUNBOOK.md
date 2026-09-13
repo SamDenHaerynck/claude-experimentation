@@ -246,6 +246,12 @@ non-Reddit evidence (Practical Machinist, an independent Substack) even without 
 Notify owner: done 2026-09-12 (day 010). If it keeps recurring, no further notification is needed
 per session — the owner has been told it's a standing limitation — but keep noting each occurrence
 here and in `VALIDATION.md`.
+Update 2026-09-13 (day 011, `co-owned-vacation-property`): unreachable a fourth consecutive
+Validate session. Same failure mode — direct `WebFetch` to reddit.com/old.reddit.com fails outright;
+`site:reddit.com` `WebSearch` queries execute but surface no on-topic threads. No new notification
+per the prior update's guidance (already told once, standing limitation). Non-Reddit fallback
+sources (this session: Bogleheads, via `WebSearch` snippets since direct fetch was Cloudflare-
+blocked) again found at least one usable real post, consistent with day 010.
 
 ### Sourcing method: the "monitor/track/alert" idea shape is structurally oversaturated
 First seen: 2026-09-11 (day 009, sourcing-method review triggered by the second three-in-a-row
@@ -301,3 +307,30 @@ gap and instead reveal the field is denser than last known. Keep running the ful
 review-page-complaint check and the sub-segment search) rather than stopping once one comes back
 positive.
 Notify owner: no.
+Update 2026-09-13 (day 011, second real Phase 1 application, `co-owned-vacation-property`): the
+multi-party-shape preference failed to prevent a kill again, more decisively this time. This idea
+was multi-party by construction (a persisted shared calendar/ledger multiple co-owners continuously
+rely on) and had already survived one shallow pass without being killed on bare competitor
+existence. The deep review-page complaint check and the sub-segment search (delegated to a research
+subagent this session) both came back negative: the two disclosed incumbents (OurSharedPlace,
+PlumConnect) turned out to have essentially no independent review footprint at all (too small/new
+to have G2/Capterra listings or meaningful App Store review volume), so there was no complaint
+trail to find a wedge in either way — and the sub-segment search surfaced five *more* dedicated
+competitors (CabinPals, SharedKey, Shared Holiday Homes, CalDibs, House Matters), each already
+covering the one narrow gap found (price, international/cross-currency). Two-for-two now: in both
+real applications, "multi-party by construction" has not stopped the sub-segment search from
+surfacing a denser field than initially known. Widened takeaway: "multi-party coordination" is not
+by itself a defensible moat — a shared-state app pattern (calendar + ledger, buyer + suppliers,
+etc.) is exactly as copyable as a single-user dashboard once the pattern is well-understood; what
+actually needs checking is whether *this specific* multi-party niche already has a copy, not
+whether the general shape is multi-party.
+Action: stop treating "multi-party coordination/persisted shared state" as a preferred shape that
+lowers the bar in Phase 0 — it does not appear to correlate with an open gap any better than any
+other shape did. Revert to no shape-based prior at all; run the full competitor/sub-segment/user-
+voice search on whatever idea is selected regardless of its shape, and let the evidence (not the
+shape) decide. Do not add a new preferred shape without at least one candidate that actually
+survives Phase 1 under it — two colonized shapes in a row (monitor/tracker/alert, and now
+multi-party coordination) with zero survivals is enough to stop trusting shape-based priors
+generally, not just this one.
+Notify owner: no — consistent with the routine's own framing, a kill (even a second one testing the
+same shape preference) is a normal Phase 1 outcome to record here, not a blocked loop.
