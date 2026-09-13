@@ -60,22 +60,20 @@ kill since the day-009 review, not a third-in-a-row, so the sourcing-method trig
 again. Remaining entries renumbered; still at 3, the routine's floor, so no replenishment needed
 this session.
 
-1. **Co-owned vacation property scheduling and expense-splitting** — a shared calendar plus
-   expense ledger for a group of relatives or friends who jointly own a cabin, beach house, or
-   timeshare-like property, so booking conflicts and shared costs (utilities, repairs, taxes) don't
-   have to be tracked over group text and a shared spreadsheet. Rationale: property (b) — the value
-   is the persisted shared calendar/ledger state multiple co-owners all rely on continuously, not a
-   one-shot artifact; multi-party by construction. Disclosed competitor risk: this is heavily
-   colonized — OurSharedPlace ($99/property/year, unlimited members, fair-use scheduling) and
-   PlumConnect (calendar plus a group bank account integrated with Mercury) both already target
-   this exact audience with close-fit features. A targeted search in the 2026-09-11 review for
-   complaints about either found nothing usable at search-summary depth (per the 2026-09-12 kill of
-   the former #1, a deeper review-page fetch may be needed before treating that as conclusive).
-   Phase 1 should only proceed past a differentiation check if it can name a concrete gap (e.g. a
-   co-ownership structure or price point these two don't serve) rather than "ours would be
-   simpler."
+Updated 2026-09-13 (day 011): killed former candidate #1 (co-owned vacation property scheduling and
+expense-splitting) in Phase 1 — see `killed/co-owned-vacation-property/REASON.md`. Both corrections
+were applied via a delegated research subagent (a deep review-page complaint check, and an explicit
+underserved-sub-segment search) and both came back negative: neither incumbent has any real
+independent review footprint to find complaints in, and the sub-segment search surfaced five more
+dedicated competitors (CabinPals, SharedKey, Shared Holiday Homes, CalDibs, House Matters) beyond
+the two disclosed, each already covering the one narrow gap found (price, international). This is
+the second kill since the day-009 review — two since the last review, not yet a third-in-a-row.
+Notably this shows the sourcing review's own preferred shape (multi-party coordination, not a
+single-user monitor/tracker) is *also* colonized; see `RUNBOOK.md`. Remaining entries renumbered;
+down to 2, below the routine's three-candidate floor — next session must replenish before or as
+part of Phase 0/1.
 
-2. **Freelancer SOW/contract generator with e-sign tracking** — a lightweight, freelancer-specific
+1. **Freelancer SOW/contract generator with e-sign tracking** — a lightweight, freelancer-specific
    alternative to heavyweight contract platforms: generates scoped statements of work from a short
    intake form, tracks e-signature status, and reminds on renewal/expiry. Rationale: solo
    consultants often use generic templates or expensive all-in-one tools (DocuSign, PandaDoc) built
@@ -85,7 +83,7 @@ this session.
    (b), but Validate must test whether that piece alone (not the document generation) is what a
    buyer would pay for, given free-template and incumbent-freemium substitutes likely exist.
 
-3. **Git-history-to-changelog generator for indie SaaS** — ingests merged PRs/commits and drafts a
+2. **Git-history-to-changelog generator for indie SaaS** — ingests merged PRs/commits and drafts a
    customer-facing changelog entry or release-notes email, matching a configurable tone/template.
    Rationale: solo/indie SaaS founders ship frequently but often skip customer communication because
    writing a polished changelog entry takes more time than the fix itself. Demoted: this is close to

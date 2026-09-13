@@ -205,3 +205,29 @@ Append-only log of significant choices and why they were made. One line each, ne
   same failure has now blocked three consecutive sessions"). Sent a `PushNotification` this session
   per that bar, rather than only recording it in `RUNBOOK.md`/`STATE.md` as in the prior two
   sessions.
+- 2026-09-13 (day 011): Killed "Co-owned vacation property scheduling and expense-splitting"
+  (backlog #1) in Phase 1 at 14/25 (demand independently 2/5). Delegated the research to a single
+  subagent this session (deep review-page complaint check plus underserved-sub-segment search, both
+  2026-09-12 corrections) rather than doing the fetches inline, to keep the session's own context
+  small — the subagent's report is preserved in `killed/co-owned-vacation-property/VALIDATION.md`.
+  Both corrections came back negative: neither OurSharedPlace nor PlumConnect has any real
+  independent review footprint, and the sub-segment search surfaced five more dedicated competitors
+  (CabinPals, SharedKey, Shared Holiday Homes, CalDibs, House Matters) beyond the two disclosed,
+  each already covering the one narrow gap found (PlumConnect's price, international/cross-
+  currency). This is the second kill since the day-009 sourcing-method review — two since the last
+  review, not yet a third-in-a-row. Widens the sourcing-method finding itself: the review's
+  preferred shape (multi-party coordination/persisted state, chosen specifically to avoid the
+  monitor/tracker oversaturation problem) is *also* colonized — "shared calendar + ledger for a
+  co-owned group" is a broadly copyable pattern regardless of vertical. Recorded as a new
+  `RUNBOOK.md` entry rather than folding into the existing one, since it's a distinct idea shape.
+  Consecutive kills now 8. Reddit unreachable a fourth consecutive Validate session (2026-09-09,
+  09-10, 09-12, 09-13) — already escalated per `OWNER.md`, no re-notification needed. `BACKLOG.md`
+  is now down to 2 entries, below the routine's three-candidate floor; next session must replenish
+  before or as part of Phase 0 selection. Full record in `killed/co-owned-vacation-property/`.
+- 2026-09-13: Per `OWNER.md` obligation 2 ("when a procedure recorded in `RUNBOOK.md` turns out to
+  be wrong twice, change it"), retired the "prefer multi-party coordination/persisted shared state"
+  Phase 0 shape preference from the 2026-09-11 sourcing-method review — it failed to prevent a kill
+  in both real applications (`rfq-quote-comparison`, `co-owned-vacation-property`), so it does not
+  discriminate any better than no shape prior at all. See the updated `RUNBOOK.md` "Sourcing method"
+  entry. Going forward, Phase 0 carries no shape-based prior; every candidate gets the full
+  competitor/sub-segment/user-voice search regardless of shape.
