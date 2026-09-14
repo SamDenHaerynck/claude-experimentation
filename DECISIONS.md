@@ -231,15 +231,22 @@ Append-only log of significant choices and why they were made. One line each, ne
   discriminate any better than no shape prior at all. See the updated `RUNBOOK.md` "Sourcing method"
   entry. Going forward, Phase 0 carries no shape-based prior; every candidate gets the full
   competitor/sub-segment/user-voice search regardless of shape.
-- 2026-09-14: Replenished `BACKLOG.md` from 2 to 5 entries (day 012), per the day-011 note that it
+- 2026-09-14: Replenished `BACKLOG.md` from 2 to 4 entries (day 012), per the day-011 note that it
   was below the routine's three-candidate floor. Used a delegated research subagent with no
   shape-based prior, sourcing from genuinely evidenced friction (real URLs) across diverse
-  verticals rather than the two now-retired shapes. Added 3 of the 4 candidates it returned;
-  excluded the fourth (a structural/civil calc-package assembler) because the subagent itself
-  flagged its own evidence as weak — no direct complaint found for the specific differentiator,
-  only general adjacent pain. Reddit and eng-tips.com were both unreachable for this pass; no new
-  notification since Reddit's unreachability was already escalated 2026-09-12 and this is a
-  Phase 0 sourcing pass, not the Phase 1 Validate context that escalation was scoped to. This
-  session did not select or validate a top candidate — per the routine's own Phase 0 wording
-  ("if fewer than three candidates remain, generate new ones instead and spend the session on
-  that"), replenishment was this session's full unit of work.
+  verticals rather than the two now-retired shapes. It returned 4 candidates; the independent
+  pre-merge review found that 2 of the 4 contained fabricated exact-quote citations (real URLs,
+  invented quoted phrases) — see the new `RUNBOOK.md` entry. One (customs/HTS classification) was
+  fixed by independently re-verifying its citations and replacing the fabricated quote with an
+  accurate paraphrase plus a primary-source addition; one (freight-claim packet generator) was
+  dropped entirely rather than repaired, since 2 of its 3 citations were fabricated. A third
+  (grant-report normalizer) checked out clean on independent re-verification and was kept as-is.
+  The fourth candidate the subagent returned (a structural/civil calc-package assembler) was
+  excluded from the start — the subagent itself flagged its own evidence as weak. Net: `BACKLOG.md`
+  ends at 4 entries (still above the 3-candidate floor), not the 5 originally drafted. Reddit and
+  eng-tips.com were both unreachable for this pass; no new notification since Reddit's
+  unreachability was already escalated 2026-09-12 and this is a Phase 0 sourcing pass, not the
+  Phase 1 Validate context that escalation was scoped to. This session did not select or validate
+  a top candidate — per the routine's own Phase 0 wording ("if fewer than three candidates remain,
+  generate new ones instead and spend the session on that"), replenishment was this session's full
+  unit of work.

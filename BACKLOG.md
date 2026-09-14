@@ -73,53 +73,50 @@ single-user monitor/tracker) is *also* colonized; see `RUNBOOK.md`. Remaining en
 down to 2, below the routine's three-candidate floor — next session must replenish before or as
 part of Phase 0/1.
 
-Updated 2026-09-14 (day 012): replenished from 2 entries back up to 5, per the day-011 note that
+Updated 2026-09-14 (day 012): replenished from 2 entries back up to 4, per the day-011 note that
 the backlog was below the routine's three-candidate floor. Sourced via a delegated research
 subagent using no shape-based prior (per the day-011 retirement of both the "monitor/tracker" and
 "multi-party coordination" shape preferences) — instructed instead to find genuinely evidenced
 friction (real forum/complaint/review URLs, or a regulatory/platform change creating a new need)
-across diverse verticals, and to name a found competitor for each rather than skip that check.
-Three of the four candidates it returned are added below as new #1-#3, ranked ahead of the two
-carried-over entries because each has real supporting evidence and a named competitor gap
-identified; the fourth (a structural/civil calc-package assembler for permit submittal) was
-excluded rather than added — the subagent itself flagged its evidence as weak (general permit-
-delay pain confirmed, but no direct complaint found specifically about the formatting/assembly
-step), consistent with the routine's "no evidence found is a signal" instruction. Reddit was
-unreachable again for this sourcing pass (site: search and direct fetch both failed); the
-subagent substituted other forums (Mike Holt, ElectricianTalk), vendor/G2/Capterra pages, and
-industry blogs/news where a source it tried (eng-tips.com, 403 on direct fetch) also failed. This
-is a Phase 0 sourcing pass, not Phase 1 Validate — none of these three has yet had the full
-competitor/sub-segment/user-voice search run; that happens when one is selected as top candidate.
+across diverse verticals, and to name a found competitor for each rather than skip that check. The
+subagent returned 4 candidates; the independent pre-merge review (see `log/2026-09-14.md`) spot-
+checked the cited URLs and found that quoted claims attributed to shipbob.com, blog.inymbus.com,
+and softwareadvice.com did not actually appear on those pages — invented citations dressed as real
+sourcing. Direct re-verification confirmed this. Two of the 4 candidates are added below as new
+#1-#2 after removing/replacing the fabricated quotes with claims actually verified against the
+source text (see `RUNBOOK.md`'s new entry on this failure mode); a third candidate (freight-claim
+packet generator) is dropped entirely rather than repaired, because two of its three supporting
+citations were fabricated and there wasn't time this session to re-source it properly; the fourth
+(a structural/civil calc-package assembler for permit submittal) was excluded from the start — the
+subagent itself flagged that evidence as weak, consistent with the routine's "no evidence found is
+a signal" instruction. Reddit was unreachable again for this sourcing pass (site: search and direct
+fetch both failed); the subagent substituted other forums (Mike Holt, ElectricianTalk), vendor/G2/
+Capterra pages, and industry blogs/news where a source it tried (eng-tips.com, 403 on direct fetch)
+also failed. This is a Phase 0 sourcing pass, not Phase 1 Validate — neither surviving candidate has
+had the full competitor/sub-segment/user-voice search run; that happens when one is selected.
 
 1. **Small-batch customs/HTS classification and duty paperwork for micro e-commerce sellers** — 
    takes a product description/photo and generates the HTS code, a commercial invoice, and a duty
    estimate for a single occasional international shipment, aimed at Etsy/small Shopify sellers and
    craftspeople who ship internationally in small volume rather than through a platform-integrated
-   high-volume pipeline. Rationale: the US ended the $800 de minimis exemption for all countries on
-   2025-08-29, so "every parcel now needs an HTS code, formal customs entry, and full duty payment
-   regardless of value" with misclassification penalties of 20-40% of underpaid duty
-   ([gingercontrol.com](https://gingercontrol.com/blog/de-minimis-repeal-small-importer-impact)),
-   and sellers "may not have a US 10-digit HTS code documented for your products"
+   high-volume pipeline. Rationale: Executive Order 14324, "Suspending Duty-Free De Minimis
+   Treatment for All Countries," eliminated the $800 de minimis exemption worldwide effective
+   2025-08-29
+   ([whitehouse.gov](https://www.whitehouse.gov/presidential-actions/2025/07/suspending-duty-free-de-minimis-treatment-for-all-countries/)) —
+   confirmed independently, not just via the one blog source. Misclassification penalties under 19
+   USC 1592 run 20-40% of underpaid duty for negligence, up to 4x for fraud, and after the repeal
+   "every parcel into the US now needs an HTS code (no more 'low-value, no paperwork' exception)...
+   and every parcel now needs formal customs entry treatment"
+   ([gingercontrol.com](https://gingercontrol.com/blog/de-minimis-repeal-small-importer-impact),
+   quote independently re-verified). ShipBob's own blog separately confirms sellers must provide
+   "accurate HTS (Harmonized Tariff Schedule) codes" and offers to automate that classification
    ([shipbob.com](https://www.shipbob.com/blog/de-minimis-value/)) — a brand-new compliance burden
    for a segment that never needed this before, giving a real property-(c) cost-of-being-wrong.
    Named competitor: Zonos (zonos.com/classify, zonos.com/landed-cost) offers free HS
    classification, but it's built for platform-integrated, higher-volume stores, not occasional
    manual/single-shipment sellers — the disclosed gap Phase 1 must test rather than assume.
 
-2. **Freight-claim packet generator for small trucking companies and owner-operators** — assembles
-   BOL, POD, invoice, and damage photos into a carrier-specific claim submission packet. Rationale:
-   cargo losses exceed $50B/yr and claims processing is described as "over-complicated and extremely
-   frustrating" with manual assembly and carrier-communication delays
-   ([blog.inymbus.com](https://blog.inymbus.com/freight-claims-management-the-definitive-guide)).
-   Named competitor: iNymbus, but it is explicitly built and priced for "enterprise shippers
-   processing thousands of repetitive claims" via RPA
-   ([softwareadvice.com](https://www.softwareadvice.com/scm/inymbus-profile/)), leaving small or
-   occasional filers as the disclosed gap. Flag: this is closer to a one-shot document-assembly
-   artifact, the same general shape as three of this repo's earliest kills — Phase 1 must test
-   whether the packet-assembly step alone clears the free/DIY/generic-LLM substitute bar those
-   kills failed on, not just whether a gap versus iNymbus exists.
-
-3. **Grant-report normalizer for small nonprofit program staff** — program staff enter
+2. **Grant-report normalizer for small nonprofit program staff** — program staff enter
    outcome/spend data once; the tool reformats it into each individual funder's own report
    template. Rationale: "every funder has their own reporting guidelines... which all require
    customization" and reformatting is called out as "one of the most time-consuming tasks for
@@ -132,7 +129,7 @@ competitor/sub-segment/user-voice search run; that happens when one is selected 
    nonprofit willingness-to-pay is untested and budgets are typically tight — the specific risk
    Phase 1 should weigh most.
 
-4. **Freelancer SOW/contract generator with e-sign tracking** — a lightweight, freelancer-specific
+3. **Freelancer SOW/contract generator with e-sign tracking** — a lightweight, freelancer-specific
    alternative to heavyweight contract platforms: generates scoped statements of work from a short
    intake form, tracks e-signature status, and reminds on renewal/expiry. Rationale: solo
    consultants often use generic templates or expensive all-in-one tools (DocuSign, PandaDoc) built
@@ -142,7 +139,7 @@ competitor/sub-segment/user-voice search run; that happens when one is selected 
    (b), but Validate must test whether that piece alone (not the document generation) is what a
    buyer would pay for, given free-template and incumbent-freemium substitutes likely exist.
 
-5. **Git-history-to-changelog generator for indie SaaS** — ingests merged PRs/commits and drafts a
+4. **Git-history-to-changelog generator for indie SaaS** — ingests merged PRs/commits and drafts a
    customer-facing changelog entry or release-notes email, matching a configurable tone/template.
    Rationale: solo/indie SaaS founders ship frequently but often skip customer communication because
    writing a polished changelog entry takes more time than the fix itself. Demoted: this is close to

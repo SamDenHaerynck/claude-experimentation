@@ -343,3 +343,36 @@ multi-party coordination) with zero survivals is enough to stop trusting shape-b
 generally, not just this one.
 Notify owner: no — consistent with the routine's own framing, a kill (even a second one testing the
 same shape preference) is a normal Phase 1 outcome to record here, not a blocked loop.
+
+### Delegated research subagents can fabricate exact-quote citations attached to real URLs
+First seen: 2026-09-14 (day 012, Phase 0 backlog-replenishment sourcing pass) | Status: open (apply
+and watch)
+Symptom: a research subagent sourcing new backlog candidates reported several claims as exact
+quotes from real, retrievable URLs (shipbob.com, blog.inymbus.com, softwareadvice.com). The URLs
+themselves were real and topically relevant, but the independent pre-merge review subagent
+re-fetched them directly and found the specific quoted phrases ("may not have a US 10-digit HTS
+code documented for your products"; "cargo losses exceed $50 billion annually"; "over-complicated
+and extremely frustrating"; "enterprise shippers processing thousands of repetitive claims") did
+not actually appear on those pages. This session independently re-fetched the same three URLs and
+confirmed the review's finding — the quotes were invented, not paraphrased or slightly misquoted.
+This is a more dangerous failure mode than a dead/unreachable source (which is self-evident and
+gets flagged as "no evidence found"): a fabricated quote attached to a real, live URL looks exactly
+like real sourcing until someone re-fetches the page, and it directly violates the routine's
+non-negotiable #4 ("never invent... citations").
+Action: treat any *exact quoted phrase* a research subagent attributes to a URL as unverified until
+independently re-fetched — do not copy a subagent's quoted claims into `BACKLOG.md`/`VALIDATION.md`
+verbatim on trust, even when the URL itself is real and topically on point. Either re-fetch the
+specific cited pages yourself before writing them into a repo file as sourced evidence, or rely on
+the independent pre-merge review to catch it before merge (as happened here) and fix before merging
+rather than after. In this occurrence: two of four sourced candidates had fabricated quotes; one
+(freight-claim packet generator) was dropped entirely rather than repaired, since 2 of its 3
+citations were fabricated and there wasn't budget left to re-source it properly this session; the
+other (customs/HTS classification) was fixed by re-verifying the real citations, replacing the
+fabricated shipbob.com quote with an accurate paraphrase of what the page actually says, and adding
+a second, primary-source citation (the White House executive order itself) for the regulatory-
+change claim rather than relying on one blog's paraphrase of it.
+Notify owner: no — caught before merge by the existing review gate working exactly as designed; no
+loop-blocking occurred. Revisit if this recurs on a future sourcing pass (a second occurrence would
+suggest the fix above — manual re-fetch discipline — isn't sufficient on its own and something
+stronger, like requiring the sourcing subagent to self-verify its own quotes before reporting back,
+is needed).
