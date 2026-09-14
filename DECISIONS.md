@@ -240,7 +240,9 @@ Append-only log of significant choices and why they were made. One line each, ne
   fixed by independently re-verifying its citations and replacing the fabricated quote with an
   accurate paraphrase plus a primary-source addition; one (freight-claim packet generator) was
   dropped entirely rather than repaired, since 2 of its 3 citations were fabricated. A third
-  (grant-report normalizer) checked out clean on independent re-verification and was kept as-is.
+  (grant-report normalizer) was initially marked clean but round 2 of the review found a second
+  fabricated quote on it that round 1's spot-check had missed; fixed by replacing it with the
+  actual verbatim text of the cited page and re-verifying independently a second time.
   The fourth candidate the subagent returned (a structural/civil calc-package assembler) was
   excluded from the start — the subagent itself flagged its own evidence as weak. Net: `BACKLOG.md`
   ends at 4 entries (still above the 3-candidate floor), not the 5 originally drafted. Reddit and

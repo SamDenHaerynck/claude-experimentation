@@ -376,3 +376,19 @@ loop-blocking occurred. Revisit if this recurs on a future sourcing pass (a seco
 suggest the fix above — manual re-fetch discipline — isn't sufficient on its own and something
 stronger, like requiring the sourcing subagent to self-verify its own quotes before reporting back,
 is needed).
+Update 2026-09-14 (same session, round 2 review): the round-1 fix was itself incomplete. Only the
+one candidate flagged by round 1 (freight-claim) was dropped and the other flagged candidate
+(customs/HTS) was fixed, but the *third* candidate (grant-report normalizer) had been marked
+"checked out clean on independent re-verification" without actually re-checking each of its two
+quotes individually — one ("every funder has their own reporting guidelines... which all require
+customization") was itself fabricated and survived into the round-2 diff, caught only because the
+round-2 reviewer re-fetched it again from scratch rather than trusting the round-1 "clean" label.
+Sharper action: when a fabricated quote is found anywhere in a sourcing subagent's output, do not
+trust *any* of that subagent's quotes as "clean" based on spot-checking only the ones a reviewer
+happened to flag — independently re-fetch and verify every single quoted phrase in every surviving
+candidate, one at a time, before calling any of them verified. A "some checked out" review result
+is not the same as "all checked out"; treat every remaining quote as guilty until re-fetched.
+Notify owner: no — still caught before merge, this time by round 2 rather than round 1. If a third
+round finds yet another fabricated quote, that meets a different bar (the review process itself
+repeatedly failing to fully catch this) and should be flagged to the owner rather than just fixed
+again.

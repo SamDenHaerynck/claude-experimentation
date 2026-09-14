@@ -118,9 +118,11 @@ had the full competitor/sub-segment/user-voice search run; that happens when one
 
 2. **Grant-report normalizer for small nonprofit program staff** — program staff enter
    outcome/spend data once; the tool reformats it into each individual funder's own report
-   template. Rationale: "every funder has their own reporting guidelines... which all require
-   customization" and reformatting is called out as "one of the most time-consuming tasks for
-   nonprofits" ([exponentphilanthropy.org](https://exponentphilanthropy.org/blog/how-to-simplify-grant-applications-and-reports-for-nonprofits/)).
+   template. Rationale: "a single organization may juggle 40-60 applications and just as many
+   unique reporting requirements from 20-30 funders, each with its own format and timeline," and
+   reformatting is called out as "one of the most time-consuming tasks for nonprofits"
+   ([exponentphilanthropy.org](https://exponentphilanthropy.org/blog/how-to-simplify-grant-applications-and-reports-for-nonprofits/),
+   both quotes independently re-verified against the page).
    No direct named competitor found: Foundant and Submittable are funder-side intake portals for
    *receiving* reports, not grantee-side tools for reformatting the same underlying data across many
    funders' differing templates — genuinely undisclosed-competitor territory, so Phase 1 must run
