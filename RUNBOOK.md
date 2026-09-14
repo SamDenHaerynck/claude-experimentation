@@ -252,6 +252,15 @@ Validate session. Same failure mode — direct `WebFetch` to reddit.com/old.redd
 per the prior update's guidance (already told once, standing limitation). Non-Reddit fallback
 sources (this session: Bogleheads, via `WebSearch` snippets since direct fetch was Cloudflare-
 blocked) again found at least one usable real post, consistent with day 010.
+Update 2026-09-14 (day 012, Phase 0 backlog-replenishment sourcing pass, not a Phase 1 Validate
+session): unreachable a fifth time, same failure mode (site: search and direct fetch both failed).
+A second source also failed this pass: eng-tips.com returned a 403 on direct fetch. The delegated
+research subagent substituted other practitioner forums (Mike Holt, ElectricianTalk), vendor/G2/
+Capterra pages, and industry blogs/news, and still returned usable real-URL evidence for 3 of 4
+candidates — consistent with the standing workaround. No new notification (same standing
+limitation already escalated 2026-09-12; this occurrence is Phase 0 sourcing, outside the Phase-1-
+Validate context the original escalation was scoped to, but recorded here for the same tracking
+purpose).
 
 ### Sourcing method: the "monitor/track/alert" idea shape is structurally oversaturated
 First seen: 2026-09-11 (day 009, sourcing-method review triggered by the second three-in-a-row
@@ -334,3 +343,52 @@ multi-party coordination) with zero survivals is enough to stop trusting shape-b
 generally, not just this one.
 Notify owner: no — consistent with the routine's own framing, a kill (even a second one testing the
 same shape preference) is a normal Phase 1 outcome to record here, not a blocked loop.
+
+### Delegated research subagents can fabricate exact-quote citations attached to real URLs
+First seen: 2026-09-14 (day 012, Phase 0 backlog-replenishment sourcing pass) | Status: open (apply
+and watch)
+Symptom: a research subagent sourcing new backlog candidates reported several claims as exact
+quotes from real, retrievable URLs (shipbob.com, blog.inymbus.com, softwareadvice.com). The URLs
+themselves were real and topically relevant, but the independent pre-merge review subagent
+re-fetched them directly and found the specific quoted phrases ("may not have a US 10-digit HTS
+code documented for your products"; "cargo losses exceed $50 billion annually"; "over-complicated
+and extremely frustrating"; "enterprise shippers processing thousands of repetitive claims") did
+not actually appear on those pages. This session independently re-fetched the same three URLs and
+confirmed the review's finding — the quotes were invented, not paraphrased or slightly misquoted.
+This is a more dangerous failure mode than a dead/unreachable source (which is self-evident and
+gets flagged as "no evidence found"): a fabricated quote attached to a real, live URL looks exactly
+like real sourcing until someone re-fetches the page, and it directly violates the routine's
+non-negotiable #4 ("never invent... citations").
+Action: treat any *exact quoted phrase* a research subagent attributes to a URL as unverified until
+independently re-fetched — do not copy a subagent's quoted claims into `BACKLOG.md`/`VALIDATION.md`
+verbatim on trust, even when the URL itself is real and topically on point. Either re-fetch the
+specific cited pages yourself before writing them into a repo file as sourced evidence, or rely on
+the independent pre-merge review to catch it before merge (as happened here) and fix before merging
+rather than after. In this occurrence: two of four sourced candidates had fabricated quotes; one
+(freight-claim packet generator) was dropped entirely rather than repaired, since 2 of its 3
+citations were fabricated and there wasn't budget left to re-source it properly this session; the
+other (customs/HTS classification) was fixed by re-verifying the real citations, replacing the
+fabricated shipbob.com quote with an accurate paraphrase of what the page actually says, and adding
+a second, primary-source citation (the White House executive order itself) for the regulatory-
+change claim rather than relying on one blog's paraphrase of it.
+Notify owner: no — caught before merge by the existing review gate working exactly as designed; no
+loop-blocking occurred. Revisit if this recurs on a future sourcing pass (a second occurrence would
+suggest the fix above — manual re-fetch discipline — isn't sufficient on its own and something
+stronger, like requiring the sourcing subagent to self-verify its own quotes before reporting back,
+is needed).
+Update 2026-09-14 (same session, round 2 review): the round-1 fix was itself incomplete. Only the
+one candidate flagged by round 1 (freight-claim) was dropped and the other flagged candidate
+(customs/HTS) was fixed, but the *third* candidate (grant-report normalizer) had been marked
+"checked out clean on independent re-verification" without actually re-checking each of its two
+quotes individually — one ("every funder has their own reporting guidelines... which all require
+customization") was itself fabricated and survived into the round-2 diff, caught only because the
+round-2 reviewer re-fetched it again from scratch rather than trusting the round-1 "clean" label.
+Sharper action: when a fabricated quote is found anywhere in a sourcing subagent's output, do not
+trust *any* of that subagent's quotes as "clean" based on spot-checking only the ones a reviewer
+happened to flag — independently re-fetch and verify every single quoted phrase in every surviving
+candidate, one at a time, before calling any of them verified. A "some checked out" review result
+is not the same as "all checked out"; treat every remaining quote as guilty until re-fetched.
+Notify owner: no — still caught before merge, this time by round 2 rather than round 1. If a third
+round finds yet another fabricated quote, that meets a different bar (the review process itself
+repeatedly failing to fully catch this) and should be flagged to the owner rather than just fixed
+again.
