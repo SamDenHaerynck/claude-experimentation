@@ -252,6 +252,15 @@ Validate session. Same failure mode — direct `WebFetch` to reddit.com/old.redd
 per the prior update's guidance (already told once, standing limitation). Non-Reddit fallback
 sources (this session: Bogleheads, via `WebSearch` snippets since direct fetch was Cloudflare-
 blocked) again found at least one usable real post, consistent with day 010.
+Update 2026-09-14 (day 012, Phase 0 backlog-replenishment sourcing pass, not a Phase 1 Validate
+session): unreachable a fifth time, same failure mode (site: search and direct fetch both failed).
+A second source also failed this pass: eng-tips.com returned a 403 on direct fetch. The delegated
+research subagent substituted other practitioner forums (Mike Holt, ElectricianTalk), vendor/G2/
+Capterra pages, and industry blogs/news, and still returned usable real-URL evidence for 3 of 4
+candidates — consistent with the standing workaround. No new notification (same standing
+limitation already escalated 2026-09-12; this occurrence is Phase 0 sourcing, outside the Phase-1-
+Validate context the original escalation was scoped to, but recorded here for the same tracking
+purpose).
 
 ### Sourcing method: the "monitor/track/alert" idea shape is structurally oversaturated
 First seen: 2026-09-11 (day 009, sourcing-method review triggered by the second three-in-a-row
