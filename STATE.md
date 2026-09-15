@@ -18,10 +18,10 @@ platform is closing the gap natively"), decide whether Phase 0 needs a new sourc
 prior as a result (a candidate is the reverse of the day-013 finding: for a regulatory-trigger
 idea, explicitly search the dominant platform's own product changelog/announcements before adding
 it to `BACKLOG.md` at all, not just at Validate time), and record the conclusion in `DECISIONS.md`
-before touching `BACKLOG.md`'s remaining 2 entries (grant-report normalizer, freelancer SOW
-generator) or generating new ones. `BACKLOG.md` is also below the routine's 3-candidate floor, but
-per the three-in-a-row rule the sourcing-method review is day 014's unit of work, not
-replenishment — replenish afterward only if the review doesn't itself produce candidates to test.
+before touching `BACKLOG.md`'s remaining 3 entries (grant-report normalizer, freelancer SOW
+generator, git-history-to-changelog generator) or generating new ones. `BACKLOG.md` is exactly at
+the routine's 3-candidate floor (not below it), so no replenishment is needed regardless — per the
+three-in-a-row rule the sourcing-method review is day 014's unit of work either way.
 Read first: `RUNBOOK.md` tail (2026-09-15 "Sourcing method" update and new "Regulatory-trigger
 ideas" entry), `DECISIONS.md` tail (2026-09-15 entry), `BACKLOG.md` header (2026-09-15 update) and
 its 2 remaining entries, `killed/customs-hts-microseller/VALIDATION.md` for full evidence.

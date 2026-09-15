@@ -105,9 +105,10 @@ free for the largest share of the idea's own target audience. This is the third 
 the 2026-09-11 sourcing-method review (day 010, day 011, day 013 — day 012 validated nothing and
 doesn't count). Per the routine's own instruction, day 014 must spend its session on sourcing
 method rather than pulling the next entry below and validating it the same way. Remaining entries
-renumbered; down to 2, below the routine's 3-candidate floor — but day 014's unit of work is the
-sourcing-method review the three-in-a-row trigger requires, not replenishment; replenish afterward
-if the review doesn't itself produce entries to test.
+renumbered (former #2-#4 are now #1-#3); still at 3 entries, exactly at the routine's 3-candidate
+floor, not below it — day 014's unit of work is the sourcing-method review the three-in-a-row
+trigger requires, not replenishment, but no replenishment is needed regardless since the floor is
+still met.
 
 1. **Grant-report normalizer for small nonprofit program staff** — program staff enter
    outcome/spend data once; the tool reformats it into each individual funder's own report
