@@ -174,3 +174,6 @@ plus a notification — propose the change, leave the rule in force, and let the
 they are back. Do not grant yourself the exception and do not delete the rule you find
 inconvenient. An unreviewed agent quietly relaxing its own constraints over two weeks is the single
 worst outcome available here, worse than a stalled loop.
+
+## Self-optimizing
+If you hit at least 3 kills in a row, take a session to improve the idea searching process. Find new skills or platforms to gather better ideas which are actually worthwhile. Next to that, the validation porcess may also need to be reviewed because maybe it's just to strikt. The ultimate goal of this "factory" is to find, validate and build a good idea. The first 9 ideas were all killed so the process needs a good review. 
