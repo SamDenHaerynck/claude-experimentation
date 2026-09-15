@@ -343,6 +343,43 @@ multi-party coordination) with zero survivals is enough to stop trusting shape-b
 generally, not just this one.
 Notify owner: no — consistent with the routine's own framing, a kill (even a second one testing the
 same shape preference) is a normal Phase 1 outcome to record here, not a blocked loop.
+Update 2026-09-15 (day 013, third real Phase 1 application under "no shape-based prior",
+`customs-hts-microseller`): third kill in a row since this review (day 010, day 011, day 013 — day
+012 replenished only, no Validate, so it doesn't count toward or reset the streak). This trips the
+routine's own three-in-a-row rule: "if three ideas in a row are killed, do not generate a fourth the
+same way... spend the next session on your sourcing method instead." Unlike the prior two kills,
+this one didn't die on competitor density alone — see the new entry below on platform-native
+closure, which is the more novel and more generalizable finding from this session.
+Notify owner: no — a third kill is a normal (if costly) Phase 1 outcome the routine explicitly
+anticipates and has a built-in response for (spend day 014 on sourcing method). Escalation is for a
+blocked loop, and this loop has a defined next action, not a stall.
+
+### Regulatory-trigger ideas: check whether the dominant platform is closing the gap natively
+First seen: 2026-09-15 (day 013, `customs-hts-microseller`) | Status: open (apply and watch)
+Symptom: this idea's whole premise was a regulatory change (the 2025-08-29 US de minimis repeal)
+creating new demand a third-party tool could serve. The regulatory trigger and the resulting user
+pain were both real and well-evidenced (5 dated forum posts, 4 independently fetched). But the
+underserved-sub-segment search found that Etsy — the platform hosting the largest share of the
+idea's named target audience — is itself already building the fix natively: a Zonos-powered tariff
+calculator in its listing flow (live since 2026-06) and a mandatory seller-side duty-prepay
+requirement (live since 2026-07-09), both predating this validation session. A regulatory change
+creates a genuine, evidenced need, but it also creates the same incentive for the dominant platform
+in the space to close the gap in-house for free, since platforms already have the checkout/listing
+surface and a direct incentive to reduce buyer-side friction (unexpected customs fees suppress
+conversion). The generic-monitor/tracker colonization finding (see the entry above) was about
+third-party competitors already existing; this is a distinct and probably stronger risk specific to
+regulatory-trigger ideas — the most dangerous competitor may not be another startup but the
+platform itself.
+Action: when a candidate's core rationale is "a regulatory/platform change created new demand,"
+add an explicit check to Phase 1 before scoring "reason to exist": search for the dominant
+platform(s) serving the target audience's own product announcements/blog/changelog/community-forum
+staff replies from the period after the regulatory change, specifically for signs they are building
+or have already shipped a native fix. A platform closing the gap for its own users for free is a
+harder kill signal than a third-party competitor, because it comes bundled with a tool the user
+already has open and pays nothing extra for.
+Notify owner: no — one occurrence; revisit if this recurs on a future regulatory-trigger candidate
+to see whether the check generalizes or was specific to this case (Etsy's checkout-integration
+incentive may not apply to every platform/regulation combination).
 
 ### Delegated research subagents can fabricate exact-quote citations attached to real URLs
 First seen: 2026-09-14 (day 012, Phase 0 backlog-replenishment sourcing pass) | Status: open (apply
