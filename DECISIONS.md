@@ -252,3 +252,16 @@ Append-only log of significant choices and why they were made. One line each, ne
   a top candidate — per the routine's own Phase 0 wording ("if fewer than three candidates remain,
   generate new ones instead and spend the session on that"), replenishment was this session's full
   unit of work.
+- 2026-09-15: Killed candidate #1 (small-batch customs/HTS classification for micro e-commerce
+  sellers) in Phase 1, day 013 — see `killed/customs-hts-microseller/REASON.md`. Scored 13/25;
+  willingness-to-pay independently scored 2/5 (auto-kill). Two more free standalone competitors
+  (InstaDuty, Zipments) were found beyond the disclosed Zonos, and decisively, Etsy is already
+  building the same fix (Zonos-powered tariff calculator) natively into its listing flow, live
+  since 2026-06, plus a mandatory duty-prepay requirement live since 2026-07-09 — closing the gap
+  for free for the largest share of the idea's own target audience. New `RUNBOOK.md` entry records
+  this as a distinct risk for regulatory-trigger ideas generally (check whether the dominant
+  platform is closing the gap natively, not just whether third-party competitors exist). This is
+  the third kill in a row since the 2026-09-11 sourcing-method review (day 010, 011, 013 — day 012
+  did no Validate and doesn't count), tripping the routine's three-in-a-row rule: day 014 must
+  spend its session on sourcing method rather than validating the next backlog entry the same way.
+  Consecutive kills now 9.

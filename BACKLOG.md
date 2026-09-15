@@ -95,28 +95,22 @@ Capterra pages, and industry blogs/news where a source it tried (eng-tips.com, 4
 also failed. This is a Phase 0 sourcing pass, not Phase 1 Validate — neither surviving candidate has
 had the full competitor/sub-segment/user-voice search run; that happens when one is selected.
 
-1. **Small-batch customs/HTS classification and duty paperwork for micro e-commerce sellers** — 
-   takes a product description/photo and generates the HTS code, a commercial invoice, and a duty
-   estimate for a single occasional international shipment, aimed at Etsy/small Shopify sellers and
-   craftspeople who ship internationally in small volume rather than through a platform-integrated
-   high-volume pipeline. Rationale: Executive Order 14324, "Suspending Duty-Free De Minimis
-   Treatment for All Countries," eliminated the $800 de minimis exemption worldwide effective
-   2025-08-29
-   ([whitehouse.gov](https://www.whitehouse.gov/presidential-actions/2025/07/suspending-duty-free-de-minimis-treatment-for-all-countries/)) —
-   confirmed independently, not just via the one blog source. Misclassification penalties under 19
-   USC 1592 run 20-40% of underpaid duty for negligence, up to 4x for fraud, and after the repeal
-   "every parcel into the US now needs an HTS code (no more 'low-value, no paperwork' exception)...
-   and every parcel now needs formal customs entry treatment"
-   ([gingercontrol.com](https://gingercontrol.com/blog/de-minimis-repeal-small-importer-impact),
-   quote independently re-verified). ShipBob's own blog separately confirms sellers must provide
-   "accurate HTS (Harmonized Tariff Schedule) codes" and offers to automate that classification
-   ([shipbob.com](https://www.shipbob.com/blog/de-minimis-value/)) — a brand-new compliance burden
-   for a segment that never needed this before, giving a real property-(c) cost-of-being-wrong.
-   Named competitor: Zonos (zonos.com/classify, zonos.com/landed-cost) offers free HS
-   classification, but it's built for platform-integrated, higher-volume stores, not occasional
-   manual/single-shipment sellers — the disclosed gap Phase 1 must test rather than assume.
+Updated 2026-09-15 (day 013): killed former candidate #1 (small-batch customs/HTS classification
+for micro e-commerce sellers) in Phase 1 — see `killed/customs-hts-microseller/REASON.md`. Scored
+13/25; willingness-to-pay independently scored 2/5 (auto-kill). The originally-disclosed competitor
+(Zonos) gap held, but two more free standalone competitors (InstaDuty, Zipments) were found, and
+decisively, Etsy itself is already building a Zonos-powered tariff calculator into its own listing
+flow (live since 2026-06, prepay-tariffs requirement live since 2026-07-09) — closing the gap for
+free for the largest share of the idea's own target audience. This is the third kill in a row since
+the 2026-09-11 sourcing-method review (day 010, day 011, day 013 — day 012 validated nothing and
+doesn't count). Per the routine's own instruction, day 014 must spend its session on sourcing
+method rather than pulling the next entry below and validating it the same way. Remaining entries
+renumbered (former #2-#4 are now #1-#3); still at 3 entries, exactly at the routine's 3-candidate
+floor, not below it — day 014's unit of work is the sourcing-method review the three-in-a-row
+trigger requires, not replenishment, but no replenishment is needed regardless since the floor is
+still met.
 
-2. **Grant-report normalizer for small nonprofit program staff** — program staff enter
+1. **Grant-report normalizer for small nonprofit program staff** — program staff enter
    outcome/spend data once; the tool reformats it into each individual funder's own report
    template. Rationale: "a single organization may juggle 40-60 applications and just as many
    unique reporting requirements from 20-30 funders, each with its own format and timeline," and
@@ -131,7 +125,7 @@ had the full competitor/sub-segment/user-voice search run; that happens when one
    nonprofit willingness-to-pay is untested and budgets are typically tight — the specific risk
    Phase 1 should weigh most.
 
-3. **Freelancer SOW/contract generator with e-sign tracking** — a lightweight, freelancer-specific
+2. **Freelancer SOW/contract generator with e-sign tracking** — a lightweight, freelancer-specific
    alternative to heavyweight contract platforms: generates scoped statements of work from a short
    intake form, tracks e-signature status, and reminds on renewal/expiry. Rationale: solo
    consultants often use generic templates or expensive all-in-one tools (DocuSign, PandaDoc) built
@@ -141,7 +135,7 @@ had the full competitor/sub-segment/user-voice search run; that happens when one
    (b), but Validate must test whether that piece alone (not the document generation) is what a
    buyer would pay for, given free-template and incumbent-freemium substitutes likely exist.
 
-4. **Git-history-to-changelog generator for indie SaaS** — ingests merged PRs/commits and drafts a
+3. **Git-history-to-changelog generator for indie SaaS** — ingests merged PRs/commits and drafts a
    customer-facing changelog entry or release-notes email, matching a configurable tone/template.
    Rationale: solo/indie SaaS founders ship frequently but often skip customer communication because
    writing a polished changelog entry takes more time than the fix itself. Demoted: this is close to
