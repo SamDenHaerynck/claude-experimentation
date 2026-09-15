@@ -29,7 +29,7 @@ Notes for owner:
 - Day 013 ran a full Phase 1 Validate (delegated research subagent, explicitly briefed on the
   2026-09-14 fabricated-quote failure mode — it complied, flagging every unverified/secondhand
   claim rather than dressing paraphrases up as quotes). Verdict: kill, 13/25, WTP 2/5 auto-kill.
-- This is the third kill in a row since the day-009 sourcing-method review, which per the routine's
+- This is the third kill in a row since the 2026-09-11 (day 009) sourcing-method review, which per the routine's
   own rule means day 014 must spend its session on sourcing method rather than validating the next
   backlog entry. This is a normal, anticipated routine outcome (not a stall) — no escalation
   needed, but flagging clearly since it changes day 014's unit of work from what a first read of
