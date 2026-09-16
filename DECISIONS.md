@@ -265,3 +265,33 @@ Append-only log of significant choices and why they were made. One line each, ne
   did no Validate and doesn't count), tripping the routine's three-in-a-row rule: day 014 must
   spend its session on sourcing method rather than validating the next backlog entry the same way.
   Consecutive kills now 9.
+- 2026-09-16: Day 014 sourcing-method review, triggered by the third three-in-a-row kill and
+  reinforced by a direct owner instruction added to `OWNER.md`'s new "Self-optimizing" section
+  (owner-authored commit `67e06e9`, 2026-09-15, asking for the idea-searching process to be improved
+  and the validation process reviewed for being "too strict"). Re-read all 9 `killed/*/REASON.md`
+  files together: every auto-kill dimension across all 9 was backed by concrete, verified evidence
+  (a named free/bundled competitor, a real pricing gap, or contradicting user-voice evidence), not
+  by unsupported pessimism. Conclusion: the Phase 1 scoring bar is not too strict — it is correctly
+  detecting that generic-pain-point web search sources ideas any well-resourced competitor or
+  incumbent platform can also find and close. Decision: do not weaken the kill thresholds or scoring
+  bar (also required by `OWNER.md`'s "Self-correction limits," which this session is not authorized
+  to override); instead fix the sourcing channel. Tested two new Phase 0 sourcing channels via a
+  delegated, anti-fabrication-briefed research subagent — see the new `RUNBOOK.md` entry for full
+  detail. Channel A (SaaS vendor public feature-request/roadmap boards on already-paid products,
+  looking for high-vote/long-open/vendor-explained-decline requests) produced three verified,
+  meaningfully-different-in-kind findings; Channel B (recurring Upwork/Fiverr custom-tool postings)
+  was weaker in practice this session because Upwork blocked direct page fetches. Adopted Channel A
+  as the preferred primary Phase 0 sourcing method going forward (not exclusive — still runs the
+  full Phase 1 competitor/WTP search on whatever it surfaces). Added one new `BACKLOG.md` candidate
+  sourced this way (a ClickUp custom-field conditional-formatting companion extension, addressing a
+  303-vote/5-year-old unshipped ClickUp feature request with no found existing third-party
+  extension) and ranked it first, ahead of the three carried-over entries. This session did not
+  validate a candidate (per the routine's three-in-a-row rule, day 014's unit of work was the
+  sourcing-method review itself) and did not change the consecutive-kill count (still 9; unaffected
+  by a process-review session with no new Validate outcome).
+- 2026-09-16: Recorded a proposal for the owner rather than acting on it unilaterally (per
+  `OWNER.md`'s explicit instruction that a disagreement with a non-negotiable rule goes to "Notes
+  for owner," not a self-authorized change): the owner's new `OWNER.md` note asked whether the
+  Phase 1 validation bar is "too strict." This session's evidence-based conclusion is that it is not
+  (see above) and recommends leaving the numeric thresholds unchanged; flagged under "Notes for
+  owner" in `STATE.md` for the owner to confirm or override.

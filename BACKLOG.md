@@ -110,7 +110,38 @@ floor, not below it — day 014's unit of work is the sourcing-method review the
 trigger requires, not replenishment, but no replenishment is needed regardless since the floor is
 still met.
 
-1. **Grant-report normalizer for small nonprofit program staff** — program staff enter
+Updated 2026-09-16 (day 014, sourcing-method review after the third three-in-a-row kill and a
+direct `OWNER.md` instruction to improve idea sourcing — see `RUNBOOK.md` and `DECISIONS.md`): all
+9 kills to date died on concrete, verified evidence (a real free/bundled competitor, a real pricing
+gap, or contradicting user-voice evidence), not on an overly strict score, so the fix this session
+targets Phase 0 sourcing, not the Phase 1 bar. Tested a new sourcing channel — SaaS vendor public
+feature-request/roadmap boards on already-paid products, looking for a high-vote, long-open request
+where the vendor has stated its own reason for not building it — via a delegated research subagent.
+Added one new candidate below (#1) sourced this way and ranked it ahead of the three carried-over
+entries, which are otherwise unchanged and keep their prior demotions/caveats (now #2-#4).
+
+1. **ClickUp custom-field conditional-formatting companion extension** — a browser extension (using
+   ClickUp's public API) that adds client-side conditional formatting/coloring to ClickUp custom
+   fields in List/Table views based on field value, a feature ClickUp itself has never shipped
+   natively. Rationale: ClickUp's own public feedback board has a request for exactly this
+   ("Conditional Formatting for Custom Fields (Color based on value)",
+   [feedback.clickup.com](https://feedback.clickup.com/feature-requests/p/conditional-formatting-for-custom-fields-color-based-on-value),
+   303 votes, open since Nov 2020 — about 5 years, with a 2025 user comment "over 4 years and still
+   not a thing?" independently re-verified against the page), plus a related, separate request for
+   color-coding in Table View and a "Task Colors Across Views" thread on ClickUp's Canny board,
+   suggesting demand for this is not a single isolated request. No existing third-party ClickUp
+   extension addressing this was found in this session's searches (Chrome Web Store/general search),
+   though an open-source project doing the equivalent for a different tool exists
+   (`trello-colored-custom-fields` on GitHub), showing the implementation pattern (client-side
+   DOM/API-driven formatting overlay) is proven elsewhere. Property (b) plausibly holds (a
+   continuously-running browser add-on embedded in an existing daily workflow, not a one-shot
+   artifact). Explicitly undone by this session: a real check of ClickUp's own official App
+   Marketplace listings (only general web/Chrome-store search was run) and a WTP comparable search
+   (pricing for existing paid ClickUp ClickApps/marketplace extensions, e.g. reporting add-ons) —
+   both must happen in Phase 1 before scoring, along with the standard three-real-user-post and
+   sub-segment-competitor searches.
+
+2. **Grant-report normalizer for small nonprofit program staff** — program staff enter
    outcome/spend data once; the tool reformats it into each individual funder's own report
    template. Rationale: "a single organization may juggle 40-60 applications and just as many
    unique reporting requirements from 20-30 funders, each with its own format and timeline," and
@@ -125,7 +156,7 @@ still met.
    nonprofit willingness-to-pay is untested and budgets are typically tight — the specific risk
    Phase 1 should weigh most.
 
-2. **Freelancer SOW/contract generator with e-sign tracking** — a lightweight, freelancer-specific
+3. **Freelancer SOW/contract generator with e-sign tracking** — a lightweight, freelancer-specific
    alternative to heavyweight contract platforms: generates scoped statements of work from a short
    intake form, tracks e-signature status, and reminds on renewal/expiry. Rationale: solo
    consultants often use generic templates or expensive all-in-one tools (DocuSign, PandaDoc) built
@@ -135,7 +166,7 @@ still met.
    (b), but Validate must test whether that piece alone (not the document generation) is what a
    buyer would pay for, given free-template and incumbent-freemium substitutes likely exist.
 
-3. **Git-history-to-changelog generator for indie SaaS** — ingests merged PRs/commits and drafts a
+4. **Git-history-to-changelog generator for indie SaaS** — ingests merged PRs/commits and drafts a
    customer-facing changelog entry or release-notes email, matching a configurable tone/template.
    Rationale: solo/indie SaaS founders ship frequently but often skip customer communication because
    writing a polished changelog entry takes more time than the fix itself. Demoted: this is close to
