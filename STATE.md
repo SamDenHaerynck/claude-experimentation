@@ -38,10 +38,10 @@ Notes for owner:
 - On "find new platforms/skills for sourcing": tested two new channels this session (full detail in
   `RUNBOOK.md`). SaaS vendor public feature-request/roadmap boards (Canny, UserVoice, in-app
   wishlist pages) on already-paid products — searching for a high-vote, long-open request, ideally
-  with the vendor's own stated reason for declining it — produced three verified, meaningfully
-  different findings (Webflow's offline-desktop and EU-hosting wishlist items, ClickUp's
-  conditional-formatting request) and is now the preferred primary Phase 0 sourcing method going
-  forward. Freelance-marketplace job-posting mining (Upwork/Fiverr) was weaker in practice this
+  with the vendor's own stated reason for declining it — produced three findings a delegated
+  subagent first reported and the acting session then independently re-fetched and confirmed itself
+  (Webflow's offline-desktop and EU-hosting wishlist items, ClickUp's conditional-formatting
+  request) and is now the preferred primary Phase 0 sourcing method going forward. Freelance-marketplace job-posting mining (Upwork/Fiverr) was weaker in practice this
   session because Upwork blocks direct page fetches from this environment (only search-index
   titles/dates were reachable) — not retired, but not yet trustworthy as more than a directional
   signal. One more channel noticed but not tested: paid-add-on reviews on platform app marketplaces

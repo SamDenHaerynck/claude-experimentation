@@ -453,11 +453,29 @@ snippets) per the fabricated-quote lesson above:
 - **Channel A — SaaS vendor public feature-request/roadmap boards** (Canny, UserVoice, in-app
   wishlist boards) for an already-paid product: search for a request with a high vote count, open a
   long time (many months/years), from a real paying customer base, ideally with the vendor's *own*
-  stated reason for not building it. Found three verified examples (Webflow's "Desktop/Offline
-  Application" wishlist item, 5,412 votes/~9 years open, with a Webflow admin's own 2021 reply
-  giving an architectural reason for not building it; Webflow's "European Hosting for GDPR", 3,553
-  votes/~5 years open, with paying-agency comments citing lost EU clients; ClickUp's "Conditional
-  Formatting for Custom Fields", 303 votes/~5 years open, still unshipped). This channel is
+  stated reason for not building it. A delegated research subagent first reported three candidates;
+  per the standing "delegated subagents can fabricate quotes" lesson above, all three were then
+  independently re-fetched by the acting session itself (not just trusted from the subagent's
+  self-report) before being written up here:
+  - Webflow's "Desktop/Offline Application" wishlist item
+    ([wishlist.webflow.com/ideas/DESIGNER-I-13](https://wishlist.webflow.com/ideas/DESIGNER-I-13)):
+    5,412 votes, created Dec 16 2016 (~9 years open), status "Reviewed (not on roadmap)." Directly
+    re-fetched Jan 19 2021 admin reply, verbatim: "this is not something on our roadmap at this time
+    due to some of the technical constraints that would place on our product" — Webflow's
+    browser-based, live-push-update architecture would need "a major shift to release based
+    updates" to support it.
+  - Webflow's "European Hosting to comply with GDPR" item
+    ([wishlist.webflow.com/ideas/WEBFLOW-I-3429](https://wishlist.webflow.com/ideas/WEBFLOW-I-3429)):
+    3,553 votes, created Oct 21 2020 (~5 years open), status "Reviewed," unshipped. Directly
+    re-fetched comments, verbatim, e.g. a named Austrian professional (Andreas Grünwald, Sep 18
+    2025): "We would like to use Webflow. GDPR and keeping data in Europe is a serious issue," and
+    another (Christian Søegaard, Sep 12 2025): "the lack of EU-only hosting is becoming a real
+    blocker for many of us working with institutional and public clients in Europe."
+  - ClickUp's "Conditional Formatting for Custom Fields (Color based on value)" item
+    ([feedback.clickup.com](https://feedback.clickup.com/feature-requests/p/conditional-formatting-for-custom-fields-color-based-on-value)):
+    303 votes, created Nov 23 2020 (~5 years open), unshipped, with a 2025 user comment "over 4
+    years and still not a thing?"
+  This channel is
   meaningfully different in kind from prior sourcing: it starts from a *proven* paying customer base
   (real accounts, real vote counts) rather than a hypothesized one, and a vendor's own admission of
   *why* they won't build it (off their architecture, off their business model, too niche) is a more
