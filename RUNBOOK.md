@@ -459,7 +459,8 @@ snippets) per the fabricated-quote lesson above:
   self-report) before being written up here:
   - Webflow's "Desktop/Offline Application" wishlist item
     ([wishlist.webflow.com/ideas/DESIGNER-I-13](https://wishlist.webflow.com/ideas/DESIGNER-I-13)):
-    5,412 votes, created Dec 16 2016 (~9 years open), status "Reviewed (not on roadmap)." Directly
+    5,412 votes, created Dec 16 2016 (~9 years open), status "Reviewed" (not a shipped/on-roadmap
+    status — inferred from the admin reply below, not a separate status-badge value). Directly
     re-fetched Jan 19 2021 admin reply, verbatim: "this is not something on our roadmap at this time
     due to some of the technical constraints that would place on our product" — Webflow's
     browser-based, live-push-update architecture would need "a major shift to release based
