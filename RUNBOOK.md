@@ -429,3 +429,92 @@ Notify owner: no — still caught before merge, this time by round 2 rather than
 round finds yet another fabricated quote, that meets a different bar (the review process itself
 repeatedly failing to fully catch this) and should be flagged to the owner rather than just fixed
 again.
+
+### Sourcing method review after 9 consecutive real-research kills: scoring bar is not the problem, sourcing channel is
+First seen: 2026-09-16 (day 014, third three-in-a-row trigger, and a direct owner instruction added
+to `OWNER.md`'s new "Self-optimizing" section) | Status: open (apply and watch)
+Symptom: 9 ideas killed in a row across 13 build days, every one sourced via generic web search
+(searching for a profession's documented pain point, a regulatory change, or a workflow people do
+manually). Re-reading all 9 `killed/*/REASON.md` files together: in every case the auto-kill
+dimension (demand, WTP, or reason-to-exist scoring 2 or below) was backed by concrete, independently
+verified evidence — a specific named free/bundled competitor, a specific pricing structure showing
+no WTP, or real user-voice evidence contradicting the idea's own claimed differentiator. None of the
+9 kills relied on vague pattern-matching or an unsupported low score; each traces to a real,
+citable fact. Conclusion: the Phase 1 scoring bar is functioning correctly, not being applied too
+strictly — it is accurately detecting that ideas sourced by "search for a well-known pain point"
+live in the exact part of solution-space that is easiest for a competitor, an incumbent platform,
+or a free tool to also find and close, because that sourcing method is not doing anything a
+well-resourced competitor couldn't also do. The fix is upstream, in Phase 0's sourcing channel, not
+in loosening Phase 1's bar (which `OWNER.md`'s "Self-correction limits" section forbids weakening
+regardless).
+Action taken this session: tested two new Phase 0 sourcing channels via a delegated research
+subagent, each against 2-3 real examples, independently re-fetched (not trusted from search
+snippets) per the fabricated-quote lesson above:
+- **Channel A — SaaS vendor public feature-request/roadmap boards** (Canny, UserVoice, in-app
+  wishlist boards) for an already-paid product: search for a request with a high vote count, open a
+  long time (many months/years), from a real paying customer base, ideally with the vendor's *own*
+  stated reason for not building it. A delegated research subagent first reported three candidates;
+  per the standing "delegated subagents can fabricate quotes" lesson above, all three were then
+  independently re-fetched by the acting session itself (not just trusted from the subagent's
+  self-report) before being written up here:
+  - Webflow's "Desktop/Offline Application" wishlist item
+    ([wishlist.webflow.com/ideas/DESIGNER-I-13](https://wishlist.webflow.com/ideas/DESIGNER-I-13)):
+    5,412 votes, created Dec 16 2016 (~9 years open), status "Reviewed" (not a shipped/on-roadmap
+    status — inferred from the admin reply below, not a separate status-badge value). Directly
+    re-fetched Jan 19 2021 admin reply, verbatim: "this is not something on our roadmap at this time
+    due to some of the technical constraints that would place on our product" — Webflow's
+    browser-based, live-push-update architecture would need "a major shift to release based
+    updates" to support it.
+  - Webflow's "European Hosting to comply with GDPR" item
+    ([wishlist.webflow.com/ideas/WEBFLOW-I-3429](https://wishlist.webflow.com/ideas/WEBFLOW-I-3429)):
+    3,553 votes, created Oct 21 2020 (~5 years open), status "Reviewed," unshipped. Directly
+    re-fetched comments, verbatim, e.g. a named Austrian professional (Andreas Grünwald, Sep 18
+    2025): "We would like to use Webflow. GDPR and keeping data in Europe is a serious issue," and
+    another (Christian Søegaard, Sep 12 2025): "the lack of EU-only hosting is becoming a real
+    blocker for many of us working with institutional and public clients in Europe."
+  - ClickUp's "Conditional Formatting for Custom Fields (Color based on value)" item
+    ([feedback.clickup.com](https://feedback.clickup.com/feature-requests/p/conditional-formatting-for-custom-fields-color-based-on-value)):
+    303 votes, created Nov 23 2020 (~5 years open), unshipped, with a 2025 user comment "over 4
+    years and still not a thing?"
+  This channel is
+  meaningfully different in kind from prior sourcing: it starts from a *proven* paying customer base
+  (real accounts, real vote counts) rather than a hypothesized one, and a vendor's own admission of
+  *why* they won't build it (off their architecture, off their business model, too niche) is a more
+  durable "reason to exist" signal than "no competitor found yet" — because it explains why the
+  vendor is unlikely to close the gap itself later the way Etsy/Shopify/GitLab did in three of the 9
+  kills above, rather than merely not having gotten to it yet.
+- **Channel B — recurring freelance-marketplace postings** (Upwork/Fiverr) for a custom-built
+  internal tool: multiple similar postings from different clients over time is evidence of real WTP
+  and of no adequate off-the-shelf product (otherwise they'd buy instead of commission). Weaker in
+  practice this session: Upwork blocked direct page fetches (403) from this environment, so only
+  search-index titles/dates were reachable, not full postings — and even where postings were found
+  (property-management spreadsheet automation, trucking/logistics dispatch automation), off-the-shelf
+  incumbents (AppFolio, Buildium, Guesty) already exist in that space, so recurring bespoke-build
+  requests alone don't prove those incumbents have a gap; that still needs the same competitor-
+  complaint check as any other candidate.
+Going forward: prefer Channel A (vendor feature-request boards on already-monetized products) as
+the primary Phase 0 sourcing method over generic pain-point web search, specifically looking for a
+high-vote, long-open, vendor-explained-decline request. Do not treat Channel A as sufficient on its
+own, either — Phase 1 still needs the full competitor search (this time including the vendor's own
+app marketplace/extension ecosystem, since a third party may have already filled a vendor-declined
+gap) and the WTP evidence (comparable paid marketplace extensions/add-ons for the same platform).
+Channel B is not being retired, but needs a stronger verification path (a way to actually fetch full
+Upwork postings, or a substitute source) before it is trusted as more than a directional signal.
+One further channel noticed but not tested this session: app-marketplace reviews for small paid
+add-ons that already patch a large platform's gap (Shopify App Store, Zapier app directory, Chrome
+Web Store) — their own review sections may reveal a second layer of still-unmet needs from a
+proven-paying niche. Worth testing in a future sourcing pass.
+Applied this session: added one new `BACKLOG.md` candidate sourced via Channel A (a companion
+browser extension adding client-side conditional formatting to ClickUp custom fields, addressing
+the 303-vote/5-year-old ClickUp feature request above) — disclosed as not yet competitor-checked
+against ClickUp's own app marketplace/Chrome Web Store beyond the general searches run this session,
+which found no existing extension but did find a proven implementation pattern for the same idea on
+a different tool (an open-source `trello-colored-custom-fields` project), and did find at least two
+other ClickUp threads asking for related color-coding, suggesting broader appetite than one isolated
+request.
+Notify owner: no — this is the routine's own anticipated response to a third three-in-a-row trigger,
+reinforced by a direct (non-live, written) owner instruction in `OWNER.md`, not a blocked loop. The
+conclusion that the scoring bar itself should not be weakened is recorded here and under "Notes for
+owner" in `STATE.md` for the owner's own judgment, per `OWNER.md`'s self-correction limits (a
+disagreement with a non-negotiable rule is a proposal to the owner, not something to change
+unilaterally).
