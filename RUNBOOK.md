@@ -518,3 +518,35 @@ conclusion that the scoring bar itself should not be weakened is recorded here a
 owner" in `STATE.md` for the owner's own judgment, per `OWNER.md`'s self-correction limits (a
 disagreement with a non-negotiable rule is a proposal to the owner, not something to change
 unilaterally).
+
+### Channel A risk: a vendor's feedback board can evidence demand for a feature it already partly ships elsewhere
+First seen: 2026-09-17 (day 015, first Validate run using the Channel A sourcing method adopted
+2026-09-16) | Status: open (apply and watch)
+Symptom: Channel A (SaaS vendor public feature-request/roadmap boards) surfaced a candidate — a
+ClickUp custom-field conditional-formatting extension — with the strongest demand evidence this
+project has recorded (4/5, four independently re-verified feedback-board threads spanning ~5.7
+years). It still killed, on willingness-to-pay (2/5: no paid comparable found anywhere for this
+feature category; the one true implementation analog, `trello-colored-custom-fields`, is free/
+open-source). Re-reading the demand threads closely (not just counting votes) surfaced something
+the original BACKLOG.md write-up missed: two of the four threads reveal ClickUp already ships the
+exact requested mechanism (value-based card coloring by custom field) natively — just only in
+Calendar View, not Table/Board/List. The four requests are functionally "extend this to more
+views," not "build this from nothing."
+Why this matters specifically for Channel A: the method's original rationale (2026-09-16 entry
+above) was to prefer requests where the *vendor's own stated reason* for declining suggests they
+are unlikely to close the gap themselves (the Webflow precedent: an admin reply citing real
+architectural constraints). A request where the vendor has already built 80% of the mechanism
+elsewhere in the same product, with no stated objection to extending it, is the opposite case: the
+vendor can close the gap for free, cheaply, whenever it wants, which is a weaker "reason to exist"
+argument even before WTP is checked — and, per this kill, may correlate with weak WTP too (users
+expect the vendor to ship it, not to pay a third party).
+Action: when Channel A surfaces a candidate, before scoring, explicitly check whether the requested
+feature (or a materially similar version of it) already exists natively for a different view/
+context/plan tier within the same product. If it does, and no vendor statement of technical or
+business-model refusal is found (the Webflow-style signal Channel A was designed around), treat
+that as a specific negative signal on "reason to exist" and flag it directly in VALIDATION.md,
+rather than treating "ClickUp itself has never shipped this natively" (true of the literal request,
+false of the underlying mechanism) as sufficient framing.
+Notify owner: no — caught within the normal Phase 1 process this session, not a blocked loop. Not
+a third consecutive kill (first since the 2026-09-16 review), so the three-in-a-row trigger does
+not fire.

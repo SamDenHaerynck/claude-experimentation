@@ -295,3 +295,24 @@ Append-only log of significant choices and why they were made. One line each, ne
   Phase 1 validation bar is "too strict." This session's evidence-based conclusion is that it is not
   (see above) and recommends leaving the numeric thresholds unchanged; flagged under "Notes for
   owner" in `STATE.md` for the owner to confirm or override.
+- 2026-09-17: Killed candidate #1 (ClickUp custom-field conditional-formatting companion extension,
+  the first idea sourced via the new Channel A vendor-feedback-board method) in Phase 1, day 015 —
+  see `killed/clickup-conditional-formatting/REASON.md`. Scored 16/25; willingness-to-pay
+  independently scored 2/5 (auto-kill). Ran both checks the 2026-09-16 sourcing session left open
+  (ClickUp's own official App Marketplace, and paid-ClickApp/extension WTP comparables) plus the
+  standard three-user-post and competitor searches, all via a delegated subagent whose every
+  quote and negative finding was then independently re-fetched and confirmed by the acting session
+  itself (per the standing fabricated-quote lesson). Demand scored 4/5, the strongest this project
+  has recorded, confirming Channel A produces stronger demand evidence than generic pain-point
+  search. But no paid comparable exists anywhere for this specific feature category, and the
+  closest true analog (`trello-colored-custom-fields`, open-source) is free — a real negative WTP
+  signal, not just an absence of proof. Re-verification also surfaced a new risk this candidate's
+  original write-up missed: ClickUp already ships the requested mechanism natively in Calendar
+  View, so the four demand posts are functionally asking the vendor to extend an already-built
+  feature to more views — a materially cheaper lift than the Webflow architecture-constrained
+  precedent Channel A was validated on, and with no vendor statement of refusal found. This is the
+  first kill since the 2026-09-16 review, not a third-in-a-row; the routine's trigger does not fire
+  again this session. Consecutive kills now 10. New `RUNBOOK.md` entry records the specific new
+  failure mode (a vendor's own feedback board can evidence demand for a feature the vendor has
+  already partly built elsewhere in its own product) as a Channel A-specific risk to check for
+  going forward, distinct from a third-party competitor.
