@@ -41,8 +41,7 @@ competitor, since the vendor can close the gap for free with no re-architecture.
 Consecutive kills: 10 (dependency-eol-watcher, vendor-security-questionnaire-autofill,
 rent-increase-notice-calculator, ci-migration-rollback-gate, contractor-classification-checker,
 sales-tax-nexus-monitor, rfq-quote-comparison, co-owned-vacation-property,
-customs-hts-microseller, and now this idea). This is the fourth kill since the 2026-09-16
-sourcing-method review — but that review's own unit of work (session-only, no Validate run) means
-only day 015 counts as a fresh three-in-a-row check post-review, and it is the first kill since
-then, not a third-in-a-row. The routine's three-in-a-row trigger does **not** fire again this
-session. See `STATE.md` for the next action.
+customs-hts-microseller, and now this idea). This is the 10th kill overall, but the 2026-09-16
+sourcing-method review's own unit of work was session-only (no Validate run), so it is the **first**
+kill since that review, not a third-in-a-row. The routine's three-in-a-row trigger does **not**
+fire again this session. See `STATE.md` for the next action.
