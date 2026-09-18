@@ -23,7 +23,7 @@ re-verified:
   [exponentphilanthropy.org](https://exponentphilanthropy.org/blog/how-to-simplify-grant-applications-and-reports-for-nonprofits/),
   re-fetched directly. Verbatim: "A single organization may juggle 40–60 applications and just as
   many unique reporting requirements from 20–30 funders, each with its own format and timeline."
-  Verbatim: "Reforming burden – Reformatting is one of the most time-consuming tasks for
+  Verbatim: "Reduces burden – Reformatting is one of the most time-consuming tasks for
   nonprofits." (both confirmed present on direct fetch, correcting the possibility raised by the
   subagent's own fabrication warning about a *different* page).
 - **PEAK Grantmaking** (grantmaker-side membership association, survey of 280 grantmaking
@@ -38,9 +38,12 @@ re-verified:
   [nonprofitaf.com](https://www.nonprofitaf.com/report-crappy-funders/), re-fetched directly.
   Verbatim: "Making nonprofits translate their budget into a funder's budget format: It is
   ridiculous and self-centered for any funder to expect anyone to convert their budgets into the
-  funder's format." This is genuine, attributable practitioner-voiced pain about the exact
-  reformatting task — but it is framed as a single-funder complaint ("a funder's format"), not the
-  multi-funder/20-30-funders framing the idea's thesis rests on.
+  funder's format, especially if the funder's format is in—gasp!—Microsoft Word!" This is genuine,
+  attributable practitioner-voiced pain about the exact reformatting task, from a listicle of
+  complaints about "a funder who does any of the crappy practices listed below" (i.e. applicable to
+  any funder exhibiting the practice, not framed as literally about a single specific funder) — but
+  it still describes the pain of one instance of reformatting ("a funder's format"), not explicitly
+  the compounding, many-simultaneous-templates pain the idea's own thesis rests on.
 - **FundEasy** vendor blog anecdote (an unnamed "development director at a mid-sized rescue
   mission") — explicitly disclosed by the research subagent as illustrative vendor marketing copy,
   not a verified real-user testimonial. Excluded as evidence per routine non-negotiable #4.
