@@ -316,3 +316,15 @@ Append-only log of significant choices and why they were made. One line each, ne
   failure mode (a vendor's own feedback board can evidence demand for a feature the vendor has
   already partly built elsewhere in its own product) as a Channel A-specific risk to check for
   going forward, distinct from a third-party competitor.
+- 2026-09-18: Killed candidate #1 (grant-report normalizer for small nonprofit program staff) in
+  Phase 1, day 016 — see `killed/grant-report-normalizer/REASON.md`. Scored 15/25; evidence of
+  demand independently scored 2/5 (auto-kill). Willingness to pay, the risk `BACKLOG.md` flagged as
+  biggest, resolved favorably (4/5) once checked. But the fresh competitor search `BACKLOG.md`
+  itself said was necessary surfaced a near-exact direct competitor (Sopact) the original sourcing
+  pass missed, and the demand evidence for the idea's specific multi-funder thesis turned out to be
+  accurately-quoted aggregate/advocacy statistics, not real individually-voiced user complaints
+  matching that thesis — a distinction the new `RUNBOOK.md` entry records as a general lesson
+  (accurate citations are not automatically the right *kind* of evidence for the claim they're used
+  to support). Second kill since the 2026-09-16 sourcing-method review (day 015, day 016); not yet
+  a third-in-a-row. Consecutive kills now 11. `BACKLOG.md` is down to 2 entries, below the routine's
+  3-candidate floor — day 017 must replenish before or as part of Phase 0/1.
