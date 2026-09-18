@@ -550,3 +550,31 @@ false of the underlying mechanism) as sufficient framing.
 Notify owner: no — caught within the normal Phase 1 process this session, not a blocked loop. Not
 a third consecutive kill (first since the 2026-09-16 review), so the three-in-a-row trigger does
 not fire.
+
+### Aggregate/advocacy statistics are not a substitute for real user-voice demand evidence
+First seen: 2026-09-18 (day 016, grant-report-normalizer kill) | Status: open (apply and watch)
+Symptom: the candidate's `BACKLOG.md` write-up quoted a real, independently-verifiable statistic
+from a funder-advocacy association's blog ("a single organization may juggle 40-60 applications...
+from 20-30 funders") plus a real 280-organization grantmaker survey confirming the structural
+problem — both accurate, both re-verified by direct fetch, neither fabricated. It was tempting to
+read this as satisfying the routine's "real user-voice demand evidence" bar. On closer search,
+zero individually-voiced nonprofit-staffer complaints matching the idea's own specific thesis (pain
+from *many* differing funder templates, not one) were found anywhere — the one attributable
+practitioner complaint located (NonprofitAF.com) was about a single-funder format demand. The
+statistics are real; they are just a different kind of evidence (aggregate/survey/advocacy) than
+"a real person, in their own words, describing wanting this specific thing," and the two were at
+risk of being conflated.
+Why this matters: an idea can look well-evidenced (accurate citations, real URLs, no fabrication)
+and still fail the demand bar, because *accuracy* of a citation is necessary but not sufficient —
+the citation also has to be the right *kind* of evidence (individual user voice) for the specific
+claim it's being used to support (that users want this particular differentiator), not just
+adjacent-but-real evidence about the general problem space.
+Action: when scoring "evidence of demand," explicitly separate (a) statistics/survey/advocacy
+sources confirming a problem exists in aggregate from (b) individually-attributed posts where a
+real person describes wanting the *specific* thing the idea proposes. Score (b) is what the
+demand dimension is actually about; (a) alone, however well-verified, does not satisfy it. If
+search for (b) comes up empty despite genuine effort, that is "no evidence found" per routine
+non-negotiable #4, not a gap (a) can fill.
+Notify owner: no — caught within the normal Phase 1 process this session, not a blocked loop. This
+is the second kill since the 2026-09-16 sourcing-method review (day 015, day 016) — not yet a
+third-in-a-row; the trigger fires if day 017 also kills.

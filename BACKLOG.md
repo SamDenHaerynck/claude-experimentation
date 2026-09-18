@@ -136,22 +136,21 @@ on). This is the first kill since the 2026-09-16 sourcing-method review, not a t
 the routine's trigger does not fire again this session. Remaining entries renumbered (former #2-#4
 are now #1-#3); back down to 3 entries, exactly at the routine's floor.
 
-1. **Grant-report normalizer for small nonprofit program staff** — program staff enter
-   outcome/spend data once; the tool reformats it into each individual funder's own report
-   template. Rationale: "a single organization may juggle 40-60 applications and just as many
-   unique reporting requirements from 20-30 funders, each with its own format and timeline," and
-   reformatting is called out as "one of the most time-consuming tasks for nonprofits"
-   ([exponentphilanthropy.org](https://exponentphilanthropy.org/blog/how-to-simplify-grant-applications-and-reports-for-nonprofits/),
-   both quotes independently re-verified against the page).
-   No direct named competitor found: Foundant and Submittable are funder-side intake portals for
-   *receiving* reports, not grantee-side tools for reformatting the same underlying data across many
-   funders' differing templates — genuinely undisclosed-competitor territory, so Phase 1 must run
-   the search fresh rather than trust this absence. Property (b) plausibly holds (the same
-   underlying data gets re-formatted repeatedly as new funders and reporting cycles arrive), but
-   nonprofit willingness-to-pay is untested and budgets are typically tight — the specific risk
-   Phase 1 should weigh most.
+Updated 2026-09-18 (day 016): killed former candidate #1 (grant-report normalizer for small
+nonprofit program staff) in Phase 1 — see `killed/grant-report-normalizer/REASON.md`. Scored
+15/25; evidence of demand independently scored 2/5 (auto-kill). Willingness to pay, the risk this
+entry's own write-up flagged as biggest, actually resolved favorably (4/5) — but the fresh
+competitor search this entry's own write-up said was necessary surfaced a direct, near-exact
+competitor (Sopact, already charging $3,588-$9,588/yr + a $2,000 setup fee for "store data once,
+present differently per funder") that the original sourcing pass missed, and the demand evidence
+for the idea's specific multi-funder thesis turned out to be accurately-quoted aggregate/advocacy
+statistics rather than any real individually-voiced grantee complaint matching that thesis. This is
+the second kill since the 2026-09-16 sourcing-method review (day 015, day 016) — not yet a
+third-in-a-row; the trigger fires if day 017 also kills. Remaining entries renumbered (former #2-#3
+are now #1-#2); down to 2 entries, below the routine's 3-candidate floor — day 017 must replenish
+before or as part of Phase 0/1, per the same pattern as day 011/012.
 
-2. **Freelancer SOW/contract generator with e-sign tracking** — a lightweight, freelancer-specific
+1. **Freelancer SOW/contract generator with e-sign tracking** — a lightweight, freelancer-specific
    alternative to heavyweight contract platforms: generates scoped statements of work from a short
    intake form, tracks e-signature status, and reminds on renewal/expiry. Rationale: solo
    consultants often use generic templates or expensive all-in-one tools (DocuSign, PandaDoc) built
@@ -161,7 +160,7 @@ are now #1-#3); back down to 3 entries, exactly at the routine's floor.
    (b), but Validate must test whether that piece alone (not the document generation) is what a
    buyer would pay for, given free-template and incumbent-freemium substitutes likely exist.
 
-3. **Git-history-to-changelog generator for indie SaaS** — ingests merged PRs/commits and drafts a
+2. **Git-history-to-changelog generator for indie SaaS** — ingests merged PRs/commits and drafts a
    customer-facing changelog entry or release-notes email, matching a configurable tone/template.
    Rationale: solo/indie SaaS founders ship frequently but often skip customer communication because
    writing a polished changelog entry takes more time than the fix itself. Demoted: this is close to
