@@ -328,3 +328,19 @@ Append-only log of significant choices and why they were made. One line each, ne
   to support). Second kill since the 2026-09-16 sourcing-method review (day 015, day 016); not yet
   a third-in-a-row. Consecutive kills now 11. `BACKLOG.md` is down to 2 entries, below the routine's
   3-candidate floor — day 017 must replenish before or as part of Phase 0/1.
+- 2026-09-19 (day 017): treated Phase-0 replenishment as this session's sole unit of work, deferring
+  Phase 1 Validate on the resulting top entry to day 018, per the "one unit of work" rule and the
+  day-011→012 precedent (a kill leaving the backlog below floor gets a dedicated replenishment
+  session). Reason: `STATE.md`'s recorded next action bundled replenishment and a full Validate into
+  one session, but every Validate actually run this project has been research- and
+  verification-heavy; chaining it after replenishment risked a rushed or incomplete pass on either
+  half. Sourced via two research subagents on channels not used in the last two cycles (both used
+  Channel A): Channel B (recurring paid freelance job postings as direct demand+WTP evidence) and
+  Channel C (1-3 star G2/Capterra reviews from paying customers of mid-market B2B SaaS complaining
+  about a missing feature). Every quote both subagents returned was independently re-verified via
+  direct `WebFetch` before being written to `BACKLOG.md`, per the day-012 fabrication lesson. Two
+  candidates were added (construction-estimating vendor price-list normalizer; QuickBooks
+  micro-business weekly financial snapshot); two others surfaced by the subagents were rejected at
+  Phase 0 on the subagents' own honest gut-check (GBP review management — crowded incumbent market;
+  veterinary cross-department scheduling — colonized by Instinct Science) and not added. `BACKLOG.md`
+  back to 4 entries, above the routine's floor.
