@@ -150,7 +150,81 @@ third-in-a-row; the trigger fires if day 017 also kills. Remaining entries renum
 are now #1-#2); down to 2 entries, below the routine's 3-candidate floor — day 017 must replenish
 before or as part of Phase 0/1, per the same pattern as day 011/012.
 
-1. **Freelancer SOW/contract generator with e-sign tracking** — a lightweight, freelancer-specific
+Updated 2026-09-19 (day 017): replenished from 2 entries back up to 4, per the day-016 note that
+the backlog was below the routine's three-candidate floor. This session's own unit of work was
+replenishment only, not Validate — per the routine's "one unit of work" rule and the day-011→012
+precedent (a kill leaving the backlog below floor gets a dedicated replenishment session; Validate
+on the resulting top entry is deferred to the next session). Sourced via two research subagents
+running two channels not used in the last two Validate cycles (which both used Channel A, SaaS
+vendor feedback boards): Channel B (recurring paid freelance/contractor job postings, as *direct*
+demand+willingness-to-pay evidence — a business already paying a human for the task) and Channel C
+(1-3 star G2/Capterra/TrustRadius reviews on paid mid-market B2B SaaS, from reviewers who are
+already paying customers of the base product, complaining about a specific missing
+feature/workaround). G2 and Upwork both returned HTTP 403 on every direct-fetch attempt; Capterra
+and Freelancer.com fetched successfully and are the actual evidence base below. Every quote below
+was independently re-verified via direct `WebFetch` against the cited URL by this session (not
+just trusted from the subagent), per the day-012 fabricated-citation lesson. Both subagents also
+surfaced a candidate each that failed their own honest gut-check and are **not** added: a Google
+Business Profile review-management/freshness tool (already covered by a crowded existing market —
+Podium, Birdeye, NiceJob, ReviewTrackers, EmbedSocial, all doing this today per the subagent's
+pricing-page checks) and a veterinary cross-department patient-scheduling tool (real, strong
+evidence — property (a)/(b)/(c) all plausibly hold — but Instinct Science is an established
+incumbent integrating with the exact named practice-management systems for this exact problem).
+The two surviving candidates below are added ahead of the two carried-over entries, which are
+otherwise unchanged and keep their prior demotions (now #3-#4). Neither new candidate has had a
+full Phase 1 competitor/sub-segment/user-voice pass yet — that happens when one is selected next
+session — but each names its single highest-priority risk explicitly so Phase 1 starts there
+rather than discovering it late.
+
+1. **Vendor price-list ingestion/normalizer for construction estimating software** — for
+   contractors/estimators using takeoff/estimating tools (STACK, PlanSwift, etc.), ingests messy
+   PDF/Excel/CSV price sheets from a contractor's own suppliers, normalizes them into the
+   estimator's item/cost-code format, and flags what changed since the last import — a companion
+   to the existing tool, not a replacement. Sourced via Channel C: Gary L., a Construction
+   Estimator, 1-star review of STACK Takeoff on Capterra, 2025-10-27
+   (https://www.capterra.com/p/147181/STACK-Takeoff/reviews/) — independently re-verified
+   verbatim: "Importing material prices is VERY cumbersome. You have to manually import prices
+   which is time consuming," and "Every item has to be manually entered and often the user has to
+   convert vendor pricing to user pricing, again very time consuming." Property case: (a) material/
+   commodity prices change week to week and must stay current; (b) every estimate depends on the
+   price catalog, a recurring refresh tied to workflow, not a one-time artifact; (c) a stale price
+   directly costs margin or a lost bid — real money. Competitors named by the research subagent
+   (not yet independently re-verified by this session — Phase 1 must do so): generic
+   regional-average cost databases (RSMeans/Gordian, CostOS, Sigma Estimates, Craftsman National
+   Estimator, Trade Service/NetPricer) sell quarterly-updated averages, not a tool for a
+   contractor's own negotiated vendor quotes; STACK's own marketplace has a few named point
+   integrations (e.g. LED Lighting Supply) but reportedly no general importer. Highest-priority
+   risk for Phase 1: this is a single reviewer's complaint (n=1) — no second corroborating quote
+   was found in PlanSwift's reviews (which complained about licensing/rendering instead) — so
+   demand does not yet clear the "3+ individually-voiced" bar this project's own RUNBOOK.md
+   requires; a broader user-voice search (other estimating tools' reviews, contractor forums) must
+   run before scoring, and the "no general importer exists" competitor claim needs independent
+   re-verification, not trust.
+
+2. **Automated weekly financial snapshot for solo/micro-business owners on QuickBooks Online** —
+   connects to one small business's QuickBooks Online, auto-flags overdue invoices and surfaces new
+   bank-feed transactions needing categorization/review, and pushes a weekly P&L/balance-sheet/
+   cash-flow snapshot — aimed at the segment currently paying a human $8-15/hr on freelance
+   platforms to do this by hand, not at bookkeeping firms managing many clients. Sourced via Channel
+   B: a Freelancer.com posting (https://www.freelancer.com/projects/data-entry/
+   weekly-quickbooks-bookkeeping-reporting, $8-15 USD/hr, recurring weekly, independently
+   re-verified via direct WebFetch) asks for weekly work to "enter new customer invoices, apply
+   payments, and flag any overdue balances," "record and categorize expenses from bank feeds,
+   receipts, and credit-card statements," and "generate the P&L, balance sheet, and cash-flow
+   snapshot." Property case: (a)/(b) both plausibly hold (bank feeds/invoices change continuously,
+   tied to a recurring weekly cadence); (c) plausibly holds (a wrong P&L number has real cost).
+   Highest-priority risk for Phase 1, ahead of everything else: QuickBooks Online itself already
+   provides live P&L/balance-sheet/cash-flow reports and bank-feed categorization rules natively,
+   included in the base subscription — this looks exactly like the "already-recurring free
+   incumbent" failure mode in `RUNBOOK.md` that has killed prior candidates, and the sourcing
+   research did not address it at all. Phase 1 must determine whether the job posting is really
+   asking for something QBO doesn't already do (the judgment/exception-handling layer on top, not
+   the reports themselves) before treating this as evidenced demand for a paid tool. Named
+   competitors from the research subagent (not yet independently re-verified — Dext/Hubdoc, Chaser,
+   Upflow, Zeni, Puzzle) were judged to target bookkeeping firms or funded startups rather than this
+   solo-owner segment; re-verify before trusting "no incumbent found" for this niche.
+
+3. **Freelancer SOW/contract generator with e-sign tracking** — a lightweight, freelancer-specific
    alternative to heavyweight contract platforms: generates scoped statements of work from a short
    intake form, tracks e-signature status, and reminds on renewal/expiry. Rationale: solo
    consultants often use generic templates or expensive all-in-one tools (DocuSign, PandaDoc) built
@@ -160,7 +234,7 @@ before or as part of Phase 0/1, per the same pattern as day 011/012.
    (b), but Validate must test whether that piece alone (not the document generation) is what a
    buyer would pay for, given free-template and incumbent-freemium substitutes likely exist.
 
-2. **Git-history-to-changelog generator for indie SaaS** — ingests merged PRs/commits and drafts a
+4. **Git-history-to-changelog generator for indie SaaS** — ingests merged PRs/commits and drafts a
    customer-facing changelog entry or release-notes email, matching a configurable tone/template.
    Rationale: solo/indie SaaS founders ship frequently but often skip customer communication because
    writing a polished changelog entry takes more time than the fix itself. Demoted: this is close to
