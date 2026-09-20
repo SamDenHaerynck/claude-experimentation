@@ -261,6 +261,28 @@ candidates — consistent with the standing workaround. No new notification (sam
 limitation already escalated 2026-09-12; this occurrence is Phase 0 sourcing, outside the Phase-1-
 Validate context the original escalation was scoped to, but recorded here for the same tracking
 purpose).
+Update 2026-09-20 (day 018, `vendor-price-list-normalizer` demand re-verification): Mike Holt's
+Forum now also returns 403 on direct fetch (previously used successfully as a substitute in day
+012). Two more construction-trades forums newly found blocked this session: ElectricianTalk and
+ContractorTalk both now redirect every thread URL to a `tollbit.*` gateway returning HTTP 402
+Payment Required (a paywall-for-bots service), and JLC Online's old forum thread URLs now 301-
+redirect to the plain homepage — the forum content itself appears to no longer be hosted there.
+G2 also 403'd on all three products checked (STACK, PlanSwift, Sage Estimating), consistent with
+prior sessions. Net effect: for this specific vertical (construction/trades), essentially the
+entire practitioner-forum ecosystem this project has relied on as a Reddit substitute (Mike Holt,
+ElectricianTalk, ContractorTalk, JLC, plus Reddit itself) was unreachable in the same session,
+leaving only vendor review sites (Capterra, Software Advice, GetApp, Trustpilot) as reachable
+user-voice sources. The subagent still did a thorough, honestly-reported search of those review
+sites (~500+ reviews across six tools) rather than treating the forum blockage as an excuse to
+stop early, and correctly reported "no evidence found" for the blocked sources rather than
+guessing. Action: for construction/trades verticals specifically, budget for review-site-only
+user-voice search (Capterra/G2/Software Advice/GetApp/Trustpilot, accepting G2 will likely 403) and
+treat the entire forum layer as probably unreachable rather than attempting it fresh each time;
+still worth one attempt per session in case a specific forum's blocking is intermittent, but do not
+let its failure alone read as reduced diligence. No new owner notification — this extends an
+already-escalated standing limitation (Reddit, 2026-09-12) to more sources in the same vertical,
+not a new distinct failure needing its own escalation, and Capterra/Software Advice remained fully
+reachable so the search was not blocked outright, only narrowed.
 
 ### Sourcing method: the "monitor/track/alert" idea shape is structurally oversaturated
 First seen: 2026-09-11 (day 009, sourcing-method review triggered by the second three-in-a-row

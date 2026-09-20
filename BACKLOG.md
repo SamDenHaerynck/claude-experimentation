@@ -176,32 +176,27 @@ full Phase 1 competitor/sub-segment/user-voice pass yet — that happens when on
 session — but each names its single highest-priority risk explicitly so Phase 1 starts there
 rather than discovering it late.
 
-1. **Vendor price-list ingestion/normalizer for construction estimating software** — for
-   contractors/estimators using takeoff/estimating tools (STACK, PlanSwift, etc.), ingests messy
-   PDF/Excel/CSV price sheets from a contractor's own suppliers, normalizes them into the
-   estimator's item/cost-code format, and flags what changed since the last import — a companion
-   to the existing tool, not a replacement. Sourced via Channel C: Gary L., a Construction
-   Estimator, 1-star review of STACK Takeoff on Capterra, 2025-10-27
-   (https://www.capterra.com/p/147181/STACK-Takeoff/reviews/) — independently re-verified
-   verbatim: "Importing material prices is VERY cumbersome. You have to manually import prices
-   which is time consuming," and "Every item has to be manually entered and often the user has to
-   convert vendor pricing to user pricing, again very time consuming." Property case: (a) material/
-   commodity prices change week to week and must stay current; (b) every estimate depends on the
-   price catalog, a recurring refresh tied to workflow, not a one-time artifact; (c) a stale price
-   directly costs margin or a lost bid — real money. Competitors named by the research subagent
-   (not yet independently re-verified by this session — Phase 1 must do so): generic
-   regional-average cost databases (RSMeans/Gordian, CostOS, Sigma Estimates, Craftsman National
-   Estimator, Trade Service/NetPricer) sell quarterly-updated averages, not a tool for a
-   contractor's own negotiated vendor quotes; STACK's own marketplace has a few named point
-   integrations (e.g. LED Lighting Supply) but reportedly no general importer. Highest-priority
-   risk for Phase 1: this is a single reviewer's complaint (n=1) — no second corroborating quote
-   was found in PlanSwift's reviews (which complained about licensing/rendering instead) — so
-   demand does not yet clear the "3+ individually-voiced" bar this project's own RUNBOOK.md
-   requires; a broader user-voice search (other estimating tools' reviews, contractor forums) must
-   run before scoring, and the "no general importer exists" competitor claim needs independent
-   re-verification, not trust.
+Updated 2026-09-20 (day 018): killed former candidate #1 (vendor price-list ingestion/normalizer
+for construction estimating software) in Phase 1 — see
+`killed/vendor-price-list-normalizer/REASON.md`. Scored 13/25; evidence of demand independently
+scored 1/5 (auto-kill). Resolved this entry's own flagged risk first: a delegated subagent
+re-checked essentially every review (~500+) across STACK Takeoff, PlanSwift, ProEst, Buildxact,
+Clear Estimates, and Esticom, plus several forums, and found no second individually-voiced
+complaint matching the specific pain (only two related-but-different complaints) — demand stays at
+n=1, below the project's 3+-voice bar. The competitor claim was also independently re-verified and
+found partially wrong: Buildxact already ships a general vendor price-list importer natively as a
+free bundled feature, undercutting the "reason to exist" case further. Several trades-forum
+channels (Mike Holt, ElectricianTalk, ContractorTalk, JLC, plus G2 and the standing Reddit
+limitation) were technically unreachable this session — recorded honestly as "no evidence found"
+from those sources, not a clean negative search; see `RUNBOOK.md`. This is the third kill since
+the 2026-09-16 sourcing-method review counting only Validate sessions (day 015, day 016, day 018 —
+day 017 was replenishment-only and does not count, per the day-011→012 precedent), so the
+three-in-a-row trigger fires again: day 019 must spend its session on sourcing/validation method,
+not on validating the new #1 below. Remaining entries renumbered (former #2-#4 are now #1-#3);
+down to 3 entries, exactly at the routine's floor — no replenishment forced, but day 019's unit of
+work is the method review the trigger requires either way.
 
-2. **Automated weekly financial snapshot for solo/micro-business owners on QuickBooks Online** —
+1. **Automated weekly financial snapshot for solo/micro-business owners on QuickBooks Online** —
    connects to one small business's QuickBooks Online, auto-flags overdue invoices and surfaces new
    bank-feed transactions needing categorization/review, and pushes a weekly P&L/balance-sheet/
    cash-flow snapshot — aimed at the segment currently paying a human $8-15/hr on freelance
@@ -224,7 +219,7 @@ rather than discovering it late.
    Upflow, Zeni, Puzzle) were judged to target bookkeeping firms or funded startups rather than this
    solo-owner segment; re-verify before trusting "no incumbent found" for this niche.
 
-3. **Freelancer SOW/contract generator with e-sign tracking** — a lightweight, freelancer-specific
+2. **Freelancer SOW/contract generator with e-sign tracking** — a lightweight, freelancer-specific
    alternative to heavyweight contract platforms: generates scoped statements of work from a short
    intake form, tracks e-signature status, and reminds on renewal/expiry. Rationale: solo
    consultants often use generic templates or expensive all-in-one tools (DocuSign, PandaDoc) built
@@ -234,7 +229,7 @@ rather than discovering it late.
    (b), but Validate must test whether that piece alone (not the document generation) is what a
    buyer would pay for, given free-template and incumbent-freemium substitutes likely exist.
 
-4. **Git-history-to-changelog generator for indie SaaS** — ingests merged PRs/commits and drafts a
+3. **Git-history-to-changelog generator for indie SaaS** — ingests merged PRs/commits and drafts a
    customer-facing changelog entry or release-notes email, matching a configurable tone/template.
    Rationale: solo/indie SaaS founders ship frequently but often skip customer communication because
    writing a polished changelog entry takes more time than the fix itself. Demoted: this is close to
