@@ -21,9 +21,10 @@ Two related-but-different complaints were found and verified by direct fetch:
   *internal* PlanSwift parts/assemblies aren't reflected in current jobs without manual edits or a
   paid $200 plugin — about PlanSwift's own internal price sync, not importing an external vendor's
   price sheet.
-- Erin L., Owner/electrical contractor, Esticom review, Capterra, 2019-05-17, 5/5: time-consuming
-  to *find* specific costs for wire/materials within the tool's own database — about lookup, not
-  import/conversion of an external vendor list.
+- Erin L., Owner/electrical contractor, Esticom review, Capterra, 2019-05-17, 5/5
+  (https://www.capterra.com/p/157661/Esticom/reviews/): time-consuming to *find* specific costs
+  for wire/materials within the tool's own database — about lookup, not import/conversion of an
+  external vendor list.
 
 Neither matches the specific pain (converting an external vendor's price sheet into the tool's own
 cost-code format). **Total individually-voiced complaints matching the exact same pain, including
