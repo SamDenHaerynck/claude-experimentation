@@ -344,3 +344,18 @@ Append-only log of significant choices and why they were made. One line each, ne
   Phase 0 on the subagents' own honest gut-check (GBP review management — crowded incumbent market;
   veterinary cross-department scheduling — colonized by Instinct Science) and not added. `BACKLOG.md`
   back to 4 entries, above the routine's floor.
+- 2026-09-20 (day 018): Killed candidate #1 (vendor price-list ingestion/normalizer for
+  construction estimating software) in Phase 1 — see
+  `killed/vendor-price-list-normalizer/REASON.md`. Scored 13/25; evidence of demand independently
+  scored 1/5 (auto-kill). Resolved `STATE.md`'s flagged risk first via a delegated subagent: an
+  exhaustive re-check of ~500+ reviews across six estimating tools plus several forums found no
+  second individually-voiced complaint matching the specific pain, and the "no general importer
+  exists" competitor claim was found partially wrong (Buildxact ships one natively, free). Several
+  construction-trades forums (Mike Holt, ElectricianTalk, ContractorTalk, JLC) were newly found
+  blocked this session alongside the standing Reddit/G2 limitations — recorded as a `RUNBOOK.md`
+  update, treated as "no evidence found" from those sources per routine non-negotiable #4, not
+  papered over. This is the third kill since the 2026-09-16 sourcing-method review counting only
+  Validate sessions (day 015, day 016, day 018 — day 017 was replenishment-only, per the
+  day-011→012 precedent that a non-Validate session doesn't count). Consecutive kills now 12. The
+  three-in-a-row trigger fires again: day 019 must spend its session on sourcing/validation method
+  rather than pulling the new `BACKLOG.md` #1 (QuickBooks weekly snapshot).
