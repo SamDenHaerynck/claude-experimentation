@@ -600,3 +600,114 @@ non-negotiable #4, not a gap (a) can fill.
 Notify owner: no — caught within the normal Phase 1 process this session, not a blocked loop. This
 is the second kill since the 2026-09-16 sourcing-method review (day 015, day 016) — not yet a
 third-in-a-row; the trigger fires if day 017 also kills.
+
+### Sourcing method review after a second three-in-a-row since 2026-09-16: tested Channel D (second-order gaps in paid app-marketplace add-ons)
+First seen: 2026-09-21 (day 019, second three-in-a-row trigger since the 2026-09-16 review — day
+015, day 016, day 018 all killed via real research; day 017 was replenishment-only and doesn't
+count) | Status: open (apply and watch)
+Symptom: Channels A/B/C have each now produced at least one real kill or a real discriminating
+result, but each also carries a known structural weakness (Channel A: the vendor can extend its
+own feature for free; Channel B: the task often duplicates what an incumbent's base subscription
+already covers; Channel C: review-site sourcing starts from an existing competitor's own review
+page, so it is biased toward finding spaces that already have an incumbent by construction). The
+untested channel flagged on 2026-09-16 — app-marketplace reviews for small *paid* add-ons that
+already patch a gap in a large host platform (Shopify App Store, Atlassian Marketplace,
+WooCommerce.com, etc.) — was tested this session via a delegated research subagent, briefed to
+fetch real review pages directly (not search snippets) and to run an explicit second-gap
+competitor check on any complaint found, per the standing fabrication and "bare existence isn't
+enough" lessons above.
+Findings (spot-checked independently by this session via direct `WebFetch` re-fetch of the same
+review pages — both key quotes and the pivotal competitor-existence claim confirmed verbatim, no
+fabrication found):
+- **Real second-order gap found:** Sufio (Shopify invoicing app, 465 ratings, 4.9★), reviewer
+  MEGAMI Wholesale (edited Sep 11 2026, 3★): "When an order is canceled in Shopify, Sufio does not
+  change the invoice status to 'Canceled.' The only option is to create a credit note, which does
+  not work for our business..." A second complaint on the same app (Rusty Dog Coffee, 2★) that no
+  ACH-via-Stripe option exists was *confirmed by Sufio's own developer reply* ("due to Shopify's
+  partner terms, we're currently unable to support ACH through Stripe in our integration") — a
+  vendor-admitted gap, structurally similar in kind to the Channel A Webflow precedent, but on a
+  paid add-on rather than the host platform itself. The second-gap check found only a narrow
+  regional bridge app (FGO Integration, Portugal/EU-specific) partially covering the
+  cancellation-sync gap, and nothing covering the ACH gap except Shopify itself potentially closing
+  it natively later (Shopify Payments ACH exists today only for Plus/B2B/US-dollar stores) — the
+  same "platform closes it for free eventually" risk Channel A already surfaces, just one layer
+  deeper.
+- **False-positive case, caught only by running the second-gap check:** Matrixify (Shopify bulk
+  import/export app, 1,654 ratings, 4.9★), reviewer DooDah Distribution (2★): complained that
+  direct Airtable-URL import isn't supported, confirmed by the vendor's own reply ("Direct Airtable
+  URL imports are not a feature Matrixify offers"). This looked like a fresh second-order niche —
+  but the second-gap search found it is *already* served by at least three dedicated products
+  (SyncBase, AirSync for Airtable — independently re-confirmed live via direct fetch, "AirSync
+  automatically syncs your Shopify store data with Airtable" — and AirPower) plus generic
+  Zapier/Make.com connectors. A complaint that looks like an untapped niche can already be crowded
+  by other *specialist* competitors searching the exact same review pages — a distinct risk from
+  Channel A/D's "platform closes it for free" risk, and arguably harder to rule out, since these
+  competitors are themselves narrow and easy to miss without a dedicated search.
+- **Marketplace reachability is inconsistent and must be checked per marketplace, not assumed:**
+  Shopify App Store review pages fetched reliably; Atlassian Marketplace's review pages returned
+  HTTP 410/redirected to a not-found page (fully blocked); WooCommerce.com's product-review API
+  was reachable but didn't expose star ratings, making a targeted 1-3-star pull impractical without
+  more effort than this session budgeted.
+Action: add Channel D to the sourcing rotation, but only with its second-gap competitor check as a
+hard gate, not an optional step — the Matrixify/Airtable case shows a real, individually-voiced,
+vendor-confirmed complaint can still be a false positive for "reason to exist" if the check is
+skipped. When a Channel D complaint survives its own second-gap check (like the Sufio/MEGAMI
+cancellation-sync gap), still apply the existing "regulatory/platform-native-closure" check from
+the 2026-09-15 entry above before scoring "reason to exist" — the platform itself (not just another
+add-on) remains the most likely eventual free closer for gaps this deep in its own ecosystem.
+No new `BACKLOG.md` candidate added this session: the one surviving Channel D finding
+(Sufio/MEGAMI invoice-cancellation-sync) is a single-feature gap in someone else's app, not a
+standalone product with its own (a)/(b)/(c) case at this project's usual candidate scope — writing
+it up as a full candidate without a broader thesis around it would repeat the "force a candidate to
+fill the session" mistake this project has avoided so far. Flagging it here as a validated *pattern
+instance* for a future sourcing pass to build on (e.g. "Shopify-ecosystem invoice/accounting-app
+sync gaps" as a broader thesis, tested across more than one invoicing app) rather than adding it
+directly.
+Notify owner: no — this is the routine's own anticipated response to a second three-in-a-row
+trigger since the last review, not a blocked loop.
+
+### Practitioner-forum layer is shrinking faster than sourcing method can rely on; review-site-only search is becoming the practical ceiling in several verticals
+First seen: 2026-09-21 (day 019, sourcing-method review) | Status: open (apply and watch)
+Symptom: rereading the accumulated "Reddit unreachable" entry above end-to-end shows a pattern
+larger than any single blocked site. Independently-operated grassroots forums have gone unreachable
+one by one across sessions, not just Reddit: Reddit (blocked since day 007), G2 (403 since ~day
+012, recurring), Upwork (403, day 014/016), eng-tips.com (403, day 012), and — newly, in the same
+single session (day 018) — Mike Holt's Forum (403, previously worked day 012), ElectricianTalk and
+ContractorTalk (both now redirect to a `tollbit.*` bot-paywall gateway returning HTTP 402), and JLC
+Online (old thread URLs now 301 to the plain homepage — content gone, not just blocked). Meanwhile,
+across the same span, vendor-controlled surfaces have stayed reachable in every session that tried
+them: Capterra, Software Advice, GetApp, Trustpilot, vendor feedback/wishlist boards (Channel A),
+Freelancer.com (Channel B, though not Upwork), and — this session — the Shopify App Store (Channel
+D). The pattern is not "one site is down," it is "independently-hosted, bot-unfriendly community
+forums are being progressively closed off to automated fetching across verticals, while
+platform-owned or vendor-owned review/feedback surfaces are not." Six-plus sessions of accumulating
+evidence make this look structural (bot-detection/anti-scraping deployment trending in one
+direction over time) rather than a run of unrelated coincidences.
+Why this matters for "evidence of demand" search specifically: this project's demand bar wants
+"individually-voiced" user complaints (the 2026-09-18 entry above), and grassroots forums were the
+richest source of that voice precisely because they are not tied to being a confirmed customer of
+any specific product. Review sites (Capterra/G2/etc.) only capture the voice of people who already
+bought *some* existing product — which is fine for the routine's actual bar ("a reason to exist
+*alongside* what already ships," not "zero competitors"), but it structurally means most reachable
+demand evidence going forward will arrive already paired with an incumbent, not as a clean "nobody
+serves this" signal. A sourcing process still budgeting real search time on forums that have a
+multi-session blocked track record (e.g. attempting Mike Holt/ElectricianTalk/ContractorTalk fresh
+for a new construction-adjacent idea) is spending effort on a channel this project's own history
+says is very unlikely to be open, at the cost of time that could go to a deeper review-site pass or
+a second-gap check.
+Action: (1) stop budgeting significant fresh search time on forums with a 2+-session blocked
+track record for a given vertical (Reddit generally; Mike Holt/ElectricianTalk/ContractorTalk/JLC
+for construction/trades specifically) — one quick attempt per session is still fine in case a block
+is intermittent, but do not let its near-certain failure read as reduced diligence, and do not let
+chasing it eat time better spent elsewhere. (2) Treat vendor/platform-owned surfaces (review sites,
+vendor feedback boards, Channel D app-marketplace reviews, Freelancer.com) as the primary reachable
+user-voice channel set going forward for most verticals, not a fallback. (3) Because that channel
+set structurally pairs demand evidence with an existing competitor, do not treat "found real
+demand evidence" and "found no competitor" as independently likely outcomes from the same search
+pass any more — expect them to arrive together, and budget explicit separate time for the
+sub-segment/second-gap competitor-complaint search this project already requires, rather than
+treating a review-site demand hit as evidence the field might still be open.
+Notify owner: no — this extends the already-escalated 2026-09-12 Reddit notification (`OWNER.md`'s
+"same failure blocked three sessions" bar was already met and reported for Reddit specifically);
+this entry generalizes the pattern across sources but is not a new blocked-loop condition, since
+review sites and vendor surfaces remain reachable and the session's work was not itself blocked.
