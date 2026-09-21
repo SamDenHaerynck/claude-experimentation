@@ -359,3 +359,32 @@ Append-only log of significant choices and why they were made. One line each, ne
   day-011→012 precedent that a non-Validate session doesn't count). Consecutive kills now 12. The
   three-in-a-row trigger fires again: day 019 must spend its session on sourcing/validation method
   rather than pulling the new `BACKLOG.md` #1 (QuickBooks weekly snapshot).
+- 2026-09-21 (day 019): sourcing-method review per the second three-in-a-row trigger since
+  2026-09-16 (day 015, day 016, day 018). Tested the one channel flagged-but-untested on
+  2026-09-16 — Channel D, app-marketplace reviews for paid add-ons that already patch a host-
+  platform gap, checked for a second-order unmet need via a delegated, independently-fetched
+  subagent pass, then spot-verified by this session via direct `WebFetch` re-fetch of the same
+  review pages (all key quotes and the pivotal competitor-existence claim confirmed, no
+  fabrication). Result: mixed but net-positive — one real, vendor-confirmed second-order gap found
+  (Sufio invoice-cancellation-sync on Shopify) with only a narrow regional competitor partially
+  covering it, and one false positive caught only because the second-gap check was run (Matrixify/
+  Airtable, already served by three dedicated competitors). Added Channel D to the sourcing
+  rotation with its second-gap check as a mandatory gate, not optional — see `RUNBOOK.md`. Did not
+  add a new `BACKLOG.md` candidate: the one surviving Channel D finding is a single-feature gap in
+  someone else's app, not a full candidate at this project's usual scope; forcing it into
+  `BACKLOG.md` to fill the session would repeat a mistake this project has avoided so far, so it is
+  recorded in `RUNBOOK.md` as a pattern instance for a future, broader-thesis sourcing pass instead.
+  Separately, reread the accumulated forum-blockage history across all prior sessions together and
+  concluded it is structural, not a run of coincidences: independently-hosted community forums
+  (Reddit, G2, Upwork, eng-tips, and as of day 018, Mike Holt/ElectricianTalk/ContractorTalk/JLC)
+  have gone unreachable one by one, while vendor/platform-owned surfaces (review sites, vendor
+  feedback boards, Channel D marketplaces, Freelancer.com) have stayed reachable throughout.
+  Recorded as a `RUNBOOK.md` action: stop budgeting real search time on forums with a 2+-session
+  blocked track record, treat vendor/platform-owned surfaces as the primary reachable user-voice
+  channel set going forward, and expect demand evidence sourced that way to arrive already paired
+  with an incumbent rather than as a clean "nobody serves this" signal — budget explicit separate
+  time for the second-gap/sub-segment competitor search rather than treating a review-site demand
+  hit as proof the field might still be open. `BACKLOG.md` stays at 3 entries (still at the
+  routine's floor, no replenishment forced); its ranking is unchanged. Consecutive kills unchanged
+  at 12 (no idea was validated or killed this session, per the routine's own instruction not to
+  pull a new candidate the same way three killed ideas already were).
