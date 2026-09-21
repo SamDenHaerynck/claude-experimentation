@@ -628,10 +628,23 @@ fabrication found):
   vendor-admitted gap, structurally similar in kind to the Channel A Webflow precedent, but on a
   paid add-on rather than the host platform itself. The second-gap check found only a narrow
   regional bridge app (FGO Integration, Portugal/EU-specific) partially covering the
-  cancellation-sync gap, and nothing covering the ACH gap except Shopify itself potentially closing
-  it natively later (Shopify Payments ACH exists today only for Plus/B2B/US-dollar stores) — the
-  same "platform closes it for free eventually" risk Channel A already surfaces, just one layer
-  deeper.
+  cancellation-sync gap, and nothing covering the ACH gap except Shopify itself — which appears to
+  have already closed most of it. The original draft of this entry claimed Shopify Payments' ACH
+  Direct Debit for B2B is "Plus/B2B/US-dollar-store" only; the independent pre-merge review flagged
+  that as likely outdated and unsourced. Re-checked directly: Shopify's own help-center ACH page
+  (`help.shopify.com/en/manual/payments/shopify-payments/local-payment-methods/ach`) now says only
+  that the store must be "on an active Shopify subscription plan" (no plan-tier restriction stated,
+  where a Plus-only feature would normally say so), consistent with secondary reporting that the
+  feature expanded from Plus-exclusive at its 2025-10-23 launch to all paid plans by 2026-04-02 —
+  though the primary-source changelog post itself
+  (`changelog.shopify.com/posts/ach-direct-debit-bank-payments-for-b2b`) does not state plan tiers
+  either way, so the exact expansion date is not independently confirmed from a primary source,
+  only inferred from the current help-center wording plus secondary blogs. Recording this
+  explicitly as "very likely available on all paid plans now, exact rollout date not
+  primary-source-confirmed" rather than asserting the date as settled fact. Either way, the
+  practical point holds: this is a stronger version of the same "platform closes it for free
+  eventually" risk Channel A already surfaces — the platform looks to have already closed most of
+  the ACH gap itself, not left it open indefinitely.
 - **False-positive case, caught only by running the second-gap check:** Matrixify (Shopify bulk
   import/export app, 1,654 ratings, 4.9★), reviewer DooDah Distribution (2★): complained that
   direct Airtable-URL import isn't supported, confirmed by the vendor's own reply ("Direct Airtable
