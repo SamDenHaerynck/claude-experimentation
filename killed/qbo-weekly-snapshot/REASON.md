@@ -12,7 +12,7 @@ native tools don't already do. Checked directly against QBO's current help-cente
 three are free, native QBO features today (real-time financial reports on every plan, automatic
 invoice reminders plus an AR aging report, and bank-feed rules with 2026 AI-assisted
 auto-categorization). The one residual piece not covered by QBO itself — following up on *why* a
-transaction is uncategorized — already has a paid third-party incumbent, Uncat ($9/month,
+transaction is uncategorized — already has a paid third-party incumbent, Uncat ($9/month/client,
 syncs to QBO/Xero), which closes exactly that loop today.
 
 The Freelancer.com posting that sourced this idea is real evidence someone wants this *work* done

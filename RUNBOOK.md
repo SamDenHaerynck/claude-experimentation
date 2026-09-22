@@ -724,3 +724,27 @@ Notify owner: no — this extends the already-escalated 2026-09-12 Reddit notifi
 "same failure blocked three sessions" bar was already met and reported for Reddit specifically);
 this entry generalizes the pattern across sources but is not a new blocked-loop condition, since
 review sites and vendor surfaces remain reachable and the session's work was not itself blocked.
+
+### Auto-kill dimension set is inconsistently documented across killed ideas: does "reason to exist" count on its own?
+First seen: 2026-09-22 (day 020, `qbo-weekly-snapshot` kill, caught by the pre-merge review
+subagent) | Status: open (apply and watch)
+Symptom: the routine's Phase 1 spec states the total-score kill threshold (<16) and separately
+says "Kill the idea if... demand, willingness to pay, or buildability scores 2 or below" — three
+named dimensions, not five. Day 020's `VALIDATION.md`/`REASON.md` scored "reason to exist" at 1/5
+and called that an independent auto-kill on its own, following this repo's own day-014 `RUNBOOK.md`
+entry, which lists "demand, WTP, or reason-to-exist" as the auto-kill set. But several earlier
+`killed/*/REASON.md` files (`ci-migration-rollback-gate`, `contractor-classification-checker`,
+`grant-report-normalizer`) only ever invoke demand/WTP as auto-kill triggers, and
+`killed/clickup-conditional-formatting/VALIDATION.md` states outright that reason-to-exist "is not
+itself an auto-kill dimension." The repo has been applying two different rules inconsistently
+across sessions, not just today.
+Action: this doesn't change any past verdict — every kill scoring "reason to exist" at ≤2 also
+scored <16 total (day 020 included: 13/25), so no idea was wrongly killed on this technicality
+alone. But a future idea could plausibly score reason-to-exist at 1-2 while still totaling ≥16 on
+the other four dimensions, and whether that's an auto-kill is currently undecided repo doctrine.
+Do not silently pick one interpretation next time it matters — flag it under "Notes for owner" in
+`STATE.md` when it becomes score-determinative, since the routine spec's own text (three named
+dimensions) is the more authoritative reading and a runbook entry cannot override the routine
+spec, only clarify how this repo has been applying it.
+Notify owner: no — doesn't change any past verdict, and no session is currently blocked by it;
+noting here so it isn't rediscovered from scratch next time it's score-determinative.

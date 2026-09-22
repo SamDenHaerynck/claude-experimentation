@@ -12,9 +12,12 @@ named tasks against QuickBooks Online's own current help-center/feature pages:
 
 - **"Generate the P&L, balance sheet, and cash-flow snapshot"** — native, free, included in every
   QBO subscription tier. QBO generates real-time P&L, balance sheet, and cash-flow reports at any
-  moment once transactions are categorized; the Advanced plan additionally ships an "executive
-  summary" auto-generated CFO-style overview (quickbooks.intuit.com/r/product-update/
-  quickbooks-improvements-2026/).
+  moment once transactions are categorized. A claim in an earlier draft of this entry that the
+  Advanced plan additionally ships an auto-generated "executive summary" CFO-style overview, cited
+  to quickbooks.intuit.com/r/product-update/quickbooks-improvements-2026/, was flagged by the
+  pre-merge review as not actually supported by that page on direct fetch — removed rather than
+  left uncorrected. The core claim (P&L/BS/CF native on every plan) does not depend on it and
+  stands on its own.
 - **"Flag any overdue balances" / follow up on overdue invoices** — native. QBO has built-in
   automatic invoice reminder emails (configurable to fire before/after due date) and a native
   Accounts Receivable Aging report (summary and detail, standard 0-30/31-60/61-90/90+ buckets)
@@ -33,7 +36,8 @@ named tasks against QuickBooks Online's own current help-center/feature pages:
 The one piece of this job genuinely *not* covered by QBO's free native tools — chasing down
 *why* a specific transaction is uncategorized (the judgment/exception-handling layer, not the
 mechanical categorization) — already has a existing paid third-party app, not an open gap: **Uncat**
-(uncat.com, $9/month), which syncs to QBO/Xero/QB Desktop and automatically messages a business
+(uncat.com, $9/month/client — effectively $9/month for a solo owner, who is one "client"), which
+syncs to QBO/Xero/QB Desktop and automatically messages a business
 (email/text) to collect an explanation and receipt for each uncategorized transaction, closing
 that specific loop for a fraction of even the freelancer job posting's own $8-15/hr rate. Uncat's
 own marketing targets accountants/bookkeepers running this workflow for their clients, not solo
