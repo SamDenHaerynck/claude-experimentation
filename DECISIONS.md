@@ -388,3 +388,18 @@ Append-only log of significant choices and why they were made. One line each, ne
   routine's floor, no replenishment forced); its ranking is unchanged. Consecutive kills unchanged
   at 12 (no idea was validated or killed this session, per the routine's own instruction not to
   pull a new candidate the same way three killed ideas already were).
+- 2026-09-22 (day 020): killed the QuickBooks weekly-financial-snapshot candidate in Phase 1 after
+  resolving `STATE.md`'s flagged risk directly against Intuit's own product pages rather than via a
+  delegated subagent — the risk (does QBO's native functionality already cover this job) was
+  narrow and answerable from primary sources faster by direct fetch than by briefing a subagent.
+  All three tasks named in the sourcing job posting turned out to be free, native QBO features
+  today, and the one residual gap (uncategorized-transaction follow-up) already has a $9/mo
+  incumbent (Uncat). Did not independently re-verify the five disclosed non-competitors
+  (Dext/Hubdoc, Chaser, Upflow, Zeni, Puzzle) `BACKLOG.md` also asked for — the native-feature
+  finding alone is sufficient to kill regardless of their status, and re-confirming a conclusion
+  that would not change the verdict was not worth the session's time; recorded explicitly in
+  `VALIDATION.md`/`REASON.md` as unclaimed rather than silently treated as done. `BACKLOG.md` drops
+  to 2 entries, below the routine's floor; left for next session to replenish rather than doing it
+  this session, consistent with the day-011 precedent of deferring replenishment to the next
+  session's Phase 0/1 rather than treating it as required same-session filler. Consecutive kills
+  now 13; first kill since the day-019 sourcing-method review, not a third-in-a-row.

@@ -196,30 +196,19 @@ not on validating the new #1 below. Remaining entries renumbered (former #2-#4 a
 down to 3 entries, exactly at the routine's floor — no replenishment forced, but day 019's unit of
 work is the method review the trigger requires either way.
 
-1. **Automated weekly financial snapshot for solo/micro-business owners on QuickBooks Online** —
-   connects to one small business's QuickBooks Online, auto-flags overdue invoices and surfaces new
-   bank-feed transactions needing categorization/review, and pushes a weekly P&L/balance-sheet/
-   cash-flow snapshot — aimed at the segment currently paying a human $8-15/hr on freelance
-   platforms to do this by hand, not at bookkeeping firms managing many clients. Sourced via Channel
-   B: a Freelancer.com posting (https://www.freelancer.com/projects/data-entry/
-   weekly-quickbooks-bookkeeping-reporting, $8-15 USD/hr, recurring weekly, independently
-   re-verified via direct WebFetch) asks for weekly work to "enter new customer invoices, apply
-   payments, and flag any overdue balances," "record and categorize expenses from bank feeds,
-   receipts, and credit-card statements," and "generate the P&L, balance sheet, and cash-flow
-   snapshot." Property case: (a)/(b) both plausibly hold (bank feeds/invoices change continuously,
-   tied to a recurring weekly cadence); (c) plausibly holds (a wrong P&L number has real cost).
-   Highest-priority risk for Phase 1, ahead of everything else: QuickBooks Online itself already
-   provides live P&L/balance-sheet/cash-flow reports and bank-feed categorization rules natively,
-   included in the base subscription — this looks exactly like the "already-recurring free
-   incumbent" failure mode in `RUNBOOK.md` that has killed prior candidates, and the sourcing
-   research did not address it at all. Phase 1 must determine whether the job posting is really
-   asking for something QBO doesn't already do (the judgment/exception-handling layer on top, not
-   the reports themselves) before treating this as evidenced demand for a paid tool. Named
-   competitors from the research subagent (not yet independently re-verified — Dext/Hubdoc, Chaser,
-   Upflow, Zeni, Puzzle) were judged to target bookkeeping firms or funded startups rather than this
-   solo-owner segment; re-verify before trusting "no incumbent found" for this niche.
+Updated 2026-09-22 (day 020): killed former #1 (automated weekly financial snapshot for solo/
+micro-business owners on QuickBooks Online) in Phase 1 — see `killed/qbo-weekly-snapshot/
+REASON.md`. Scored 13/25; "reason to exist alongside what already ships" independently scored 1/5
+(auto-kill). Resolved this entry's own flagged risk directly against Intuit's own product pages:
+all three tasks named in the sourcing job posting (flag overdue invoices, categorize bank-feed
+transactions, generate a P&L/balance-sheet/cash-flow snapshot) are free, native QuickBooks Online
+features today, and the one residual gap (following up on why a transaction is uncategorized)
+already has a $9/month paid incumbent (Uncat). This is the first kill since the 2026-09-21 (day
+019) sourcing-method review, not a third-in-a-row. Remaining entries renumbered (former #2-#3 are
+now #1-#2); down to 2 entries, below the routine's three-candidate floor — next session must
+replenish before or as part of Phase 0/1, unless this session's remaining time does it first.
 
-2. **Freelancer SOW/contract generator with e-sign tracking** — a lightweight, freelancer-specific
+1. **Freelancer SOW/contract generator with e-sign tracking** — a lightweight, freelancer-specific
    alternative to heavyweight contract platforms: generates scoped statements of work from a short
    intake form, tracks e-signature status, and reminds on renewal/expiry. Rationale: solo
    consultants often use generic templates or expensive all-in-one tools (DocuSign, PandaDoc) built
@@ -229,7 +218,7 @@ work is the method review the trigger requires either way.
    (b), but Validate must test whether that piece alone (not the document generation) is what a
    buyer would pay for, given free-template and incumbent-freemium substitutes likely exist.
 
-3. **Git-history-to-changelog generator for indie SaaS** — ingests merged PRs/commits and drafts a
+2. **Git-history-to-changelog generator for indie SaaS** — ingests merged PRs/commits and drafts a
    customer-facing changelog entry or release-notes email, matching a configurable tone/template.
    Rationale: solo/indie SaaS founders ship frequently but often skip customer communication because
    writing a polished changelog entry takes more time than the fix itself. Demoted: this is close to
