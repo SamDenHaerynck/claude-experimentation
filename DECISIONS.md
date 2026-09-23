@@ -403,3 +403,18 @@ Append-only log of significant choices and why they were made. One line each, ne
   this session, consistent with the day-011 precedent of deferring replenishment to the next
   session's Phase 0/1 rather than treating it as required same-session filler. Consecutive kills
   now 13; first kill since the day-019 sourcing-method review, not a third-in-a-row.
+- 2026-09-23 (day 021): sourced (via a delegated research subagent checking ~17 verticals through
+  general web search, not one of the four named vendor-surface channels) and, within the same
+  session, killed a new candidate (CAM reconciliation tool for small independent commercial
+  property managers). Departed from the day-011 precedent of deferring Validate to the next
+  session: this session's own direct re-verification of the subagent's cited sources (per the
+  standing fabricated-citation lesson) surfaced a decisive competitor, PigJet, purpose-built for
+  "portfolios managing between 3 and 25 NNN properties" and named on the very forum page the
+  subagent had already cited as demand evidence but not reported as a competitor — once that was
+  found, deferring the kill to a fresh session would only re-spend time re-deriving evidence
+  already in hand. Scored 13/25; evidence of demand independently scored 2/5 (auto-kill). Added a
+  new `RUNBOOK.md` entry on the underlying failure mode (a sourcing subagent can miss a named
+  competitor sitting on the same page it cites as evidence) rather than treating it as one-off.
+  Consecutive kills now 14; second kill since the day-019 review, not yet a third-in-a-row.
+  `BACKLOG.md` stays at 2 entries (unchanged, since this candidate was never written into that file
+  before being killed) — still below the routine's floor.

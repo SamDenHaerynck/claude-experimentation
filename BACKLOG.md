@@ -208,6 +208,20 @@ already has a $9/month paid incumbent (Uncat). This is the first kill since the 
 now #1-#2); down to 2 entries, below the routine's three-candidate floor — next session must
 replenish before or as part of Phase 0/1, unless this session's remaining time does it first.
 
+Updated 2026-09-23 (day 021): sourced and killed a new candidate (CAM reconciliation tool for small
+independent commercial property managers) within the same session — see
+`killed/cam-reconciliation-small-cre/REASON.md`. Scored 13/25; evidence of demand independently
+scored 2/5 (auto-kill). A delegated research subagent checked ~17 verticals via general web search
+(not this project's four named vendor-surface channels) and found this the only candidate with
+solid evidence — nearly every other vertical it checked was already colonized by 2+ named
+competitors. This candidate was never added to this file: this session's own direct re-verification
+of the subagent's citations surfaced a decisive, purpose-built competitor (PigJet, sized for
+"portfolios managing between 3 and 25 NNN properties") that the subagent's report had missed
+despite it being named on the very source page cited as evidence, so validation and kill happened
+in the same pass rather than across two sessions. See `RUNBOOK.md` for a new entry on this
+subagent-miss failure mode. Backlog remains at 2 entries (below the routine's three-candidate
+floor) — day 022 must replenish before or as part of Phase 0/1, unless it happens sooner.
+
 1. **Freelancer SOW/contract generator with e-sign tracking** — a lightweight, freelancer-specific
    alternative to heavyweight contract platforms: generates scoped statements of work from a short
    intake form, tracks e-signature status, and reminds on renewal/expiry. Rationale: solo
