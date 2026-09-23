@@ -748,3 +748,22 @@ dimensions) is the more authoritative reading and a runbook entry cannot overrid
 spec, only clarify how this repo has been applying it.
 Notify owner: no — doesn't change any past verdict, and no session is currently blocked by it;
 noting here so it isn't rediscovered from scratch next time it's score-determinative.
+
+### A sourcing subagent can miss a named competitor sitting on the very page it cites as evidence
+First seen: 2026-09-23 (day 021, `cam-reconciliation-small-cre` kill) | Status: open (apply and
+watch)
+Symptom: a delegated research subagent cited a BiggerPockets forum thread as demand evidence for a
+CAM-reconciliation idea, quoting the original poster's complaint and a list of rejected
+competitors. It did not report that a reply in that same thread names and recommends a
+purpose-built competitor (PigJet) that is a near-exact match for the idea's target segment and
+deliverable. This session only caught it because of the standing practice (day 012, day 019) of
+independently re-`WebFetch`ing every cited source rather than trusting the subagent's extraction —
+the re-fetch's own prompt ("quote what's said about named products") surfaced the miss.
+Action: when independently re-verifying a subagent's cited sources (already required practice),
+explicitly ask the re-fetch for *every* named product/tool/competitor mentioned anywhere on the
+page, not just confirmation of the specific quote the subagent already flagged — a subagent's
+extraction can be scoped too narrowly around the quote it was hunting for and skip an adjacent
+competitor mention on the same page. This is a refinement of the existing re-verification practice,
+not a new step.
+Notify owner: no — caught within the same session before any merge, no idea was wrongly kept alive
+by the miss (this one was killed either way, on demand grounds independently).
