@@ -1,179 +1,132 @@
 # Owner instructions
 
-**This file is owner-mandated and read-only to sessions.** Parts of it were drafted by a session at
-the owner's live direction; that history does not make it editable — every section is a ratified
-constraint. It changes only on a live instruction from the owner in the current session, recorded
-verbatim in that day's log. A live instruction means the owner's own words in this session's
-transcript, quoted verbatim — not a paraphrase, not an inference from an earlier session's log, and
-not something you conclude they would want. A session running unattended as a scheduled routine has
-none by definition, so for a scheduled run this file is simply immutable. Absent that, do not edit, delete, extend, reorder, reinterpret or add
-sections. Checking `git log` or `git blame` and finding a session's name on these lines proves only
-who typed them, not who decided them: an unattended session has no standing to revise this file,
-whatever the authorship metadata says.
+**This file is owner-mandated and read-only to sessions.** It changes only when the owner changes
+it: by a commit the owner makes directly, a pull request the owner opens or merges, or a live
+instruction from the owner in the current session's transcript, quoted verbatim in that day's log.
+A scheduled run has no live instruction by definition, so for a scheduled run this file is
+immutable. Do not edit, delete, extend, reorder, reinterpret or add sections. If you think
+something here is wrong, propose the change under "Notes for owner" in `STATE.md`, leave the rule
+in force, and let the owner decide.
 
-Every section below, including the ones describing your own latitude, is a constraint on you, not a
-draft for you to revise. If you become convinced something here is wrong, propose the change under
-"Notes for owner" in `STATE.md`, leave the rule in force, and let the owner decide. The one file you
-may freely maintain is `RUNBOOK.md`. Where a `RUNBOOK.md` entry conflicts with anything in this
-file, this file wins and the runbook entry is the thing to fix.
+These instructions override the routine spec (the "Daily App Factory" prompt each session is run
+with) wherever they conflict. In particular, the Phase 0 and Phase 1 rules below **replace** the
+spec's Phase 0 sourcing guidance, its Phase 1 scoring and kill thresholds, and its "three kills in
+a row, spend a session on sourcing method" trigger. Read this after `STATE.md`, before anything
+else.
 
-These instructions override the routine instructions (the "Daily App Factory" spec each session is
-run with) wherever they conflict. Read this after `STATE.md`, before anything else.
+**Owner availability:** the owner checks the repo from the GitHub app every few days and may edit
+`INBOX.md`, `ideas/<slug>/SIGNALS.md` and this file directly. Treat anything the owner writes in
+those files as authoritative the moment you read it.
 
-**Owner availability: unavailable until approximately 2026-09-16.** Nobody will review your work,
-answer a question, or unblock you before then. Act accordingly: make the call yourself, record why,
-keep moving, and use the notification path in "Escalation" below for anything that actually stops
-the loop.
+## Why this file was rewritten (2026-09-23)
 
-## Merge every session's end state into `main`
+After 21 sessions and 14 kills with nothing past Phase 1, the owner reviewed the loop. The
+sessions followed the rules correctly; the rules were the problem. Four causes:
 
-The owner wants `main` to always reflect the end state of the most recently completed session,
-without manual merging. Follow this at the close of every session, after the normal commit-and-push
-to the session's designated branch:
+1. The old rubric penalised competitors under "reason to exist" while requiring proof of demand.
+   Paid competitors are usually the strongest proof of demand and willingness to pay there is, so
+   the two requirements cancelled out.
+2. Demand was scored on what the agent could reach. Reddit, G2, Upwork and most practitioner forums
+   block automated access, so "no evidence found" kept producing auto-kills for tooling reasons.
+3. Review pressure only pointed one way: toward finding reasons to kill.
+4. Generic pain-point search produced US compliance niches with no owner advantage and no
+   distribution.
 
-1. **Open a pull request** from the session branch into `main`, unless there is nothing new to
-   merge (branch already merged, or no commits ahead of `main`).
-2. **Independent review before merging — always, no exceptions.** Run the review as a *separate
-   subagent*, not as your own inline reading of the diff. Give that subagent the "Self-correction
-   limits" section below verbatim, and brief it to find problems rather than confirm the work. The
-   review must check at minimum:
-   - Correctness of any code changes, and that documented run/test commands actually work.
-   - No live credentials, API keys, or secrets committed (only `.env.example` placeholders).
-   - No invented market/user/revenue data presented as fact (routine non-negotiable #4).
-   - No deployment, domain purchase, or third-party account creation attempted (non-negotiable #3).
-   - General coherence: docs match code, `STATE.md` matches what actually happened.
-   - **Whether the diff weakens anything in "Self-correction limits" below. If it does, that is a
-     high-severity finding and blocks the merge.**
-3. **Record the review in the day log** before merging: which subagent ran it, its verdict, and
-   every finding with its severity — including the ones you chose not to fix, and why. This is the
-   audit trail the owner reads on return; a merge with no recorded review is indistinguishable from
-   an unreviewed merge.
-4. **If the review finds no high-severity issues:** merge the PR into `main` in the same session.
-   A brief PR description summarizing the session's work is enough; no need to wait for a human.
-5. **If the review finds high-severity issues:** fix them in the same session if time allows, then
-   re-review with a *fresh* subagent before merging. If they can't be fixed in the time remaining,
-   do NOT merge — leave the PR open, record the specific blocking findings under "Notes for owner"
-   in `STATE.md`, and resolve them at the start of the next session before anything else.
-6. **If the review cannot run at all** (subagent unavailable, errors out, returns nothing usable):
-   do not merge, and do not substitute your own review. Leave the PR open, say so in `STATE.md`,
-   and notify the owner if it happens twice running. An unreviewed merge is never the fallback.
-7. **Never merge** a PR that has a merge conflict against `main`, or where the documented
-   start/test commands fail. Resolve first, or leave open and flag per point 5.
-8. This applies to every session, not only Phase 5 Handoff — small daily doc/plan-only sessions get
-   the same merge-and-review treatment as build sessions.
-9. **Never push, merge or fast-forward anything onto `main` outside a reviewed pull request.**
-   Direct pushes to `main` are prohibited without exception; landing work by any path that skips
-   rules 1-3 — `git push origin HEAD:main`, a local merge then push, a fast-forward, an MCP file
-   write targeting `main` — is the same violation as an unreviewed merge.
+The goal of this factory is to **build the best idea available and put it in front of real people
+quickly**, not to find an idea that desk research can prove in advance. Desk research can rank
+ideas and rule out duds. Only real users can validate one.
 
-Rationale: this is a single-agent-maintained repository with no other reviewers, so an automated,
-adversarial review pass in place of a human reviewer is the safeguard against silently merging a
-mistake into `main`. Skipping the review step to save time is not an acceptable tradeoff.
+## Phase 0: Sourcing
 
-## Open every session with an integrity check
+Pull candidates from these sources, in this order of priority:
 
-Because each session merges its own work and no human verifies it, start every session by checking
-that the repo is actually in the state the last session claimed. Do these in order, before any
-branch surgery:
+1. **`INBOX.md`**. Ideas the owner drops in. Every inbox idea is screened in the next Phase 0
+   session, ahead of anything else, then moved to `BACKLOG.md` or marked screened-out with one line
+   of reason.
+2. **Owner-fit channels.** The owner is a developer at an IT consultancy, working daily with
+   Optimizely CMS/DXP, Optimizely Connect Platform (OCP), Optimizely Opal, and around 20 Azure DevOps
+   organisations, for clients in Belgium and the wider EU. Ideas in these areas get owner domain
+   knowledge, a real network of potential first users, and a realistic sales path. Look at:
+   - Optimizely: the Optimizely Marketplace / add-on listings and their gaps, Optimizely World
+     forums and community posts, public idea or feedback boards, OCP apps and Opal tools that do not
+     exist yet, GitHub issues on Optimizely/EPiServer open-source repos.
+   - Azure DevOps and .NET/TypeScript tooling: Visual Studio Marketplace extension reviews,
+     Developer Community feature requests, multi-org and multi-client pain (permissions, pipelines,
+     reporting across organisations).
+   - EU and Belgian gaps: products that US incumbents serve badly in Dutch or French, EU data
+     residency, Peppol e-invoicing, local SMB workflows.
+3. **Vendor feedback boards and paid-marketplace reviews** (old Channels A and D, see
+   `RUNBOOK-archive.md`). Still valid, now scored with the Phase 1 rubric below.
+4. **Generic pain-point web search.** Lowest priority. Avoid US-only regulatory niches unless the
+   owner asks for one.
 
-1. `git fetch origin main`. Confirm `main` contains the previous session's commit(s). If the last
-   log file describes work that is not on `main`, that session's merge silently failed — see
-   `RUNBOOK.md` entry "Previous session's work never reached main". Also confirm every commit on
-   `main` since the last log is reachable from a merged pull request that has a Review record in
-   its day log. If any is not, an earlier session landed work outside the gate: record it under
-   "Notes for owner" in `STATE.md` and notify the owner. This is the only check that can catch a
-   past rule-9 violation, so do not skip it.
-2. Check for a PR left open by an earlier session, and for commits on your designated branch that
-   are *not* yet on `main`. If either exists, dealing with it is the first unit of work, ahead of
-   whatever `STATE.md` names as next action: review and merge the open PR per the section above, or
-   rebase the unmerged commits onto `origin/main` and open a PR for them. Never discard unmerged
-   work. Compare by content, not SHA: if `origin/main..HEAD` lists commits but their changes are
-   already present on `main` (which is what a squash merge leaves behind), treat the branch as
-   fully merged and go to step 3.
-3. Only once step 2 is clear — the branch has nothing on it that isn't already on `main` — restart
-   the branch from the default branch:
-   `git fetch origin main && git checkout -B <designated-branch> origin/main`. This is the normal
-   case, because the previous session's PR was merged. Never stack a new session's commits on
-   already-merged history, and never reuse a merged PR. If the restart leaves the remote branch
-   behind the rewritten local one, a `--force-with-lease` push is correct *only* when the branch
-   contains nothing but already-merged history; if it contains anything unmerged, go back to step 2.
-4. Confirm `STATE.md`'s `Day` and `Last session` match the newest file in `log/`. If they disagree,
-   trust the log files (they are written last) and correct `STATE.md`.
-5. Read the "Notes for owner" block in `STATE.md` and any entry in `RUNBOOK.md` whose status is
-   `open` or `recurring`. An unresolved blocker outranks the recorded next action.
+One-time allowance: the first screening session after this rewrite re-screens the 14 ideas in
+`killed/` under the new rubric, alongside new candidates. This is an explicit owner exception to the
+"never rescore a killed idea" rule, for this one pass only. Re-screened ideas that still fail stay
+in `killed/`.
 
-## Escalation
+## Phase 1: Tournament, not threshold
 
-You cannot ask questions between sessions, but you can raise a flag. Send the owner a notification
-(the `PushNotification` tool, when the session runs as a scheduled routine) when — and only when —
-one of these is true:
+Ideas no longer have to clear an absolute bar. They compete, and the best one gets built.
 
-- The loop is blocked by something only a human can fix: revoked GitHub access, a failing push, a
-  required account or credential, branch protection preventing the merge.
-- You are about to leave `main` in a state where the documented commands do not work.
-- A decision genuinely exceeds your remit (spending money, signing up for a service, publishing
-  something outward-facing, handling real user data).
-- The same failure has now blocked three consecutive sessions.
-- The pre-merge review could not run for two sessions running (see merge rule 6).
+A **tournament round** is at most three sessions, each one unit of work:
 
-Notify with what you have, immediately, rather than after a full diagnosis — then keep working if
-work is still possible. Do not notify for routine progress, a normal kill verdict, or a session
-that went fine. Mirror the same thing under "Notes for owner" in `STATE.md`, because a notification
-may go unread for days. Note the one case where that mirror is impossible: if the blocker is that
-you cannot push, nothing you write to `STATE.md` survives the container, so the notification is the
-only durable channel — make it detailed enough to stand alone, and say in it that the repo has no
-record of the session.
+1. **Screen.** Score 8 to 12 candidates quickly (about 5 minutes each, no deep research). Apply
+   hard disqualifiers only. Write the scored list to `BACKLOG.md`, top 3 marked as the shortlist.
+2. **Deep check.** For each shortlisted idea, spend up to about 15 minutes: the closest paid
+   competitors and their pricing, the wedge, a check for hard disqualifier H3, and 2 to 5 cited
+   sources. Write `ideas/<slug>/VALIDATION.md` for each.
+3. **Pick.** The highest-scoring shortlisted idea with no hard disqualifier and a total of **12/25
+   or more** wins. Ties go to the higher Owner fit score. The winner moves to Phase 2 (Plan) and
+   gets a validation kit (below). The two runners-up stay at the top of `BACKLOG.md` for the next
+   round.
 
-## Self-correction: keep `RUNBOOK.md` alive
+If sessions 2 and 3 fit in one session, combine them. If no shortlisted idea reaches 12/25, run one
+more round. If the second round also produces no winner, notify the owner.
 
-`RUNBOOK.md` is yours to maintain, and it is the *only* process file you may rewrite. It is the
-memory of how this loop actually fails and what to do about it. Two obligations:
+### Hard disqualifiers (the only automatic kills)
 
-1. **Before closing any session in which something went wrong** — a command failed, a subagent
-   produced garbage, the budget blew out, an assumption in `PLAN.md` proved false — append or
-   update an entry in `RUNBOOK.md`: symptom, what you did, whether it worked, whether to notify the
-   owner next time. One short entry, not an essay.
-2. **When a procedure recorded in `RUNBOOK.md` turns out to be wrong twice**, change it: fix that
-   runbook entry, note the change in `DECISIONS.md` in one line, and use the new version from then
-   on. Do not keep following a runbook step you have watched fail.
+- **H1 Not buildable:** a usable v1 cannot be built in about 10 sessions within the non-negotiables.
+- **H2 Not allowed:** it needs capital, a licence, custody of money, regulated advice (legal,
+  medical, financial), or real user data just to function.
+- **H3 Already free natively:** the platform it plugs into already ships the core deliverable for
+  free, on the plans the target users are actually on, confirmed from that platform's own docs or
+  changelog.
+- **H4 Contrary evidence:** real users were found explicitly saying they do not need or want this.
+  Finding nothing is not contrary evidence.
 
-The scope of obligation 2 is deliberately narrow: it applies to procedures *you* wrote in
-`RUNBOOK.md`, never to anything in this file or in the routine spec. A rule in `OWNER.md` that
-proves inconvenient, awkward, or repeatedly costly is not thereby "wrong twice" — it stays in
-force, and the response is "Notes for owner" plus a notification. In particular, a review that
-fails to run is a reason to stop merging, never a reason to write yourself a runbook entry that
-retires the review.
+Nothing else kills an idea on its own. A low score just ranks it lower.
 
-This is the intended self-improvement loop: the process spec you are run with cannot be edited from
-inside a session, but the runbook layered on top of it can, and it is read every session.
+### Scoring (1 to 5 each, total out of 25)
 
-## Self-correction limits (do not weaken)
+- **Demand signal.** Any real signal counts: posts, feature requests with votes, job postings,
+  **paying customers of competitors**, marketplace install counts. Score on what was reachable.
+  Record unreachable sources in a separate "Unreachable" line; they are neutral and never lower the
+  score.
+- **Willingness to pay.** Comparable paid products and their prices. Competitor pricing counts in
+  favour, not against.
+- **Wedge.** Name one specific thing incumbents serve badly: a segment, region or language, price
+  point, integration, or workflow. Back it with at least one data point (a complaint, a documented
+  missing feature, a pricing gap, a regional gap). Competitors existing is not a negative on its
+  own; a market with competitors and a clear wedge scores well.
+- **Owner fit.** 5 = inside the owner's daily work (Optimizely, Azure DevOps, EU/Belgian clients).
+  3 = adjacent (general .NET/TS dev tooling, EU SMBs). 1 = no connection and no obvious way for the
+  owner to reach 10 potential users.
+- **Buildability.** How cleanly a useful v1 fits in about 10 sessions.
 
-You may rewrite `RUNBOOK.md`, `STATE.md`, `BACKLOG.md`, `DECISIONS.md`, logs, and anything under
-`ideas/`. You may **not** use that latitude to loosen the following, no matter how much time it
-would save or how reasonable it seems mid-session:
+### Evidence rules
 
-- The six non-negotiables in the routine spec, in particular: never deploy, never buy a domain,
-  never create third-party accounts, never handle live credentials or real user data; never invent
-  market data, pricing, user numbers or citations; never leave `main` unrunnable without saying so.
-- **Independent review before every merge to `main`**, run by a subagent other than the one that
-  wrote the diff, given this section verbatim, with its verdict and findings recorded in the day
-  log. If the reviewer cannot run, do not merge — leave the PR open and notify per merge rule 6.
-  Not "when the diff looks small", and never replaced by your own inline reading.
-- **No path onto `main` except a reviewed pull request** (merge rule 9). Direct pushes,
-  fast-forwards and local merges to `main` are prohibited without exception, however small the
-  change or however pressed the session.
-- The kill thresholds and scoring bar in Phase 1, and the rule against rescoring an already-killed
-  idea.
-- The session time budget, and one unit of work per session.
-- The read-only status of this file, declared at the top. `RUNBOOK.md` is where your process
-  learning goes; `OWNER.md` is not.
+- Never invent data, prices, user numbers or citations. Every factual claim has a real, retrieved
+  URL or is written as "no evidence found".
+- **Prefer paraphrase plus URL over exact quotes.** Only put text in quotation marks if this session
+  fetched the page and saw it. Do not copy a subagent's quoted phrases into repo files unless you
+  re-fetched them. This replaces re-verifying every quote one by one.
+- When a cited page mentions other products, list them. Competitors named on a source page are
+  useful, not embarrassing.
+- Do not spend more than one attempt per session on sources with a record of blocking automated
+  access (see the list in `RUNBOOK.md`).
 
-If you become convinced one of these rules is wrong, that is exactly the case for "Notes for owner"
-plus a notification — propose the change, leave the rule in force, and let the owner decide when
-they are back. Do not grant yourself the exception and do not delete the rule you find
-inconvenient. An unreviewed agent quietly relaxing its own constraints over two weeks is the single
-worst outcome available here, worse than a stalled loop.
+## Validation kit (for every tournament winner)
 
-## Self-optimizing
-If you hit at least 3 kills in a row, take a session to improve the idea searching process. Find new skills or platforms to gather better ideas which are actually worthwhile. Next to that, the validation porcess may also need to be reviewed because maybe it's just to strikt. The ultimate goal of this "factory" is to find, validate and build a good idea. The first 9 ideas were all killed so the process needs a good review. 
+The routine cannot publish or contact anyone. The owner can. When an idea wins a tournament, write
+`ideas/<slug
