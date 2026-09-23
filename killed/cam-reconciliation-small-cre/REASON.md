@@ -6,17 +6,19 @@ of demand" independently scored 2/5 (auto-kill on its own, per the routine's own
 ## Why
 
 The sourcing forum thread's own content undercut the idea from two directions at once. First, a
-reply in the same thread that supplied the demand evidence (Nicholas Cokas, on BiggerPockets)
+reply from Nicholas Cokas in the same BiggerPockets thread that supplied the demand evidence
 directly argued the premise was wrong: "at under 20 commercial units, the problem is almost never
 software. It's workflow" — real, individually-voiced evidence contradicting the idea's own thesis,
 the same failure mode that killed the contractor-classification idea (day 009). Second, and more
-decisively, that same reply named **PigJet**, a currently-marketed, purpose-built platform whose own
-site states it is built for "portfolios managing between 3 and 25 NNN properties" — almost an exact
-match to the target segment — doing AI lease abstraction, CAM/NNN calculation, and tenant
-reconciliation statement generation. That is essentially this idea's own core deliverable already
-shipping for the exact target audience, independently confirmed via direct fetch of pigjet.com and
-its SoftwareAdvice listing, not inferred from the subagent's report (which had missed it despite it
-appearing by name on the very page used as evidence).
+decisively, the original poster (Ryan Stomel — the same person quoted for the demand evidence)
+separately names and describes using **PigJet** elsewhere in his own posts in that thread — a
+currently-marketed, purpose-built platform whose own site states it is built for "portfolios
+managing between 3 and 25 NNN properties" — almost an exact match to the target segment — doing AI
+lease abstraction, CAM/NNN calculation, and tenant reconciliation statement generation. That is
+essentially this idea's own core deliverable already shipping for the exact target audience,
+independently confirmed via direct fetch of pigjet.com's blog page and its SoftwareAdvice listing,
+not inferred from the subagent's report (which had missed it despite it appearing by name in the
+very thread used as evidence).
 
 Demand evidence was also thin on its own terms: only one complaint (Ryan Stomel) specifically named
 CAM reconciliation as the pain point; a second (Scott L, Capterra) was adjacent but about general
