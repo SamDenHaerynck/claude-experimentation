@@ -1,8 +1,11 @@
-# Runbook
 
-How this loop actually fails, and what to do about it. Maintained by the session, not the owner
-(see "Self-correction" in `OWNER.md`). Read the index at the start of every session; read the full
-entry when the symptom matches.
+
+# Runbook archive
+
+Full history up to 2026-09-23 (day 021). Reference only, superseded by the short RUNBOOK.md and the
+OWNER.md rewrite. Do not read at session start. Lessons below that penalise competitors, treat "no
+evidence found" as negative, or apply shape-based priors are superseded by the Phase 1 tournament
+rules in OWNER.md.
 
 Append an entry whenever a session hits a failure not already listed. Update an entry when its
 recorded fix turns out not to work. Keep entries short: symptom, action, notify-or-not, status.
