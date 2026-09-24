@@ -429,18 +429,26 @@ Append-only log of significant choices and why they were made. One line each, ne
   by the ranked table, not by directory location, and a physical move is deferred to whichever
   session actually selects one of them, to avoid file churn in a docs-only review. Three revived
   ideas (`ci-migration-rollback-gate`, `vendor-security-questionnaire-autofill`,
-  `dependency-eol-watcher`) turned out not to have a clean hard disqualifier on re-read (their
-  original kills leaned on a third-party competitor's free tier, not "the platform this idea plugs
-  into" shipping the feature free, which is what H3 actually requires) and now rank in the 14-16/25
-  band. Four ideas (`qbo-weekly-snapshot`, `sales-tax-nexus-monitor`,
+  `dependency-eol-watcher`) turned out not to have a clean hard disqualifier: on checking their
+  `REASON.md` files directly, none was actually killed under H3 or any hard disqualifier in the
+  first place (all three predate the hard-disqualifier framework and were killed under the old
+  numeric ≥16 threshold), and `ci-migration-rollback-gate`'s specific competitor cited
+  (Bytebase's free Community tier) is a third-party competitor, not "the platform this idea plugs
+  into" shipping the feature free, so it would not meet H3 even tested directly against it. All
+  three now rank in the 14-16/25 band. Four ideas (`qbo-weekly-snapshot`, `sales-tax-nexus-monitor`,
   `rent-increase-notice-calculator`, `customs-hts-microseller`) still cleanly meet H3 (a named
   platform ships the exact deliverable free) and one (`cam-reconciliation-small-cre`) still meets
   H4 (a real user explicitly said the problem isn't software) — these stay in `killed/` and are
   excluded from shortlist eligibility. `contractor-classification-checker`'s original H4-flavored
   kill rationale ("real users only asked for the classification answer, never the audit trail") was
   reread against H4's actual text ("explicitly saying they do not need or want this... finding
-  nothing is not contrary evidence") and judged not to meet the letter of H4 — kept in the ranked
-  pool but its own score (9/25, owner fit 1) keeps it at the bottom regardless. Top-3 shortlist:
+  nothing is not contrary evidence") and judged not to meet the letter of H4. Its `REASON.md` also
+  flagged a second, H2-adjacent signal ("sits close to unlicensed legal advice") that the first pass
+  at this table did not address explicitly; on review, judged not to strictly meet H2 either since
+  comparable free tools (Tax1099, OnPay, SmallBizHandbook) already do the same classification-risk
+  assessment as plain software without apparent licensure, but flagged as a liability-risk factor
+  to re-check explicitly if this idea is ever selected for Deep Check. Kept in the ranked pool but
+  its own score (9/25, owner fit 1) keeps it at the bottom regardless. Top-3 shortlist:
   BE-Peppol-Commerce (20/25, pending an H2 licensing check on Peppol Access Point accreditation in
   Deep Check), CMS12-UpgradeAssist (16/25), ADO-MultiOrg (16/25). `ci-migration-rollback-gate`
   (16/25) narrowly missed the shortlist only on the owner-fit tiebreak (3 vs. 5 for the other three

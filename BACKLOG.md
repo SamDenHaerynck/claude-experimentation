@@ -55,8 +55,14 @@ shortlist eligibility regardless of score, per `OWNER.md`.
 \* `contractor-classification-checker`'s original kill cited "real users only asked for the
 classification answer, never the audit trail" — on strict re-reading this is an *absence* of demand
 for the differentiator, not a user *explicitly saying they don't want it*, so it does not meet H4's
-letter ("Finding nothing is not contrary evidence"). Kept out of `killed/` for scoring purposes but
-its score (9/25, owner fit 1) keeps it at the bottom regardless.
+letter ("Finding nothing is not contrary evidence"). Its `REASON.md` also flagged a second signal
+this table's "none" call did not originally address: the idea "sits close to unlicensed legal
+advice," H2-adjacent ("regulated advice (legal...)"). Judgment call: several free comparable tools
+(Tax1099, OnPay, SmallBizHandbook quizzes) already do this exact classification-risk assessment as
+plain software, without apparent professional licensure, so H2 likely does not strictly apply — but
+this is a real liability-risk factor to re-check explicitly in any future Deep Check of this idea,
+not one to wave past silently. Kept out of `killed/` for scoring purposes; its score (9/25, owner
+fit 1) keeps it at the bottom regardless.
 
 ## Top-3 shortlist for Deep Check
 
@@ -84,10 +90,14 @@ its score (9/25, owner fit 1) keeps it at the bottom regardless.
    support, a management UI, org-governance features) survives next to it.
 
 `ci-migration-rollback-gate` (16/25, owner fit 3) is a close 4th, revived from `killed/` under the
-new rubric: its original kill leaned on Bytebase's free Community tier, but Bytebase is a
-third-party competitor, not "the platform this idea plugs into" shipping the feature free — so H3
-does not actually apply on a strict re-read, unlike this session's other three H3 kills. It was not
-shortlisted only because its owner fit (3, general CI/DevOps) is lower than the other three
+new rubric. Correction on re-check: this idea (and `vendor-security-questionnaire-autofill`,
+`dependency-eol-watcher`) predates the hard-disqualifier framework entirely — all three were killed
+under the old numeric ≥16 threshold, not under H3 or any hard disqualifier, so "no longer meets H3"
+is not quite accurate; more precisely, no hard disqualifier ever applied to these three, under
+either the old or new system. `ci-migration-rollback-gate`'s original kill leaned on Bytebase's
+free Community tier, but Bytebase is a third-party competitor, not "the platform this idea plugs
+into" shipping the feature free, so it would not meet H3 even if re-tested against it directly. It
+was not shortlisted only because its owner fit (3, general CI/DevOps) is lower than the other three
 16/25-or-above candidates on the `OWNER.md` tiebreak rule. Worth a fresh look, specifically an Azure
 DevOps Pipelines-native migration/rollback gate extension (owner runs ~20 ADO orgs daily), if the
 top 3 don't pan out in Deep Check.
