@@ -1,242 +1,124 @@
 # Backlog
 
-Ranked pool of candidate ideas not yet started. Phase 0 picks the top entry. When an idea is
-selected it moves out of this list into `ideas/<slug>/`; when generating replacements, add new
-candidates to the bottom unless evidence gathered during Validate suggests otherwise.
+Ranked pool of candidate ideas not yet started, scored under the tournament rubric in `OWNER.md`
+(rewritten 2026-09-23). Phase 1 Deep Check runs on the top 3 (the shortlist below); the highest
+scorer with no hard disqualifier and 12/25+ wins per `OWNER.md`'s Pick rule.
 
-Re-ranked 2026-09-07 after the three-kills-in-a-row sourcing-method review (see `DECISIONS.md`).
-All three prior kills were one-shot output generators (a lookup, an autofill, a letter draft) fully
-replaceable by a free calculator, a free adjacent tool, or a generic LLM prompt. Going forward,
-Phase 0/1 selects for at least one of: (a) value from data that changes on an ongoing basis and
-must be kept current, (b) value from embedding in a recurring workflow or persisted system state
-rather than a single generated artifact, or (c) a cost of being wrong high enough that free/DIY
-answers aren't trusted. The three new entries below (originally four; #1 was killed 2026-09-08,
-see `killed/ci-migration-rollback-gate/`) were ordered first because each is chosen to test one of
-those properties; the two carried-over entries are one-shot generators with the same shape as the
-three kills and are demoted to the bottom pending evidence that a real wedge exists.
+## 2026-09-24 (day 022) full re-screen
 
-Updated 2026-09-08: killed candidate #1 (CI-embedded migration/rollback safety gate) in Phase 1 —
-see `killed/ci-migration-rollback-gate/REASON.md`. Result widens the (a)/(b)/(c) check itself (see
-`RUNBOOK.md`): holding property (b) is necessary but not sufficient if a free tool that is *itself*
-already recurring/CI-embedded (not just a one-shot substitute) already serves the same audience —
-name that risk explicitly too, not just one-shot LLM/DIY substitutes.
+Per `STATE.md`'s day-022 next action: screened `INBOX.md` (empty, nothing to screen), sourced 8 new
+candidates from the owner-fit channels via a research subagent, and re-screened the 14 ideas in
+`killed/` plus the 2 prior backlog entries under the new hard-disqualifier-only rubric — the
+one-time re-screen `OWNER.md` grants for this rewrite. Full source evidence for the 14 killed ideas
+is unchanged and still lives in `killed/<slug>/VALIDATION.md` and `REASON.md`; this session did not
+re-fetch new evidence for them, only re-applied the new scoring rules to the evidence already on
+file. The 8 new candidates' evidence (URLs, paraphrased findings) is recorded per-idea below since
+they have no directory yet.
 
-Updated 2026-09-09: killed candidate #1 (contractor-vs-employee classification risk checker) in
-Phase 1 — see `killed/contractor-classification-checker/REASON.md`. This one did not lose to a
-free-recurring competitor (none was found); it failed because the only real user-voice evidence
-found contradicted the idea's own property-(c) thesis — every real forum post asked for the
-classification answer, none asked for documentation/an audit trail. Widens the check again (see
-`RUNBOOK.md`): a claimed (a)/(b)/(c) property needs real user-voice evidence that the specific
-differentiator is wanted, not just a plausible-sounding architectural argument for why it should be.
+**Judgment call, recorded per `DECISIONS.md`:** re-screened `killed/` ideas that no longer carry a
+hard disqualifier are ranked in the table below and are eligible for Deep Check / Pick, but their
+directories were left in place under `killed/<slug>/` rather than physically relocated — moving a
+directory has no bearing on tournament eligibility (that's determined by this table), and a
+physical `git mv` is deferred to the session that actually selects one, to avoid mid-review file
+churn. Ideas that still carry a hard disqualifier (H1-H4) stay in `killed/` and are excluded from
+shortlist eligibility regardless of score, per `OWNER.md`.
 
-Updated 2026-09-10: killed candidate #1 (state/local sales-tax nexus threshold monitor) in Phase 1
-— see `killed/sales-tax-nexus-monitor/REASON.md`. Property (a) held genuinely, but Shopify's own
-free built-in dashboard, Stripe Tax's free built-in alerts, and a near-identical $19-69/mo indie
-competitor (NexusMonitor, already on the Shopify App Store) all already serve this exact job; the
-only real user-voice evidence found also asked one-time factual questions, not for ongoing
-monitoring. This is the third consecutive kill since the 2026-09-07 review — the routine's
-three-in-a-row trigger has fired; see `RUNBOOK.md` and `STATE.md`. Remaining entries below are
-renumbered; day 009 must spend its session on sourcing method, not on validating entry #1 below.
+### Ranked table (24 candidates, highest score first)
 
-Updated 2026-09-11 (day 009, sourcing-method review, see `RUNBOOK.md` and `DECISIONS.md`):
-replenished from 2 entries back up to 4. This review found that the "recurring monitor/tracker/
-alert/comparison tool for a defined professional deadline or requirement" idea shape is colonized
-regardless of vertical (five unrelated candidates quick-checked, five already-existing
-competitors found), which is why both prior kills this cycle died and why no new candidate of that
-shape was added. The two new entries below (#1, #2) instead test the shape this review now
-prefers — multi-party coordination/trust infrastructure, not a single-user dashboard — and each
-discloses the real competitor found for it rather than omitting it; Phase 1 must run the
-competitor-specific-complaint check from the new `RUNBOOK.md` entry before scoring "reason to
-exist," not treat the disclosed competitor's existence alone as a reason to skip validating.
+| # | Idea | Demand | WTP | Wedge | Owner fit | Build | Total | Hard disq. | Status |
+|---|---|---|---|---|---|---|---|---|---|
+| 1 | **BE-Peppol-Commerce** (new) | 4 | 4 | 4 | 5 | 3 | **20** | none — H2 to confirm in Deep Check | Shortlist #1 |
+| 2 | **CMS12-UpgradeAssist** (new) | 3 | 2 | 3 | 5 | 3 | **16** | none | Shortlist #2 |
+| 3 | **ADO-MultiOrg** (new) | 3 | 2 | 2 | 5 | 4 | **16** | none | Shortlist #3 |
+| 4 | ci-migration-rollback-gate (revived, was killed/) | 4 | 3 | 2 | 3 | 4 | 16 | none | Close 4th, not shortlisted (lower owner fit on tiebreak) |
+| 5 | ADO-GovAudit (new) | 2 | 2 | 3 | 5 | 3 | 15 | none | Backlog |
+| 5 | Opal-ToolPack (new) | 2 | 2 | 3 | 5 | 3 | 15 | none | Backlog |
+| 5 | Opal-Insights (new) | 2 | 2 | 3 | 5 | 3 | 15 | none | Backlog |
+| 5 | ADO-BoardsMultiOrg (new) | 2 | 1 | 3 | 5 | 4 | 15 | none | Backlog |
+| 5 | AdvCMS-ReviewPersist (new) | 2 | 2 | 2 | 5 | 4 | 15 | none | Backlog |
+| 10 | vendor-security-questionnaire-autofill (revived) | 4 | 4 | 2 | 1 | 3 | 14 | none | Backlog — no owner network |
+| 10 | freelancer-sow-contract-generator (unvalidated carry-over) | 3 | 3 | 2 | 2 | 4 | 14 | none (unvalidated) | Backlog |
+| 10 | dependency-eol-watcher (revived) | 3 | 2 | 2 | 3 | 4 | 14 | none | Backlog |
+| 13 | grant-report-normalizer (revived) | 2 | 4 | 2 | 1 | 4 | 13 | none | Backlog |
+| 13 | clickup-conditional-formatting (revived) | 4 | 2 | 2 | 1 | 4 | 13 | none | Backlog |
+| 13 | git-changelog-generator (unvalidated carry-over) | 2 | 2 | 2 | 3 | 4 | 13 | none (unvalidated) | Backlog |
+| 16 | rfq-quote-comparison (revived) | 2 | 3 | 2 | 1 | 4 | 12 | none | Backlog |
+| 16 | qbo-weekly-snapshot | 3 | 3 | 1 | 1 | 4 | 12 | **H3** | Stays in killed/ |
+| 18 | co-owned-vacation-property (revived) | 2 | 3 | 1 | 1 | 4 | 11 | none | Backlog |
+| 18 | vendor-price-list-normalizer (revived) | 1 | 2 | 2 | 2 | 4 | 11 | none | Backlog |
+| 18 | sales-tax-nexus-monitor | 2 | 3 | 1 | 1 | 4 | 11 | **H3** | Stays in killed/ |
+| 21 | rent-increase-notice-calculator | 3 | 1 | 1 | 1 | 4 | 10 | **H3** | Stays in killed/ |
+| 22 | contractor-classification-checker (revived) | 2 | 2 | 1 | 1 | 3 | 9 | none* | Backlog (bottom) |
+| 22 | customs-hts-microseller | 3 | 1 | 1 | 1 | 3 | 9 | **H3** | Stays in killed/ |
+| 22 | cam-reconciliation-small-cre | 1 | 2 | 1 | 1 | 4 | 9 | **H4** | Stays in killed/ |
 
-Updated 2026-09-12 (day 010): killed former candidate #1 (small-manufacturer RFQ / subcontractor-
-quote comparison tool) in Phase 1 — see `killed/rfq-quote-comparison/REASON.md`. Both corrections
-from the 2026-09-11 review were applied properly (a deeper review-page fetch did surface a real
-QuoteWerks complaint, and an underserved-sub-segment search was run) but both still came back
-negative: the sub-segment search instead surfaced two *more* dedicated competitors (Jiga for
-manufacturing, SmartBid/Buildr for construction) beyond the original four, and real user-voice
-evidence only weakly supported the idea's specific buyer-side differentiator. This is the first
-kill since the day-009 review, not a third-in-a-row, so the sourcing-method trigger has not fired
-again. Remaining entries renumbered; still at 3, the routine's floor, so no replenishment needed
-this session.
+\* `contractor-classification-checker`'s original kill cited "real users only asked for the
+classification answer, never the audit trail" — on strict re-reading this is an *absence* of demand
+for the differentiator, not a user *explicitly saying they don't want it*, so it does not meet H4's
+letter ("Finding nothing is not contrary evidence"). Kept out of `killed/` for scoring purposes but
+its score (9/25, owner fit 1) keeps it at the bottom regardless.
 
-Updated 2026-09-13 (day 011): killed former candidate #1 (co-owned vacation property scheduling and
-expense-splitting) in Phase 1 — see `killed/co-owned-vacation-property/REASON.md`. Both corrections
-were applied via a delegated research subagent (a deep review-page complaint check, and an explicit
-underserved-sub-segment search) and both came back negative: neither incumbent has any real
-independent review footprint to find complaints in, and the sub-segment search surfaced five more
-dedicated competitors (CabinPals, SharedKey, Shared Holiday Homes, CalDibs, House Matters) beyond
-the two disclosed, each already covering the one narrow gap found (price, international). This is
-the second kill since the day-009 review — two since the last review, not yet a third-in-a-row.
-Notably this shows the sourcing review's own preferred shape (multi-party coordination, not a
-single-user monitor/tracker) is *also* colonized; see `RUNBOOK.md`. Remaining entries renumbered;
-down to 2, below the routine's three-candidate floor — next session must replenish before or as
-part of Phase 0/1.
+## Top-3 shortlist for Deep Check
 
-Updated 2026-09-14 (day 012): replenished from 2 entries back up to 4, per the day-011 note that
-the backlog was below the routine's three-candidate floor. Sourced via a delegated research
-subagent using no shape-based prior (per the day-011 retirement of both the "monitor/tracker" and
-"multi-party coordination" shape preferences) — instructed instead to find genuinely evidenced
-friction (real forum/complaint/review URLs, or a regulatory/platform change creating a new need)
-across diverse verticals, and to name a found competitor for each rather than skip that check. The
-subagent returned 4 candidates; the independent pre-merge review (see `log/2026-09-14.md`) spot-
-checked the cited URLs and found that quoted claims attributed to shipbob.com, blog.inymbus.com,
-and softwareadvice.com did not actually appear on those pages — invented citations dressed as real
-sourcing. Direct re-verification confirmed this. Two of the 4 candidates are added below as new
-#1-#2 after removing/replacing the fabricated quotes with claims actually verified against the
-source text (see `RUNBOOK.md`'s new entry on this failure mode); a third candidate (freight-claim
-packet generator) is dropped entirely rather than repaired, because two of its three supporting
-citations were fabricated and there wasn't time this session to re-source it properly; the fourth
-(a structural/civil calc-package assembler for permit submittal) was excluded from the start — the
-subagent itself flagged that evidence as weak, consistent with the routine's "no evidence found is
-a signal" instruction. Reddit was unreachable again for this sourcing pass (site: search and direct
-fetch both failed); the subagent substituted other forums (Mike Holt, ElectricianTalk), vendor/G2/
-Capterra pages, and industry blogs/news where a source it tried (eng-tips.com, 403 on direct fetch)
-also failed. This is a Phase 0 sourcing pass, not Phase 1 Validate — neither surviving candidate has
-had the full competitor/sub-segment/user-voice search run; that happens when one is selected.
+1. **BE-Peppol-Commerce** — Optimizely Configured Commerce connector generating/receiving Peppol
+   BIS/EN16931 e-invoices for Belgian B2B buyers. Belgium's B2B e-invoicing mandate took effect
+   2026-01-01 (already live, not a future risk), affecting roughly 1.2M VAT entities per
+   combell.com and blog.seeburger.com. No Optimizely-Commerce-specific Peppol integration was found
+   in this session's search; named generic Peppol access points (Smart PEPPOL, Babelway, Qvalia,
+   Banqup, Taxilla) don't address the Commerce/OCP integration layer. **Deep Check must resolve
+   before anything else: does shipping this require the product itself to be an accredited Peppol
+   Access Point (an H2-relevant licensing question), or can it integrate as a client of an existing
+   accredited AP's API (no license needed)?** If it requires AP accreditation, this may hit H2 and
+   should be re-scored or killed on that basis alone.
+2. **CMS12-UpgradeAssist** — scans an Optimizely CMS 11/Alloy codebase for breaking changes and
+   missing admin features when upgrading to CMS 12. Real recurring forum pain (2022-2023 threads on
+   world.optimizely.com) about a missing Admin > Config > Modules equivalent in CMS 12; Optimizely
+   staff said a port was being considered but Deep Check should confirm current CMS 12 state before
+   assuming the gap still exists.
+3. **ADO-MultiOrg** — an Azure DevOps multi-org MCP/CLI gateway letting a consultancy switch
+   context across ~15-20+ client orgs without reconfiguring. Real: Microsoft's own
+   `azure-devops-mcp` repo has an open (`Won't Fix`) issue (#812, filed 2025-12-29) requesting this
+   exact capability. Risk to resolve in Deep Check: an independent open-source alternative
+   ("Azure DevOps Multi-Organization MCP Server" by nikydobrev on Glama.ai) already exists and is
+   free — Deep Check must check what it actually covers and whether a real wedge (packaging,
+   support, a management UI, org-governance features) survives next to it.
 
-Updated 2026-09-15 (day 013): killed former candidate #1 (small-batch customs/HTS classification
-for micro e-commerce sellers) in Phase 1 — see `killed/customs-hts-microseller/REASON.md`. Scored
-13/25; willingness-to-pay independently scored 2/5 (auto-kill). The originally-disclosed competitor
-(Zonos) gap held, but two more free standalone competitors (InstaDuty, Zipments) were found, and
-decisively, Etsy itself is already building a Zonos-powered tariff calculator into its own listing
-flow (live since 2026-06, prepay-tariffs requirement live since 2026-07-09) — closing the gap for
-free for the largest share of the idea's own target audience. This is the third kill in a row since
-the 2026-09-11 sourcing-method review (day 010, day 011, day 013 — day 012 validated nothing and
-doesn't count). Per the routine's own instruction, day 014 must spend its session on sourcing
-method rather than pulling the next entry below and validating it the same way. Remaining entries
-renumbered (former #2-#4 are now #1-#3); still at 3 entries, exactly at the routine's 3-candidate
-floor, not below it — day 014's unit of work is the sourcing-method review the three-in-a-row
-trigger requires, not replenishment, but no replenishment is needed regardless since the floor is
-still met.
+`ci-migration-rollback-gate` (16/25, owner fit 3) is a close 4th, revived from `killed/` under the
+new rubric: its original kill leaned on Bytebase's free Community tier, but Bytebase is a
+third-party competitor, not "the platform this idea plugs into" shipping the feature free — so H3
+does not actually apply on a strict re-read, unlike this session's other three H3 kills. It was not
+shortlisted only because its owner fit (3, general CI/DevOps) is lower than the other three
+16/25-or-above candidates on the `OWNER.md` tiebreak rule. Worth a fresh look, specifically an Azure
+DevOps Pipelines-native migration/rollback gate extension (owner runs ~20 ADO orgs daily), if the
+top 3 don't pan out in Deep Check.
 
-Updated 2026-09-16 (day 014, sourcing-method review after the third three-in-a-row kill and a
-direct `OWNER.md` instruction to improve idea sourcing — see `RUNBOOK.md` and `DECISIONS.md`): all
-9 kills to date died on concrete, verified evidence (a real free/bundled competitor, a real pricing
-gap, or contradicting user-voice evidence), not on an overly strict score, so the fix this session
-targets Phase 0 sourcing, not the Phase 1 bar. Tested a new sourcing channel — SaaS vendor public
-feature-request/roadmap boards on already-paid products, looking for a high-vote, long-open request
-where the vendor has stated its own reason for not building it — via a delegated research subagent.
-Added one new candidate below (#1) sourced this way and ranked it ahead of the three carried-over
-entries, which are otherwise unchanged and keep their prior demotions/caveats (now #2-#4).
+## Sourcing notes for the 8 new candidates (research subagent, all URLs fetched or returned directly)
 
-Updated 2026-09-17 (day 015): killed former candidate #1 (ClickUp custom-field
-conditional-formatting companion extension) in Phase 1 — see
-`killed/clickup-conditional-formatting/REASON.md`. Scored 16/25; willingness-to-pay independently
-scored 2/5 (auto-kill) — no paid comparable was found anywhere for this specific feature category,
-and the one true implementation analog (`trello-colored-custom-fields`) is free/open-source, a real
-negative signal, not just an absence of proof. Demand evidence was the strongest this project has
-recorded (4/5, four independently re-verified feedback-board threads over ~5.7 years), validating
-Channel A (vendor feature-request boards) as a genuinely stronger demand-sourcing method — but this
-kill also surfaces a new risk specific to that channel: two of the four threads revealed ClickUp
-already ships the requested mechanism natively in Calendar View, so the "reason to exist" case
-(2/5) was undercut by the vendor being able to extend an already-built feature for free, with no
-stated architectural objection (unlike the Webflow precedent Channel A was originally validated
-on). This is the first kill since the 2026-09-16 sourcing-method review, not a third-in-a-row —
-the routine's trigger does not fire again this session. Remaining entries renumbered (former #2-#4
-are now #1-#3); back down to 3 entries, exactly at the routine's floor.
+- **ADO-MultiOrg**: github.com/microsoft/azure-devops-mcp/issues/812.
+- **ADO-GovAudit**: learn.microsoft.com Azure DevOps auditing docs (90-day per-org retention,
+  no cross-org rollup); github.com/ZanattaMichael/AzureDevOpsDsc/issues/84.
+- **Opal-ToolPack** / **Opal-Insights**: feedback.optimizely.com/forums/966084-optimizely-opal-ai
+  (Excel/Outlook-Teams/Canva/Semrush tool requests, 1-3 votes each; agent usage analytics request,
+  3 votes; activity-logging/CSV-export request, 1 vote).
+- **CMS12-UpgradeAssist**: world.optimizely.com forum threads (2022, 2023) on CMS 11→12 upgrade
+  pain and a missing Admin > Config > Modules equivalent.
+- **BE-Peppol-Commerce**: blog.seeburger.com and combell.com on Belgium's 2026-01-01 mandatory
+  B2B e-invoicing mandate.
+- **ADO-BoardsMultiOrg**: josh-ops.com/posts/github-connecting-to-azure-boards-multiple-orgs
+  (documents the "not recommended nor possible" single-GitHub-org-to-multi-ADO-org limitation).
+- **AdvCMS-ReviewPersist**: world.optimizely.com/blogs/advanced-cms/dates/2019/6 (reviewer-comment
+  persistence question on the open-source Advanced & External Reviews add-on, unresolved).
 
-Updated 2026-09-18 (day 016): killed former candidate #1 (grant-report normalizer for small
-nonprofit program staff) in Phase 1 — see `killed/grant-report-normalizer/REASON.md`. Scored
-15/25; evidence of demand independently scored 2/5 (auto-kill). Willingness to pay, the risk this
-entry's own write-up flagged as biggest, actually resolved favorably (4/5) — but the fresh
-competitor search this entry's own write-up said was necessary surfaced a direct, near-exact
-competitor (Sopact, already charging $3,588-$9,588/yr + a $2,000 setup fee for "store data once,
-present differently per funder") that the original sourcing pass missed, and the demand evidence
-for the idea's specific multi-funder thesis turned out to be accurately-quoted aggregate/advocacy
-statistics rather than any real individually-voiced grantee complaint matching that thesis. This is
-the second kill since the 2026-09-16 sourcing-method review (day 015, day 016) — not yet a
-third-in-a-row; the trigger fires if day 017 also kills. Remaining entries renumbered (former #2-#3
-are now #1-#2); down to 2 entries, below the routine's 3-candidate floor — day 017 must replenish
-before or as part of Phase 0/1, per the same pattern as day 011/012.
+No solid evidence was found for general Optimizely Marketplace add-on gaps or OCP-app-specific
+complaints beyond the above — recorded as "no evidence found," not filled in.
 
-Updated 2026-09-19 (day 017): replenished from 2 entries back up to 4, per the day-016 note that
-the backlog was below the routine's three-candidate floor. This session's own unit of work was
-replenishment only, not Validate — per the routine's "one unit of work" rule and the day-011→012
-precedent (a kill leaving the backlog below floor gets a dedicated replenishment session; Validate
-on the resulting top entry is deferred to the next session). Sourced via two research subagents
-running two channels not used in the last two Validate cycles (which both used Channel A, SaaS
-vendor feedback boards): Channel B (recurring paid freelance/contractor job postings, as *direct*
-demand+willingness-to-pay evidence — a business already paying a human for the task) and Channel C
-(1-3 star G2/Capterra/TrustRadius reviews on paid mid-market B2B SaaS, from reviewers who are
-already paying customers of the base product, complaining about a specific missing
-feature/workaround). G2 and Upwork both returned HTTP 403 on every direct-fetch attempt; Capterra
-and Freelancer.com fetched successfully and are the actual evidence base below. Every quote below
-was independently re-verified via direct `WebFetch` against the cited URL by this session (not
-just trusted from the subagent), per the day-012 fabricated-citation lesson. Both subagents also
-surfaced a candidate each that failed their own honest gut-check and are **not** added: a Google
-Business Profile review-management/freshness tool (already covered by a crowded existing market —
-Podium, Birdeye, NiceJob, ReviewTrackers, EmbedSocial, all doing this today per the subagent's
-pricing-page checks) and a veterinary cross-department patient-scheduling tool (real, strong
-evidence — property (a)/(b)/(c) all plausibly hold — but Instinct Science is an established
-incumbent integrating with the exact named practice-management systems for this exact problem).
-The two surviving candidates below are added ahead of the two carried-over entries, which are
-otherwise unchanged and keep their prior demotions (now #3-#4). Neither new candidate has had a
-full Phase 1 competitor/sub-segment/user-voice pass yet — that happens when one is selected next
-session — but each names its single highest-priority risk explicitly so Phase 1 starts there
-rather than discovering it late.
+## Carry-over entries (unvalidated, quick-screen estimate only, no fresh research this session)
 
-Updated 2026-09-20 (day 018): killed former candidate #1 (vendor price-list ingestion/normalizer
-for construction estimating software) in Phase 1 — see
-`killed/vendor-price-list-normalizer/REASON.md`. Scored 13/25; evidence of demand independently
-scored 1/5 (auto-kill). Resolved this entry's own flagged risk first: a delegated subagent
-re-checked essentially every review (~500+) across STACK Takeoff, PlanSwift, ProEst, Buildxact,
-Clear Estimates, and Esticom, plus several forums, and found no second individually-voiced
-complaint matching the specific pain (only two related-but-different complaints) — demand stays at
-n=1, below the project's 3+-voice bar. The competitor claim was also independently re-verified and
-found partially wrong: Buildxact already ships a general vendor price-list importer natively as a
-free bundled feature, undercutting the "reason to exist" case further. Several trades-forum
-channels (Mike Holt, ElectricianTalk, ContractorTalk, JLC, plus G2 and the standing Reddit
-limitation) were technically unreachable this session — recorded honestly as "no evidence found"
-from those sources, not a clean negative search; see `RUNBOOK.md`. This is the third kill since
-the 2026-09-16 sourcing-method review counting only Validate sessions (day 015, day 016, day 018 —
-day 017 was replenishment-only and does not count, per the day-011→012 precedent), so the
-three-in-a-row trigger fires again: day 019 must spend its session on sourcing/validation method,
-not on validating the new #1 below. Remaining entries renumbered (former #2-#4 are now #1-#3);
-down to 3 entries, exactly at the routine's floor — no replenishment forced, but day 019's unit of
-work is the method review the trigger requires either way.
-
-Updated 2026-09-22 (day 020): killed former #1 (automated weekly financial snapshot for solo/
-micro-business owners on QuickBooks Online) in Phase 1 — see `killed/qbo-weekly-snapshot/
-REASON.md`. Scored 13/25; "reason to exist alongside what already ships" independently scored 1/5
-(auto-kill). Resolved this entry's own flagged risk directly against Intuit's own product pages:
-all three tasks named in the sourcing job posting (flag overdue invoices, categorize bank-feed
-transactions, generate a P&L/balance-sheet/cash-flow snapshot) are free, native QuickBooks Online
-features today, and the one residual gap (following up on why a transaction is uncategorized)
-already has a $9/month paid incumbent (Uncat). This is the first kill since the 2026-09-21 (day
-019) sourcing-method review, not a third-in-a-row. Remaining entries renumbered (former #2-#3 are
-now #1-#2); down to 2 entries, below the routine's three-candidate floor — next session must
-replenish before or as part of Phase 0/1, unless this session's remaining time does it first.
-
-Updated 2026-09-23 (day 021): sourced and killed a new candidate (CAM reconciliation tool for small
-independent commercial property managers) within the same session — see
-`killed/cam-reconciliation-small-cre/REASON.md`. Scored 13/25; evidence of demand independently
-scored 2/5 (auto-kill). A delegated research subagent checked ~17 verticals via general web search
-(not this project's four named vendor-surface channels) and found this the only candidate with
-solid evidence — nearly every other vertical it checked was already colonized by 2+ named
-competitors. This candidate was never added to this file: this session's own direct re-verification
-of the subagent's citations surfaced a decisive, purpose-built competitor (PigJet, sized for
-"portfolios managing between 3 and 25 NNN properties") that the subagent's report had missed
-despite it being named on the very source page cited as evidence, so validation and kill happened
-in the same pass rather than across two sessions. See `RUNBOOK.md` for a new entry on this
-subagent-miss failure mode. Backlog remains at 2 entries (below the routine's three-candidate
-floor) — day 022 must replenish before or as part of Phase 0/1, unless it happens sooner.
-
-1. **Freelancer SOW/contract generator with e-sign tracking** — a lightweight, freelancer-specific
-   alternative to heavyweight contract platforms: generates scoped statements of work from a short
-   intake form, tracks e-signature status, and reminds on renewal/expiry. Rationale: solo
-   consultants often use generic templates or expensive all-in-one tools (DocuSign, PandaDoc) built
-   for larger teams; a narrow, cheap, fast tool may fill a gap. Demoted: the core deliverable (a
-   generated SOW document) is a one-shot artifact of the same shape as the three kills; not
-   disqualified outright since the e-sign tracking/renewal reminders piece is arguably property
-   (b), but Validate must test whether that piece alone (not the document generation) is what a
-   buyer would pay for, given free-template and incumbent-freemium substitutes likely exist.
-
+1. **Freelancer SOW/contract generator with e-sign tracking** — lightweight freelancer-specific
+   alternative to DocuSign/PandaDoc: generates scoped SOWs from an intake form, tracks e-signature
+   status, reminds on renewal/expiry. Owner fit is weak (2/5, general freelance tooling, no
+   specific network) — kept in the pool but unlikely to beat the shortlist above.
 2. **Git-history-to-changelog generator for indie SaaS** — ingests merged PRs/commits and drafts a
-   customer-facing changelog entry or release-notes email, matching a configurable tone/template.
-   Rationale: solo/indie SaaS founders ship frequently but often skip customer communication because
-   writing a polished changelog entry takes more time than the fix itself. Demoted: this is close to
-   a pure one-shot text-generation task, which a general-purpose LLM prompt against pasted commits
-   already does for free today — the same substitute that helped kill the questionnaire-autofill
-   idea. Validate would need to find a real wedge (e.g. persisted per-repo config/workflow
-   automation, property (b)) beyond "nicer prompt" before this clears "reason to exist."
+   customer-facing changelog/release-notes email. Close to a one-shot text-generation task a
+   general LLM prompt already does free; an Azure DevOps release-notes framing (owner fit 3) was
+   not evidenced this session and would need Deep Check to establish a real wedge.
