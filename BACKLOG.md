@@ -4,6 +4,30 @@ Ranked pool of candidate ideas not yet started, scored under the tournament rubr
 (rewritten 2026-09-23). Phase 1 Deep Check runs on the top 3 (the shortlist below); the highest
 scorer with no hard disqualifier and 12/25+ wins per `OWNER.md`'s Pick rule.
 
+## 2026-09-25 (day 023) inbox screen
+
+Per `OWNER.md`'s Phase 0 rule, `INBOX.md`'s new line (owner-submitted 2026-09-25, before this
+session) was screened ahead of continuing day 022's Deep Check step. Quick screen (~10 min, web
+search only, no subagent): a QR-code phone-ordering system for Belgian frituren/broodjeszaken,
+replacing order kiosks/screens, with in-app payment and orders routed to the owner like an online
+order.
+
+No hard disqualifier applies. H3 was considered and rejected: there is no single platform frituur
+owners already run on that ships this free — the closest matches are third-party competing
+products, not a free tier of a platform this idea would plug into. H2 does not block a v1: payment
+would integrate as a client of an existing licensed PSP (Mollie/Payconiq/Stripe), not custody funds
+directly, same pattern as any other online-ordering SaaS; this is a Build-phase implementation
+detail, not a licence requirement on the idea itself.
+
+Scored 14/25 (demand 4, WTP 4, wedge 1, owner fit 1, buildability 4) — added to the ranked table
+below as `frituur-qr-order`. Owner fit scored 1, not the 3 that "EU/Belgian SMB workflows" might
+suggest at a glance: the rubric's owner-fit dimension is about the owner's own reach and domain
+knowledge, and nothing in `OWNER.md`'s owner-fit channels or the inbox line itself (no
+`[i-know-users]` tag) evidences any personal network into Belgian horeca/frituur ownership,
+unlike the Optimizely/ADO/EU-consultancy-client channels that are actually the owner's daily work.
+Judgment call recorded in `DECISIONS.md`. Ranked but well below the current 20/16/16 shortlist, so
+the shortlist and the day-022 Deep Check next action are unchanged.
+
 ## 2026-09-24 (day 022) full re-screen
 
 Per `STATE.md`'s day-022 next action: screened `INBOX.md` (empty, nothing to screen), sourced 8 new
@@ -23,7 +47,7 @@ physical `git mv` is deferred to the session that actually selects one, to avoid
 churn. Ideas that still carry a hard disqualifier (H1-H4) stay in `killed/` and are excluded from
 shortlist eligibility regardless of score, per `OWNER.md`.
 
-### Ranked table (24 candidates, highest score first)
+### Ranked table (25 candidates, highest score first)
 
 | # | Idea | Demand | WTP | Wedge | Owner fit | Build | Total | Hard disq. | Status |
 |---|---|---|---|---|---|---|---|---|---|
@@ -39,18 +63,19 @@ shortlist eligibility regardless of score, per `OWNER.md`.
 | 10 | vendor-security-questionnaire-autofill (revived) | 4 | 4 | 2 | 1 | 3 | 14 | none | Backlog — no owner network |
 | 10 | freelancer-sow-contract-generator (unvalidated carry-over) | 3 | 3 | 2 | 2 | 4 | 14 | none (unvalidated) | Backlog |
 | 10 | dependency-eol-watcher (revived) | 3 | 2 | 2 | 3 | 4 | 14 | none | Backlog |
-| 13 | grant-report-normalizer (revived) | 2 | 4 | 2 | 1 | 4 | 13 | none | Backlog |
-| 13 | clickup-conditional-formatting (revived) | 4 | 2 | 2 | 1 | 4 | 13 | none | Backlog |
-| 13 | git-changelog-generator (unvalidated carry-over) | 2 | 2 | 2 | 3 | 4 | 13 | none (unvalidated) | Backlog |
-| 16 | rfq-quote-comparison (revived) | 2 | 3 | 2 | 1 | 4 | 12 | none | Backlog |
-| 16 | qbo-weekly-snapshot | 3 | 3 | 1 | 1 | 4 | 12 | **H3** | Stays in killed/ |
-| 18 | co-owned-vacation-property (revived) | 2 | 3 | 1 | 1 | 4 | 11 | none | Backlog |
-| 18 | vendor-price-list-normalizer (revived) | 1 | 2 | 2 | 2 | 4 | 11 | none | Backlog |
-| 18 | sales-tax-nexus-monitor | 2 | 3 | 1 | 1 | 4 | 11 | **H3** | Stays in killed/ |
-| 21 | rent-increase-notice-calculator | 3 | 1 | 1 | 1 | 4 | 10 | **H3** | Stays in killed/ |
-| 22 | contractor-classification-checker (revived) | 2 | 2 | 1 | 1 | 3 | 9 | none* | Backlog (bottom) |
-| 22 | customs-hts-microseller | 3 | 1 | 1 | 1 | 3 | 9 | **H3** | Stays in killed/ |
-| 22 | cam-reconciliation-small-cre | 1 | 2 | 1 | 1 | 4 | 9 | **H4** | Stays in killed/ |
+| 10 | frituur-qr-order (new, from INBOX.md day 023) | 4 | 4 | 1 | 1 | 4 | 14 | none | Backlog — no owner network, saturated market |
+| 14 | grant-report-normalizer (revived) | 2 | 4 | 2 | 1 | 4 | 13 | none | Backlog |
+| 14 | clickup-conditional-formatting (revived) | 4 | 2 | 2 | 1 | 4 | 13 | none | Backlog |
+| 14 | git-changelog-generator (unvalidated carry-over) | 2 | 2 | 2 | 3 | 4 | 13 | none (unvalidated) | Backlog |
+| 17 | rfq-quote-comparison (revived) | 2 | 3 | 2 | 1 | 4 | 12 | none | Backlog |
+| 17 | qbo-weekly-snapshot | 3 | 3 | 1 | 1 | 4 | 12 | **H3** | Stays in killed/ |
+| 19 | co-owned-vacation-property (revived) | 2 | 3 | 1 | 1 | 4 | 11 | none | Backlog |
+| 19 | vendor-price-list-normalizer (revived) | 1 | 2 | 2 | 2 | 4 | 11 | none | Backlog |
+| 19 | sales-tax-nexus-monitor | 2 | 3 | 1 | 1 | 4 | 11 | **H3** | Stays in killed/ |
+| 22 | rent-increase-notice-calculator | 3 | 1 | 1 | 1 | 4 | 10 | **H3** | Stays in killed/ |
+| 23 | contractor-classification-checker (revived) | 2 | 2 | 1 | 1 | 3 | 9 | none* | Backlog (bottom) |
+| 23 | customs-hts-microseller | 3 | 1 | 1 | 1 | 3 | 9 | **H3** | Stays in killed/ |
+| 23 | cam-reconciliation-small-cre | 1 | 2 | 1 | 1 | 4 | 9 | **H4** | Stays in killed/ |
 
 \* `contractor-classification-checker`'s original kill cited "real users only asked for the
 classification answer, never the audit trail" — on strict re-reading this is an *absence* of demand
@@ -121,6 +146,38 @@ top 3 don't pan out in Deep Check.
 
 No solid evidence was found for general Optimizely Marketplace add-on gaps or OCP-app-specific
 complaints beyond the above — recorded as "no evidence found," not filled in.
+
+## Sourcing notes for frituur-qr-order (day 023, INBOX.md screen)
+
+- **Demand/market size**: horecawebservice.nl's own comparison lists 20+ QR-ordering vendors
+  (Amuse, Butlaroo, Culio, Gastro Pad, Jamezz, Lekkerqr, Mozo, MplusKASSA, Next To Food, Obur,
+  OrderBilly, Orderli, Scanfie, Smartendr, Spont POS, WaiterOne, Waiterz, Woby, Wazaltzijn, and
+  more) — https://www.horecawebservice.nl/apps/digitale-qr-bestelsystemen-horeca-leveranciersvergelijking/.
+  Frituurwereld.nl cites a staffing-cost-savings claim from QR ordering (up to ~50%) —
+  https://www.frituurwereld.nl/kosten-besparen-met-qr-code-en-bestelzuil/. Get-Sides.nl cites a
+  different savings framing (more than €1,000/month) —
+  https://www.get-sides.nl/blog/voordelen-zelfbediening/. (Correction: an earlier draft of this
+  note also cited a "€600/day" figure attributed to these two pages; refetching both directly found
+  no such figure on either page, so it has been removed — it can't be traced to a real source and
+  is not restated here.) Counts as demand evidence per the competitor-counts-as-demand rule.
+- **Wedge (why it scored 1)**: **Frituurapp.be** already sells this exact product to this exact
+  segment — QR-code phone ordering, payment, and live order-status for snackbars/frituren, with a
+  webshop and kiosk option alongside it —
+  https://www.frituurapp.be/producten/qr-code-bestellen (claims "15-30% more revenue" and up to
+  5 minutes saved per order; no independent verification, not treated as fact here). Three more
+  Belgian-specific systems (OrderBilly, Smartendr, Wazaltzijn) also compete in this exact
+  geography. No gap (segment, price point, or missing feature) was found that these do not already
+  cover; this is recorded as "no evidence found" for a wedge, not invented.
+- **WTP/pricing**: publicly listed prices cluster from free (GloriaFood, Supercode free tier,
+  Lekkerqr free tier) through ~€9-€95/month-equivalent (Menubly $9.99/mo, OrderNow Pro $44/mo and
+  Ultra $95/mo — both USD per the cited page, not EUR) up to €300/month for full-featured
+  platforms, plus Culio at ~€1/day —
+  https://menustack.app/blog/qr-code-menu-cost-guide/, https://ordernowqr.com/pricing/,
+  https://www.frituurwereld.nl/kosten-besparen-met-qr-code-en-bestelzuil/. Some platforms also
+  charge a per-order percentage (2-3%) on top of a subscription.
+- **Unreachable**: no frituur-owner forum or review-site threads (e.g. Horeca Vlaanderen member
+  forums) were checked this session — flagged as unreachable/not attempted, neutral per the
+  scoring rule, not counted against demand.
 
 ## Carry-over entries (unvalidated, quick-screen estimate only, no fresh research this session)
 

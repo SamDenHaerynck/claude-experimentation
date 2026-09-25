@@ -6,6 +6,12 @@ Optional tags: [must-try] (straight to shortlist), [i-know-users].
 
 ## New
 
-A system to order food/drinks at a fast food restaurant (frituur/broodjeszaak) like you have at McDonald's but without the screens. My idea would replace the screens with your phone. You simply scan a qr code at the place and start ordering via your phone. The owner receives your order (like an online order) and you already payed during the process. This allows the owner of the business to lower his employee cost (which is super high in Belgium). 
-
 ## Screened
+
+- 2026-09-25 (day 023): frituur/broodjeszaak QR phone-ordering idea — screened, no hard
+  disqualifier, scored 14/25 (demand 4, WTP 4, wedge 1, owner fit 1, buildability 4). Moved to
+  `BACKLOG.md` as `frituur-qr-order`; ranked but not shortlisted (tied 4th-tier, well below the
+  20/16/16 shortlist). Market already has 20+ QR-ordering vendors per horecawebservice.nl's
+  comparison, including a Belgian frituur/snackbar-specific incumbent (Frituurapp.be) and three
+  more Belgian systems (OrderBilly, Smartendr, Wazaltzijn) — no evidenced wedge found. See
+  `BACKLOG.md` for full sourcing and scoring detail.
