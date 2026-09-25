@@ -20,3 +20,10 @@ not read at session start). OWNER.md wins on conflicts.
   counts as demand and WTP evidence.
 - H3 check: platform's own docs, and which plans include the feature.
 - Symmetry rule: every new check that can lower a score must say what evidence counts in favour.
+- A research note can end up attributing a figure to a URL that doesn't actually contain it (day
+  023: a "€600/day" figure was attributed to two pages that, on direct refetch, don't contain it
+  and couldn't be traced to any source). Only attribute a claim to a specific URL after fetching
+  that exact page (WebFetch) and confirming the claim is actually on it — never attribute straight
+  from a search tool's synthesized summary text. Symmetry: a claim you did fetch and confirm on the
+  page still counts in the idea's favour even if the exact wording differs from the search
+  summary's paraphrase.
