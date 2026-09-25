@@ -453,3 +453,16 @@ Append-only log of significant choices and why they were made. One line each, ne
   Deep Check), CMS12-UpgradeAssist (16/25), ADO-MultiOrg (16/25). `ci-migration-rollback-gate`
   (16/25) narrowly missed the shortlist only on the owner-fit tiebreak (3 vs. 5 for the other three
   16-scorers).
+- 2026-09-25 (day 023): screened the owner's new `INBOX.md` idea (frituur/broodjeszaak QR phone
+  ordering) ahead of continuing day 022's Deep Check, per `OWNER.md`'s inbox-priority rule. No hard
+  disqualifier (H3 doesn't apply — no single platform the target already runs on ships this free;
+  H2 doesn't block a v1 — payment integrates as a PSP client, not fund custody). Scored 14/25 and
+  added to `BACKLOG.md` as `frituur-qr-order`, not shortlisted. Owner-fit judgment call: scored 1,
+  not 3, because the rubric's owner-fit dimension measures the owner's own reach/domain knowledge,
+  and neither `OWNER.md`'s owner-fit channels nor the inbox line itself (no `[i-know-users]` tag)
+  evidence any personal network into Belgian horeca — "Belgian SMB" being a listed sourcing channel
+  is not the same as the owner personally knowing frituur owners. Wedge scored 1: Frituurapp.be is
+  an existing, closely-matching competitor already selling QR phone-ordering to Belgian frituren
+  specifically, alongside 3 more Belgian systems and 20+ vendors overall in the wider category; no
+  gap was found. Deep Check's shortlist and next action are unchanged since this idea ranks well
+  below it.
