@@ -35,8 +35,8 @@ Notes for owner:
 - (Owner) Day 022 sourced 8 new candidates from the owner-fit channels and re-screened all 14
   killed/ ideas plus the 2 prior backlog entries under the new tournament rubric. Top-3 shortlist:
   BE-Peppol-Commerce (20/25 — Belgium's B2B e-invoicing mandate, live since 2026-01-01),
-  CMS12-UpgradeAssist (16/25), ADO-MultiOrg (16/25). Full ranked table of all 24 candidates is in
-  BACKLOG.md.
+  CMS12-UpgradeAssist (16/25), ADO-MultiOrg (16/25). Full ranked table (25 candidates as of day
+  023) is in BACKLOG.md.
 - (Owner) Judgment call made day 022 (recorded in DECISIONS.md): re-screened killed/ ideas that no
   longer meet a hard disqualifier under the new rubric were left physically in killed/ but are now
   ranked and eligible for Deep Check/Pick via BACKLOG.md's table — only ideas that still meet
