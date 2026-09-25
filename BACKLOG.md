@@ -47,7 +47,7 @@ physical `git mv` is deferred to the session that actually selects one, to avoid
 churn. Ideas that still carry a hard disqualifier (H1-H4) stay in `killed/` and are excluded from
 shortlist eligibility regardless of score, per `OWNER.md`.
 
-### Ranked table (24 candidates, highest score first)
+### Ranked table (25 candidates, highest score first)
 
 | # | Idea | Demand | WTP | Wedge | Owner fit | Build | Total | Hard disq. | Status |
 |---|---|---|---|---|---|---|---|---|---|
@@ -64,18 +64,18 @@ shortlist eligibility regardless of score, per `OWNER.md`.
 | 10 | freelancer-sow-contract-generator (unvalidated carry-over) | 3 | 3 | 2 | 2 | 4 | 14 | none (unvalidated) | Backlog |
 | 10 | dependency-eol-watcher (revived) | 3 | 2 | 2 | 3 | 4 | 14 | none | Backlog |
 | 10 | frituur-qr-order (new, from INBOX.md day 023) | 4 | 4 | 1 | 1 | 4 | 14 | none | Backlog — no owner network, saturated market |
-| 13 | grant-report-normalizer (revived) | 2 | 4 | 2 | 1 | 4 | 13 | none | Backlog |
-| 13 | clickup-conditional-formatting (revived) | 4 | 2 | 2 | 1 | 4 | 13 | none | Backlog |
-| 13 | git-changelog-generator (unvalidated carry-over) | 2 | 2 | 2 | 3 | 4 | 13 | none (unvalidated) | Backlog |
-| 16 | rfq-quote-comparison (revived) | 2 | 3 | 2 | 1 | 4 | 12 | none | Backlog |
-| 16 | qbo-weekly-snapshot | 3 | 3 | 1 | 1 | 4 | 12 | **H3** | Stays in killed/ |
-| 18 | co-owned-vacation-property (revived) | 2 | 3 | 1 | 1 | 4 | 11 | none | Backlog |
-| 18 | vendor-price-list-normalizer (revived) | 1 | 2 | 2 | 2 | 4 | 11 | none | Backlog |
-| 18 | sales-tax-nexus-monitor | 2 | 3 | 1 | 1 | 4 | 11 | **H3** | Stays in killed/ |
-| 21 | rent-increase-notice-calculator | 3 | 1 | 1 | 1 | 4 | 10 | **H3** | Stays in killed/ |
-| 22 | contractor-classification-checker (revived) | 2 | 2 | 1 | 1 | 3 | 9 | none* | Backlog (bottom) |
-| 22 | customs-hts-microseller | 3 | 1 | 1 | 1 | 3 | 9 | **H3** | Stays in killed/ |
-| 22 | cam-reconciliation-small-cre | 1 | 2 | 1 | 1 | 4 | 9 | **H4** | Stays in killed/ |
+| 14 | grant-report-normalizer (revived) | 2 | 4 | 2 | 1 | 4 | 13 | none | Backlog |
+| 14 | clickup-conditional-formatting (revived) | 4 | 2 | 2 | 1 | 4 | 13 | none | Backlog |
+| 14 | git-changelog-generator (unvalidated carry-over) | 2 | 2 | 2 | 3 | 4 | 13 | none (unvalidated) | Backlog |
+| 17 | rfq-quote-comparison (revived) | 2 | 3 | 2 | 1 | 4 | 12 | none | Backlog |
+| 17 | qbo-weekly-snapshot | 3 | 3 | 1 | 1 | 4 | 12 | **H3** | Stays in killed/ |
+| 19 | co-owned-vacation-property (revived) | 2 | 3 | 1 | 1 | 4 | 11 | none | Backlog |
+| 19 | vendor-price-list-normalizer (revived) | 1 | 2 | 2 | 2 | 4 | 11 | none | Backlog |
+| 19 | sales-tax-nexus-monitor | 2 | 3 | 1 | 1 | 4 | 11 | **H3** | Stays in killed/ |
+| 22 | rent-increase-notice-calculator | 3 | 1 | 1 | 1 | 4 | 10 | **H3** | Stays in killed/ |
+| 23 | contractor-classification-checker (revived) | 2 | 2 | 1 | 1 | 3 | 9 | none* | Backlog (bottom) |
+| 23 | customs-hts-microseller | 3 | 1 | 1 | 1 | 3 | 9 | **H3** | Stays in killed/ |
+| 23 | cam-reconciliation-small-cre | 1 | 2 | 1 | 1 | 4 | 9 | **H4** | Stays in killed/ |
 
 \* `contractor-classification-checker`'s original kill cited "real users only asked for the
 classification answer, never the audit trail" — on strict re-reading this is an *absence* of demand
@@ -153,11 +153,13 @@ complaints beyond the above — recorded as "no evidence found," not filled in.
   (Amuse, Butlaroo, Culio, Gastro Pad, Jamezz, Lekkerqr, Mozo, MplusKASSA, Next To Food, Obur,
   OrderBilly, Orderli, Scanfie, Smartendr, Spont POS, WaiterOne, Waiterz, Woby, Wazaltzijn, and
   more) — https://www.horecawebservice.nl/apps/digitale-qr-bestelsystemen-horeca-leveranciersvergelijking/.
-  Frituurwereld.nl and Get-Sides.nl both cite concrete personnel-cost savings claims from QR
-  ordering (up to ~50% staffing cost, one case citing "€600/day") —
-  https://www.frituurwereld.nl/kosten-besparen-met-qr-code-en-bestelzuil/,
-  https://www.get-sides.nl/blog/voordelen-zelfbediening/. Counts as demand evidence per the
-  competitor-counts-as-demand rule.
+  Frituurwereld.nl cites a staffing-cost-savings claim from QR ordering (up to ~50%) —
+  https://www.frituurwereld.nl/kosten-besparen-met-qr-code-en-bestelzuil/. Get-Sides.nl cites a
+  different savings framing (more than €1,000/month) —
+  https://www.get-sides.nl/blog/voordelen-zelfbediening/. (Correction: an earlier draft of this
+  note also cited a "€600/day" figure attributed to these two pages; refetching both directly found
+  no such figure on either page, so it has been removed — it can't be traced to a real source and
+  is not restated here.) Counts as demand evidence per the competitor-counts-as-demand rule.
 - **Wedge (why it scored 1)**: **Frituurapp.be** already sells this exact product to this exact
   segment — QR-code phone ordering, payment, and live order-status for snackbars/frituren, with a
   webshop and kiosk option alongside it —
@@ -167,8 +169,9 @@ complaints beyond the above — recorded as "no evidence found," not filled in.
   geography. No gap (segment, price point, or missing feature) was found that these do not already
   cover; this is recorded as "no evidence found" for a wedge, not invented.
 - **WTP/pricing**: publicly listed prices cluster from free (GloriaFood, Supercode free tier,
-  Lekkerqr free tier) through ~€9-€95/month (Menubly $9.99/mo, OrderNow Pro €44/mo and Ultra
-  €95/mo) up to €300/month for full-featured platforms, plus Culio at ~€1/day —
+  Lekkerqr free tier) through ~€9-€95/month-equivalent (Menubly $9.99/mo, OrderNow Pro $44/mo and
+  Ultra $95/mo — both USD per the cited page, not EUR) up to €300/month for full-featured
+  platforms, plus Culio at ~€1/day —
   https://menustack.app/blog/qr-code-menu-cost-guide/, https://ordernowqr.com/pricing/,
   https://www.frituurwereld.nl/kosten-besparen-met-qr-code-en-bestelzuil/. Some platforms also
   charge a per-order percentage (2-3%) on top of a subscription.
