@@ -20,3 +20,9 @@ not read at session start). OWNER.md wins on conflicts.
   counts as demand and WTP evidence.
 - H3 check: platform's own docs, and which plans include the feature.
 - Symmetry rule: every new check that can lower a score must say what evidence counts in favour.
+- WebSearch's own synthesized summary can blend a fact from one result into a sentence citing a
+  different result's URL (day 023: a "€600/day" figure ended up attributed to two pages that don't
+  contain it). Only attribute a claim to a specific URL after fetching that exact page (WebFetch)
+  and confirming the claim is actually on it — never attribute straight from the search summary
+  text. Symmetry: a claim you did fetch and confirm on the page still counts in the idea's favour
+  even if the exact wording differs from the search summary's paraphrase.
