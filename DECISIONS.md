@@ -466,3 +466,18 @@ Append-only log of significant choices and why they were made. One line each, ne
   specifically, alongside 3 more Belgian systems and 20+ vendors overall in the wider category; no
   gap was found. Deep Check's shortlist and next action are unchanged since this idea ranks well
   below it.
+- 2026-09-26 (day 024): ran Deep Check on all three shortlisted ideas (`be-peppol-commerce`,
+  `CMS12-UpgradeAssist`, `ADO-MultiOrg`) via research subagents, all citations fetched directly.
+  `be-peppol-commerce` resolved both its H2 licensing question (clear — integrates as a client of
+  an existing accredited Peppol Access Point, no accreditation needed) and H3 (clear — no
+  Optimizely-Commerce Peppol connector exists anywhere) with score unchanged at 20/25 — picked as
+  tournament round-1 winner per `OWNER.md`'s Pick rule (highest score, no hard disqualifier,
+  clears 12/25). Moved to `ideas/be-peppol-commerce/`; `VALIDATION.md` and `VALIDATION_KIT.md`
+  written; `STATE.md` moved to Phase 2 (Plan). `CMS12-UpgradeAssist` revised up to 18/25 (Demand
+  3→4, WTP 2→3) on stronger-than-expected evidence of broader upgrade pain and a since-archived
+  official Optimizely tool; kept as a round-2 runner-up. `ADO-MultiOrg` revised down to 15/25
+  (Wedge 2→1) after Deep Check surfaced a second, more mature free competitor
+  (`wangkanai/devops-enhanced-mcp`) already covering the core mechanism, with no evidence found for
+  the proposed governance/UI wedge beyond analogy — not picked, not a round-2 runner-up (behind
+  `ci-migration-rollback-gate`'s unchanged 16/25 on the `OWNER.md` "two runners-up" rule). Full
+  reasoning and every cited URL in each idea's `ideas/<slug>/VALIDATION.md`.

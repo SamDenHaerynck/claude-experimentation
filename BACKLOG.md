@@ -51,31 +51,31 @@ shortlist eligibility regardless of score, per `OWNER.md`.
 
 | # | Idea | Demand | WTP | Wedge | Owner fit | Build | Total | Hard disq. | Status |
 |---|---|---|---|---|---|---|---|---|---|
-| 1 | **BE-Peppol-Commerce** (new) | 4 | 4 | 4 | 5 | 3 | **20** | none — H2 to confirm in Deep Check | Shortlist #1 |
-| 2 | **CMS12-UpgradeAssist** (new) | 3 | 2 | 3 | 5 | 3 | **16** | none | Shortlist #2 |
-| 3 | **ADO-MultiOrg** (new) | 3 | 2 | 2 | 5 | 4 | **16** | none | Shortlist #3 |
-| 4 | ci-migration-rollback-gate (revived, was killed/) | 4 | 3 | 2 | 3 | 4 | 16 | none | Close 4th, not shortlisted (lower owner fit on tiebreak) |
+| 1 | **be-peppol-commerce** (Deep Checked day 024) | 4 | 4 | 4 | 5 | 3 | **20** | none — H2 and H3 confirmed clear | **WON round 1 — moved to `ideas/`, Phase 2 Plan** |
+| 2 | **CMS12-UpgradeAssist** (Deep Checked day 024) | 4 | 3 | 3 | 5 | 3 | **18** | none | Runner-up — top of backlog for round 2 |
+| 3 | ci-migration-rollback-gate (revived, was killed/) | 4 | 3 | 2 | 3 | 4 | 16 | none | Runner-up — top of backlog for round 2 |
+| 5 | **ADO-MultiOrg** (Deep Checked day 024) | 3 | 2 | 1 | 5 | 4 | **15** | none | Deep-Checked, not picked — see below |
 | 5 | ADO-GovAudit (new) | 2 | 2 | 3 | 5 | 3 | 15 | none | Backlog |
 | 5 | Opal-ToolPack (new) | 2 | 2 | 3 | 5 | 3 | 15 | none | Backlog |
 | 5 | Opal-Insights (new) | 2 | 2 | 3 | 5 | 3 | 15 | none | Backlog |
 | 5 | ADO-BoardsMultiOrg (new) | 2 | 1 | 3 | 5 | 4 | 15 | none | Backlog |
 | 5 | AdvCMS-ReviewPersist (new) | 2 | 2 | 2 | 5 | 4 | 15 | none | Backlog |
-| 10 | vendor-security-questionnaire-autofill (revived) | 4 | 4 | 2 | 1 | 3 | 14 | none | Backlog — no owner network |
-| 10 | freelancer-sow-contract-generator (unvalidated carry-over) | 3 | 3 | 2 | 2 | 4 | 14 | none (unvalidated) | Backlog |
-| 10 | dependency-eol-watcher (revived) | 3 | 2 | 2 | 3 | 4 | 14 | none | Backlog |
-| 10 | frituur-qr-order (new, from INBOX.md day 023) | 4 | 4 | 1 | 1 | 4 | 14 | none | Backlog — no owner network, saturated market |
-| 14 | grant-report-normalizer (revived) | 2 | 4 | 2 | 1 | 4 | 13 | none | Backlog |
-| 14 | clickup-conditional-formatting (revived) | 4 | 2 | 2 | 1 | 4 | 13 | none | Backlog |
-| 14 | git-changelog-generator (unvalidated carry-over) | 2 | 2 | 2 | 3 | 4 | 13 | none (unvalidated) | Backlog |
-| 17 | rfq-quote-comparison (revived) | 2 | 3 | 2 | 1 | 4 | 12 | none | Backlog |
-| 17 | qbo-weekly-snapshot | 3 | 3 | 1 | 1 | 4 | 12 | **H3** | Stays in killed/ |
-| 19 | co-owned-vacation-property (revived) | 2 | 3 | 1 | 1 | 4 | 11 | none | Backlog |
-| 19 | vendor-price-list-normalizer (revived) | 1 | 2 | 2 | 2 | 4 | 11 | none | Backlog |
-| 19 | sales-tax-nexus-monitor | 2 | 3 | 1 | 1 | 4 | 11 | **H3** | Stays in killed/ |
-| 22 | rent-increase-notice-calculator | 3 | 1 | 1 | 1 | 4 | 10 | **H3** | Stays in killed/ |
-| 23 | contractor-classification-checker (revived) | 2 | 2 | 1 | 1 | 3 | 9 | none* | Backlog (bottom) |
-| 23 | customs-hts-microseller | 3 | 1 | 1 | 1 | 3 | 9 | **H3** | Stays in killed/ |
-| 23 | cam-reconciliation-small-cre | 1 | 2 | 1 | 1 | 4 | 9 | **H4** | Stays in killed/ |
+| 11 | vendor-security-questionnaire-autofill (revived) | 4 | 4 | 2 | 1 | 3 | 14 | none | Backlog — no owner network |
+| 11 | freelancer-sow-contract-generator (unvalidated carry-over) | 3 | 3 | 2 | 2 | 4 | 14 | none (unvalidated) | Backlog |
+| 11 | dependency-eol-watcher (revived) | 3 | 2 | 2 | 3 | 4 | 14 | none | Backlog |
+| 11 | frituur-qr-order (new, from INBOX.md day 023) | 4 | 4 | 1 | 1 | 4 | 14 | none | Backlog — no owner network, saturated market |
+| 15 | grant-report-normalizer (revived) | 2 | 4 | 2 | 1 | 4 | 13 | none | Backlog |
+| 15 | clickup-conditional-formatting (revived) | 4 | 2 | 2 | 1 | 4 | 13 | none | Backlog |
+| 15 | git-changelog-generator (unvalidated carry-over) | 2 | 2 | 2 | 3 | 4 | 13 | none (unvalidated) | Backlog |
+| 18 | rfq-quote-comparison (revived) | 2 | 3 | 2 | 1 | 4 | 12 | none | Backlog |
+| 18 | qbo-weekly-snapshot | 3 | 3 | 1 | 1 | 4 | 12 | **H3** | Stays in killed/ |
+| 20 | co-owned-vacation-property (revived) | 2 | 3 | 1 | 1 | 4 | 11 | none | Backlog |
+| 20 | vendor-price-list-normalizer (revived) | 1 | 2 | 2 | 2 | 4 | 11 | none | Backlog |
+| 20 | sales-tax-nexus-monitor | 2 | 3 | 1 | 1 | 4 | 11 | **H3** | Stays in killed/ |
+| 23 | rent-increase-notice-calculator | 3 | 1 | 1 | 1 | 4 | 10 | **H3** | Stays in killed/ |
+| 24 | contractor-classification-checker (revived) | 2 | 2 | 1 | 1 | 3 | 9 | none* | Backlog (bottom) |
+| 24 | customs-hts-microseller | 3 | 1 | 1 | 1 | 3 | 9 | **H3** | Stays in killed/ |
+| 24 | cam-reconciliation-small-cre | 1 | 2 | 1 | 1 | 4 | 9 | **H4** | Stays in killed/ |
 
 \* `contractor-classification-checker`'s original kill cited "real users only asked for the
 classification answer, never the audit trail" — on strict re-reading this is an *absence* of demand
@@ -89,30 +89,41 @@ this is a real liability-risk factor to re-check explicitly in any future Deep C
 not one to wave past silently. Kept out of `killed/` for scoring purposes; its score (9/25, owner
 fit 1) keeps it at the bottom regardless.
 
-## Top-3 shortlist for Deep Check
+## Day 024: Deep Check + Pick — winner: be-peppol-commerce
 
-1. **BE-Peppol-Commerce** — Optimizely Configured Commerce connector generating/receiving Peppol
-   BIS/EN16931 e-invoices for Belgian B2B buyers. Belgium's B2B e-invoicing mandate took effect
-   2026-01-01 (already live, not a future risk), affecting roughly 1.2M VAT entities per
-   combell.com and blog.seeburger.com. No Optimizely-Commerce-specific Peppol integration was found
-   in this session's search; named generic Peppol access points (Smart PEPPOL, Babelway, Qvalia,
-   Banqup, Taxilla) don't address the Commerce/OCP integration layer. **Deep Check must resolve
-   before anything else: does shipping this require the product itself to be an accredited Peppol
-   Access Point (an H2-relevant licensing question), or can it integrate as a client of an existing
-   accredited AP's API (no license needed)?** If it requires AP accreditation, this may hit H2 and
-   should be re-scored or killed on that basis alone.
-2. **CMS12-UpgradeAssist** — scans an Optimizely CMS 11/Alloy codebase for breaking changes and
-   missing admin features when upgrading to CMS 12. Real recurring forum pain (2022-2023 threads on
-   world.optimizely.com) about a missing Admin > Config > Modules equivalent in CMS 12; Optimizely
-   staff said a port was being considered but Deep Check should confirm current CMS 12 state before
-   assuming the gap still exists.
-3. **ADO-MultiOrg** — an Azure DevOps multi-org MCP/CLI gateway letting a consultancy switch
-   context across ~15-20+ client orgs without reconfiguring. Real: Microsoft's own
-   `azure-devops-mcp` repo has an open (`Won't Fix`) issue (#812, filed 2025-12-29) requesting this
-   exact capability. Risk to resolve in Deep Check: an independent open-source alternative
-   ("Azure DevOps Multi-Organization MCP Server" by nikydobrev on Glama.ai) already exists and is
-   free — Deep Check must check what it actually covers and whether a real wedge (packaging,
-   support, a management UI, org-governance features) survives next to it.
+All three shortlisted ideas' Deep Checks ran this session (research subagents, all citations
+fetched — full detail in each idea's `ideas/<slug>/VALIDATION.md`):
+
+1. **be-peppol-commerce** — H2 resolved clear (it integrates as an API client of an already-
+   accredited Peppol Access Point — Storecove, Qvalia, Recommand, or Billit — and does not itself
+   need OpenPeppol accreditation; multiple vendor and OpenPeppol sources confirm this is the
+   mainstream integration pattern, not a workaround). H3 resolved clear (no Optimizely-Commerce
+   Peppol connector, free or paid, exists anywhere — marketplace, forums, or provider sites).
+   Wedge confirmed and strengthened: every other major commerce/ERP platform (SAP, Dynamics,
+   NetSuite, Xero, Sage, Odoo, WooCommerce) already has a Peppol connector; Optimizely Commerce
+   does not. Score unchanged at **20/25**, no hard disqualifier. **Wins the tournament** — highest
+   score, no hard disqualifier, clears the 12/25 floor. Moved to `ideas/be-peppol-commerce/`, with
+   `VALIDATION.md` and `VALIDATION_KIT.md` written. `STATE.md` moves to Phase 2 (Plan).
+2. **CMS12-UpgradeAssist** — the original 2022 Modules-admin-screen complaint confirmed via a
+   direct Optimizely-staff quote, plus several additional, independently-documented CMS 11→12 pain
+   points found (runtime migration, WCF/XForms/WebForms removals, real 2023 upgrade-failure forum
+   threads). No commercially-available competing scanner exists; Optimizely's own semi-official
+   tooling (`upgrade-assistant` extensions) was archived 2025-11-12 in favor of a generic AI
+   modernization agent — flagged as a real substitute risk, not a hard disqualifier. Revised score
+   **18/25** (Demand 3→4, WTP 2→3, Wedge and Owner fit and Buildability unchanged). Runner-up,
+   stays at the top of the backlog for round 2.
+3. **ADO-MultiOrg** — issue #812 confirmed real and confirmed `Won't Fix`; Microsoft's FAQ confirms
+   single-org-at-a-time is by design. But Deep Check surfaced a **second** free competitor
+   (`wangkanai/devops-enhanced-mcp`, 207 commits, actively maintained) beyond the one already known
+   (`nikydobrev`'s, near-unused) — between them, the core mechanism (automatic multi-org switching)
+   is already free and reasonably mature. No evidence was found of demand for the proposed wedge
+   (a management UI, PAT vault, or governance/audit layer) beyond analogy to unrelated generic MCP
+   gateway products. Revised score **15/25** (Wedge 2→1), below both runners-up. Not picked; kept
+   in the ranked table, not shortlisted for round 2 unless the top-2 fall through.
+
+`ci-migration-rollback-gate` (16/25, unchanged, not re-checked this session — its Deep Check is
+still pending) is the other runner-up per `OWNER.md`'s "two runners-up stay at the top of
+`BACKLOG.md`" rule, ahead of ADO-MultiOrg's revised 15/25.
 
 `ci-migration-rollback-gate` (16/25, owner fit 3) is a close 4th, revived from `killed/` under the
 new rubric. Correction on re-check: this idea (and `vendor-security-questionnaire-autofill`,
