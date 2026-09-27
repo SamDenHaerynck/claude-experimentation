@@ -481,3 +481,15 @@ Append-only log of significant choices and why they were made. One line each, ne
   the proposed governance/UI wedge beyond analogy — not picked, not a round-2 runner-up (behind
   `ci-migration-rollback-gate`'s unchanged 16/25 on the `OWNER.md` "two runners-up" rule). Full
   reasoning and every cited URL in each idea's `ideas/<slug>/VALIDATION.md`.
+- 2026-09-27 (day 025): wrote `ideas/be-peppol-commerce/PLAN.md` (Phase 2). Scoped v1 as a
+  standalone .NET class library + tests (build/validate/send/receive a Peppol invoice via a
+  provider abstraction) plus a documented, stubbed Configured Commerce extension contract, since
+  the routine has no license/instance for a real Configured Commerce install and may never deploy
+  or create third-party accounts — the real integration point is honestly scoped as documented
+  interfaces, not a live plugin. Critic subagent found the EN16931 Schematron validation slice
+  (.NET has no built-in XSLT 2.0/3.0 processor, which real Schematron rules need) was underscoped
+  and stated as settled when it wasn't; split it into a spike slice (2a) + wire-in slice (2b),
+  bringing the plan to 11 slices (still under the 12-session cut-scope trigger). Also tightened the
+  Configured Commerce contract's done-bar into a concrete checklist and added a provider-doc-depth
+  checkpoint before committing to Recommand/Storecove. Full findings and changes recorded in
+  `PLAN.md`'s "Critic review" section.
