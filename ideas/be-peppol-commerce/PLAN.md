@@ -28,9 +28,12 @@ called out explicitly below and in `HANDOFF.md` later, not glossed over.
 3. The XML is validated against the EN16931 Schematron/schema rules before anything is sent.
    A document that fails validation is never sent.
 4. The validated XML is sent through an `IPeppolAccessPointClient` abstraction to the configured AP
-   provider's API. v1 ships two concrete provider clients behind this interface (chosen for public,
-   readable API docs: **Recommand** and **Storecove**, per sources in `VALIDATION.md`), both
-   exercised only against fakes/mocks in tests — no live provider account, no live key.
+   provider's API. v1 tentatively targets two concrete provider clients behind this interface,
+   **Recommand** and **Storecove** — `VALIDATION.md`'s sources confirm both clear H2 (client-of-an-
+   AP, no accreditation needed) and give pricing, but do NOT establish that either's public docs
+   describe payload/webhook shapes in enough detail to build a fake against; that is unconfirmed
+   until Slice 3's checkpoint (see Slice 3) — both exercised only against fakes/mocks in tests, no
+   live provider account, no live key.
 5. Inbound Peppol documents (as an AP provider would deliver them — webhook payload or poll
    response) are received on a minimal ASP.NET Core endpoint, parsed into a normalized internal
    model, and exposed for a caller (a real Configured Commerce extension, in production) to consume.
@@ -94,10 +97,14 @@ Each slice leaves `dotnet test` (and, from Slice 5 on, `dotnet run` for the API 
    (no signup) actually describe request/response/webhook payload shapes in enough detail to build
    a believable fake against — `VALIDATION.md`'s evidence for both is about accreditation, not API
    payload shape, so this is not yet confirmed. Recommand and Storecove are the default pick over
-   Billit (also cleared in `VALIDATION.md`, and with a real shipped precedent via Woo2Billit) because
-   both publish developer-facing API docs rather than Billit's more sales-led integration path; if
-   the checkpoint finds either provider's docs too thin, fall back to Billit or the other
-   uninvestigated provider before losing session time reverse-engineering an undocumented shape.
+   Billit (also cleared in `VALIDATION.md`, and with a real shipped precedent via Woo2Billit) on an
+   **unverified working assumption, not a cited fact**: that a smaller, developer-tooling-branded
+   provider is more likely to publish a self-serve API reference than Billit, whose `VALIDATION.md`
+   citations are pricing/marketing pages, not developer docs. This slice's checkpoint is exactly
+   where that assumption gets tested — confirm or refute it first, with a real fetched URL either
+   way, before writing any client code; if the checkpoint finds either provider's docs too thin,
+   fall back to Billit or the other uninvestigated provider before losing session time
+   reverse-engineering an undocumented shape.
    Implement the first concrete client against a mocked `HttpMessageHandler` — no live endpoint, no
    live key. Tests cover a success response and an error response.
 4. **Outbound flow end to end.** Wire fixture order → XML → validate → send through the Slice-3
