@@ -105,10 +105,36 @@ public class PeppolInvoiceBuilderTests
         Assert.Equal("2", service.Element(Cbc + "InvoicedQuantity")!.Value);
         Assert.Equal("90.00", service.Element(Cbc + "LineExtensionAmount")!.Value);
         Assert.Equal("Installation service", service.Descendants(Cbc + "Name").Single().Value);
-        Assert.Equal("45.00", service.Descendants(Cbc + "PriceAmount").Single().Value);
+        Assert.Equal("45", service.Descendants(Cbc + "PriceAmount").Single().Value);
         Assert.Equal("C62", lines[0].Element(Cbc + "InvoicedQuantity")!.Attribute("unitCode")!.Value);
     }
 
+    [Fact]
+    public void Build_KeepsUnitPricePrecisionBeyondTwoDecimals()
+    {
+        var sample = LoadSample();
+        var order = sample with { Lines = [sample.Lines[0] with { Quantity = 1000, UnitPrice = 0.125m }] };
+        var line = PeppolInvoiceBuilder.Build(order).Root!.Element(Cac + "InvoiceLine")!;
+
+        Assert.Equal("0.125", line.Descendants(Cbc + "PriceAmount").Single().Value);
+        Assert.Equal("125.00", line.Element(Cbc + "LineExtensionAmount")!.Value);
+    }
+
+    [Theory]
+    [InlineData("lines")]
+    [InlineData("seller")]
+    [InlineData("buyer")]
+    public void OrderJson_ExplicitNullForRequiredMember_Throws(string member)
+    {
+        var json = File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "Fixtures", "sample-order.json"));
+        var doc = System.Text.Json.Nodes.JsonNode.Parse(json)!.AsObject();
+        doc[member] = null;
+
+        Assert.ThrowsAny<JsonException>(() => OrderJson.Parse(doc.ToJsonString()));
+    }
+
+    // Note: the result of this test would fail Peppol rules R003/BR-CO-25 (no buyer/order reference,
+    // no due date or payment terms). It only checks element omission; BIS validity is Slice 2.
     [Fact]
     public void Build_OmitsOptionalElementsWhenAbsent()
     {

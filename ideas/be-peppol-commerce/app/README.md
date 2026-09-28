@@ -32,7 +32,7 @@ From this directory (`ideas/be-peppol-commerce/app`):
 dotnet test
 ```
 
-The first run restores NuGet packages (xUnit), so it needs network access. All 10 tests should
+The first run restores NuGet packages (xUnit), so it needs network access. All 14 tests should
 pass.
 
 ## Layout

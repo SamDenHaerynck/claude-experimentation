@@ -79,7 +79,7 @@ Status: Slice 1 complete (day 026). Next: Slice 2a.
 
 Each slice leaves `dotnet test` (and, from Slice 5 on, `dotnet run` for the API host) green.
 
-1. **Walking skeleton.** *(Done, day 026: 10 xUnit tests, `dotnet test` green.)* Solution with `BePeppolCommerce.Core` (class library) and
+1. **Walking skeleton.** *(Done, day 026: 14 xUnit tests, `dotnet test` green.)* Solution with `BePeppolCommerce.Core` (class library) and
    `BePeppolCommerce.Core.Tests` (xUnit). One sample order JSON fixture. One test: build a minimal,
    well-formed Peppol BIS UBL invoice XML from the fixture (structurally valid XML, not yet schema
    validated). `app/README.md` documents `dotnet test`.

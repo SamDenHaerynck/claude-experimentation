@@ -72,7 +72,8 @@ public static class PeppolInvoiceBuilder
                     new XElement(Cbc + "Name", l.Description),
                     TaxCategory("ClassifiedTaxCategory", l.VatCategory, l.VatPercent)),
                 new XElement(Cac + "Price",
-                    Amount("PriceAmount", l.UnitPrice, currency)))));
+                    // Unit price keeps its full precision (BT-146 is not limited to 2 decimals).
+                    new XElement(Cbc + "PriceAmount", new XAttribute("currencyID", currency), Num(l.UnitPrice))))));
 
         return new XDocument(new XDeclaration("1.0", "UTF-8", null), root);
     }
