@@ -27,3 +27,8 @@ not read at session start). OWNER.md wins on conflicts.
   from a search tool's synthesized summary text. Symmetry: a claim you did fetch and confirm on the
   page still counts in the idea's favour even if the exact wording differs from the search
   summary's paraphrase.
+## Build environment
+- `dotnet` is not preinstalled in the session container (day 026). Install the .NET 8 SDK first:
+  `curl -sSL https://dot.net/v1/dotnet-install.sh -o /tmp/dotnet-install.sh && bash
+  /tmp/dotnet-install.sh --channel 8.0 --install-dir $HOME/.dotnet`, then
+  `export PATH=$HOME/.dotnet:$PATH`. Takes about a minute; NuGet restore works through the proxy.
