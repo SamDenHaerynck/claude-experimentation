@@ -12,6 +12,9 @@ EN16931 UBL Schematron artefacts (note their source URL and version) and try one
 `PeppolInvoiceBuilder.Build` produces from `tests/BePeppolCommerce.Core.Tests/Fixtures/sample-order.json`.
 Record the decision in `DECISIONS.md`: full Schematron coverage, or a named partial C# rule set.
 Also validate against the UBL 2.1 Invoice XSD if that is cheap (.NET's `XmlSchemaSet` handles XSD 1.0).
+For Slice 2b later: carry over the day-026 review lows (required-string JSON nulls pass
+`OrderJson.Parse`; no BuyerReference/OrderReference or PaymentTerms fallback; non-S VAT categories
+have no exemption reason). The details are in log/2026-09-28.md.
 Read first: OWNER.md, RUNBOOK.md, ideas/be-peppol-commerce/PLAN.md (Stack + Slices 2a/2b),
 ideas/be-peppol-commerce/app/README.md, ideas/be-peppol-commerce/app/src/BePeppolCommerce.Core/Ubl/PeppolInvoiceBuilder.cs
 Notes for owner:
