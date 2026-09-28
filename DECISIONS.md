@@ -493,3 +493,4 @@ Append-only log of significant choices and why they were made. One line each, ne
   Configured Commerce contract's done-bar into a concrete checklist and added a provider-doc-depth
   checkpoint before committing to Recommand/Storecove. Full findings and changes recorded in
   `PLAN.md`'s "Critic review" section.
+- 2026-09-28 (day 026): Slice 1 of be-peppol-commerce built as a pure `System.Xml.Linq` builder with no third-party packages beyond xUnit, plus a `global.json` (8.0.100, rollForward latestMajor) so the owner's newer SDKs still build it. Endpoint scheme 0208 (Belgian enterprise number) in the fixture; all party data fictitious.
