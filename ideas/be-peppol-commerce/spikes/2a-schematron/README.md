@@ -25,13 +25,27 @@ mkdir -p jars out
 M=https://repo1.maven.org/maven2
 curl -sSLo jars/Saxon-HE-12.5.jar        $M/net/sf/saxon/Saxon-HE/12.5/Saxon-HE-12.5.jar
 curl -sSLo jars/xmlresolver-5.2.2.jar    $M/org/xmlresolver/xmlresolver/5.2.2/xmlresolver-5.2.2.jar
-git clone --depth 1 https://github.com/Schematron/schematron.git
+git clone https://github.com/Schematron/schematron.git && git -C schematron checkout -q 77dcd36
 git clone --depth 1 --branch v3.0.20 https://github.com/OpenPEPPOL/peppol-bis-invoice-3.git /tmp/peppol-bis-invoice-3
 dotnet build                               # first build ~1 min (IKVM compiles the jar)
 dotnet run --no-build -- gen ../../app/tests/BePeppolCommerce.Core.Tests/Fixtures/sample-order.json out/sample-invoice.xml
 for s in CEN-EN16931-UBL PEPPOL-EN16931-UBL; do
   dotnet run --no-build -- schematron/trunk/schematron/code /tmp/peppol-bis-invoice-3/rules/sch/$s.sch out/sample-invoice.xml out
 done
+# negative controls and XSD
+python3 - <<'PY'
+import re
+s=open('out/sample-invoice.xml',encoding='utf-8-sig').read()
+b=re.sub(r'(<cbc:PayableAmount currencyID="EUR">)[^<]*',r'\g<1>1.00',s).replace('schemeID="0208"','schemeID="9999"',1)
+b=re.sub(r'<cbc:BuyerReference>.*?</cbc:BuyerReference>','',b); open('out/broken-invoice.xml','w').write(b)
+open('out/xsd-broken.xml','w').write(s.replace('<cbc:IssueDate>','<cbc:Bogus>x</cbc:Bogus><cbc:IssueDate>',1))
+PY
+for s in CEN-EN16931-UBL PEPPOL-EN16931-UBL; do
+  dotnet run --no-build -- schematron/trunk/schematron/code /tmp/peppol-bis-invoice-3/rules/sch/$s.sch out/broken-invoice.xml out
+done
+curl -sSLo /tmp/ubl21.zip http://docs.oasis-open.org/ubl/os-UBL-2.1/UBL-2.1.zip && unzip -qo /tmp/ubl21.zip 'xsd/*' -d /tmp/ubl21
+dotnet run --no-build -- xsd /tmp/ubl21/xsd/maindoc/UBL-Invoice-2.1.xsd out/sample-invoice.xml
+dotnet run --no-build -- xsd /tmp/ubl21/xsd/maindoc/UBL-Invoice-2.1.xsd out/xsd-broken.xml
 ```
 
 Maven Central rate-limited this sandbox once (HTTP 429 returned as a 96-byte text file); check
@@ -52,4 +66,5 @@ on a normal network.
 
 Timing on this container: compiling the .sch to XSLT took about 2 to 3 s per file; validating one
 invoice took about 0.6 to 1.3 s cold, in a new process each time. The generated XSLT is about 1.0 MB
-(CEN) and 0.24 MB (PEPPOL).
+(CEN) and 0.24 MB (PEPPOL). These timings are cold, one process per run; warm latency is not measured.
+The build output (`bin/`) is 337 MB, mostly IKVM images and per-platform `runtimes/`.

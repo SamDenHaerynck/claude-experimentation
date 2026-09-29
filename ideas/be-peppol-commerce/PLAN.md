@@ -68,9 +68,14 @@ for XML/HTTP handling (BCL / `System.Net.Http`). **EN16931 Schematron validation
 `XslCompiledTransform` is XSLT 1.0 only, and the official rules need XSLT 2.0. v1 uses Saxon-HE 12.5
 (the Java build, MPL-2.0) compiled to a .NET assembly by IKVM (NuGet `IKVM`, zlib licence plus
 OpenJDK's GPLv2 with Classpath exception). This gives full coverage of the official CEN and Peppol
-rule sets, checked on day 027 in `spikes/2a-schematron/`. The cost is one heavier dependency and a
-first build that takes about a minute longer. SaxonCS was rejected because NuGet only has 12.x, which
-needs a paid licence key. Reconsider if a free SaxonCS-HE 13 package appears. Details are in `DECISIONS.md` (day 027). No frontend
+rule sets, checked on day 027 in `spikes/2a-schematron/`. The cost is a heavy dependency. The spike's `bin/` is 337 MB, mostly
+IKVM's `ikvm/` images and per-platform `runtimes/`, and the IKVM packages take about 3.3 GB of NuGet
+cache. The first build also takes about a minute longer. Trimming this with a `RuntimeIdentifier`
+is a 2b task. SaxonCS was rejected because NuGet only has 12.x, which
+needs a paid licence key. SaxonCS-HE 13.0 is a free download from Saxonica. It was checked on day 027
+and ships only as a self-contained command-line executable (131 MB for Linux), with no library DLL
+and no NuGet package. It lost to in-process Saxon because it would mean one process per invoice and
+one binary per OS. Its licence was not checked. Reconsider if a SaxonCS-HE library package appears. Details are in `DECISIONS.md` (day 027). No frontend
 framework is needed for v1 — there is no UI.
 
 ## Slices
@@ -115,6 +120,15 @@ Each slice leaves `dotnet test` (and, from Slice 5 on, `dotnet run` for the API 
    `OrderJson.Parse`; there is no BuyerReference/OrderReference or PaymentTerms fallback; non-S VAT
    categories have no exemption reason. Test (5) against the real Schematron now: for example, an
    order without a buyer reference must fail PEPPOL-EN16931-R003.
+   Also from the day-027 review: (6) Harden parsing against XXE. Parse input with a .NET `XmlReader`
+   (`DtdProcessing.Prohibit`, `XmlResolver = null`) and pass Saxon the parsed tree, or set the
+   parser's security features. Add a test with an external-entity payload. (7) Pin a SHA-256 for
+   each downloaded jar and fail on mismatch, and document that the first build needs network access.
+   (8) Pin the latest Saxon-HE 12.x (12.5 was an arbitrary choice). Saxon 13 on IKVM (Java SE 8)
+   is unverified and may be a long-term ceiling. (9) Add the upstream `rules/examples` files as
+   conformance tests, because the ISO skeleton is not Peppol's own build tooling. (10) Measure warm
+   per-invoice latency, add a parallel-validation test, and never share `XsltCompiler` across
+   threads. (11) Trim `runtimes/` output with a `RuntimeIdentifier`.
 3. **Provider abstraction.** Define `IPeppolAccessPointClient` (send outbound document, receive
    inbound document/list). **First checkpoint:** confirm Recommand's and Storecove's public docs
    (no signup) actually describe request/response/webhook payload shapes in enough detail to build
@@ -137,7 +151,9 @@ Each slice leaves `dotnet test` (and, from Slice 5 on, `dotnet run` for the API 
 5. **Inbound flow.** Minimal ASP.NET Core endpoint that accepts an inbound Peppol document payload
    (shape modeled on the chosen provider's documented webhook/poll format), parses it into a
    normalized `InboundInvoice` model, with tests against fixture payloads (valid and malformed).
-6. **Configured Commerce extension contract.** Document and stub (interfaces + a fake in-memory
+6. **Configured Commerce extension contract.** First, check Optimizely's public docs for the target framework of Configured Commerce extensions.
+   The day-027 reviewer said, unverified, that it has historically been .NET Framework 4.8. If so,
+   multi-target `BePeppolCommerce.Core` (IKVM supports net472). Document and stub (interfaces + a fake in-memory
    implementation, not a real plugin) the two integration points a real Configured Commerce
    extension would implement: an order/invoice-completion source (`IOrderInvoiceSource`) and a
    credential/config provider. This slice is done only when the doc covers, concretely, for each

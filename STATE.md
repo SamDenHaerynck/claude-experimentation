@@ -12,7 +12,7 @@ from OpenPEPPOL/peppol-bis-invoice-3 tag v3.0.20 with the ISO skeleton, the way
 `spikes/2a-schematron/Program.cs` does, and commit it under `Validation/Rules/` together with
 `SOURCE.md`. (3) Add a `PeppolValidator` that returns the failed asserts. (4) Add tests: the fixture
 passes; a broken fixture fails with the rule IDs; a missing buyer reference fails
-PEPPOL-EN16931-R003. Also fix the day-026 lows. If the slice runs long, split it into 2b (Schematron)
+PEPPOL-EN16931-R003. Also fix the day-026 lows and apply the review carry-overs (6)-(11) in the Slice 2b block (XXE, jar hashes, conformance examples). If the slice runs long, split it into 2b (Schematron)
 and 2c (XSD + lows) in PLAN.md rather than overrunning.
 Read first: OWNER.md, RUNBOOK.md, ideas/be-peppol-commerce/PLAN.md (Stack + Slice 2b),
 ideas/be-peppol-commerce/spikes/2a-schematron/README.md and Program.cs,
@@ -37,6 +37,11 @@ Notes for owner:
   `ci-migration-rollback-gate` (16/25, not yet Deep Checked). `ADO-MultiOrg` was also Deep Checked
   day 024 but dropped to 15/25 (a second, more mature free competitor was found covering its core
   mechanism) — `ideas/ado-multiorg/VALIDATION.md` has the detail if you want to reconsider it later.
+- (Owner) Day 027 decided that Peppol validation runs Saxon-HE (Java) inside .NET through IKVM. It
+  gives full official rule coverage but is heavy: 337 MB of build output before trimming. The
+  review also raised an unverified point: Configured Commerce extensions may have to target .NET
+  Framework 4.8, not .NET 8. Slice 6 checks this first. If you already know the answer, a line in
+  `SIGNALS.md` would save a session.
 Tournament round: 1 (won)
 Kills before 2026-09-23 rewrite: 14
 Last session: 2026-09-29, ended clean
