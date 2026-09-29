@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="IKVM" Version="8.16.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <IkvmReference Include="jars/Saxon-HE-12.5.jar">
+      <AssemblyName>Saxon.HE</AssemblyName>
+      <References>jars/xmlresolver-5.2.2.jar</References>
+    </IkvmReference>
+    <IkvmReference Include="jars/xmlresolver-5.2.2.jar"><AssemblyName>xmlresolver</AssemblyName></IkvmReference>
+  </ItemGroup>
+  <ItemGroup><ProjectReference Include="../../app/src/BePeppolCommerce.Core/BePeppolCommerce.Core.csproj" /></ItemGroup>
+</Project>

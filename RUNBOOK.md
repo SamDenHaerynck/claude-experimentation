@@ -33,3 +33,7 @@ not read at session start). OWNER.md wins on conflicts.
   `curl -sSL https://dot.net/v1/dotnet-install.sh -o /tmp/dotnet-install.sh && bash
   /tmp/dotnet-install.sh --channel 8.0 --install-dir $HOME/.dotnet`, then
   `export PATH=$HOME/.dotnet:$PATH`. Takes about a minute; NuGet restore works through the proxy.
+- Maven Central through the proxy: plain `curl` works, but repeated fetches can return HTTP 429 as a
+  small text file saved under the `.jar` name, so check the result with `file`. Java-based tools
+  such as `IKVM.Maven.Sdk` fail with PKIX errors because their trust store lacks the proxy CA (day 027).
+  GitHub REST API calls to other repos are blocked (403), but `git clone` of public repos works.
