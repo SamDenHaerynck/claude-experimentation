@@ -64,18 +64,23 @@ inbound endpoint. Justification: Optimizely Configured Commerce is itself a .NET
 platform, so a connector meant to eventually run as (or alongside) a Configured Commerce extension
 must be .NET to have any real installation path for the owner. .NET 8 is Microsoft's current LTS,
 runs locally with a single `dotnet test` / `dotnet run` command, and needs no exotic dependencies
-for XML/HTTP handling (BCL / `System.Net.Http`). **Open question, not yet settled:** how EN16931
-Schematron validation gets done in .NET is unresolved — see Slice 2a. .NET's built-in
-`XslCompiledTransform` is XSLT 1.0 only, and real Peppol BIS3/EN16931 Schematron rules need an
-XSLT 2.0/3.0 processor (candidates: SaxonCS, a comparatively new .NET port of Saxon; shelling out to
-the Java-based KoSIT/CEF validator, which would itself be the exotic dependency this paragraph
-otherwise avoids; or a partial hand-reimplementation of a subset of rules in C#, which is not full
-Schematron coverage). Slice 2a decides this with a spike before Slice 2b commits to it. No frontend
+for XML/HTTP handling (BCL / `System.Net.Http`). **EN16931 Schematron validation (settled day 027, Slice 2a):** .NET's built-in
+`XslCompiledTransform` is XSLT 1.0 only, and the official rules need XSLT 2.0. v1 uses Saxon-HE 12.5
+(the Java build, MPL-2.0) compiled to a .NET assembly by IKVM (NuGet `IKVM`, zlib licence plus
+OpenJDK's GPLv2 with Classpath exception). This gives full coverage of the official CEN and Peppol
+rule sets, checked on day 027 in `spikes/2a-schematron/`. The cost is a heavy dependency. The spike's `bin/` is 337 MB, mostly
+IKVM's `ikvm/` images and per-platform `runtimes/`, and the IKVM packages take about 3.3 GB of NuGet
+cache. The first build also takes about a minute longer. Trimming this with a `RuntimeIdentifier`
+is a 2b task. SaxonCS was rejected because NuGet only has 12.x, which
+needs a paid licence key. SaxonCS-HE 13.0 is a free download from Saxonica. It was checked on day 027
+and ships only as a self-contained command-line executable (131 MB for Linux), with no library DLL
+and no NuGet package. It lost to in-process Saxon because it would mean one process per invoice and
+one binary per OS. Its licence was not checked. Reconsider if a SaxonCS-HE library package appears. Details are in `DECISIONS.md` (day 027). No frontend
 framework is needed for v1 — there is no UI.
 
 ## Slices
 
-Status: Slice 1 complete (day 026). Next: Slice 2a.
+Status: Slices 1 (day 026) and 2a (day 027) complete. Next: Slice 2b.
 
 Each slice leaves `dotnet test` (and, from Slice 5 on, `dotnet run` for the API host) green.
 
@@ -91,9 +96,39 @@ Each slice leaves `dotnet test` (and, from Slice 5 on, `dotnet run` for the API 
    answer is an acceptable slice outcome; "no viable offline .NET path found, falling back to
    partial coverage" is a valid, honest result — do not let this slice balloon chasing full coverage
    if the spike says otherwise.
+   *(Done, day 027: full Schematron via IKVM + Saxon-HE 12.5 works on .NET 8. Fixture passes CEN
+   1.3.15, Peppol 3.0.20 and the UBL 2.1 XSD, and a broken copy fails with the expected rule IDs. See
+   `spikes/2a-schematron/README.md`.)*
 2b. **Wire in validation.** Wire the Slice-2a decision into the library so Slice 1's generated XML
    is checked before anything downstream trusts it. Slice 1's fixture must pass; add a fixture that
    is deliberately invalid and assert it fails validation with a clear error.
+   **Approach, decided in 2a:** (1) Add `IKVM` to `BePeppolCommerce.Core` and get the Saxon-HE 12.5
+   jar (plus `xmlresolver` 5.2.2) in this order. First try `IKVM.Maven.Sdk` `MavenReference`, but only
+   for about 5 minutes: in the sandbox its Java trust store rejects the proxy CA. Otherwise use an
+   MSBuild `DownloadFile` target, placed before `ResolveReferences`, that downloads the pinned jars
+   from Maven Central into `obj/` and feeds them to `IkvmReference`. That keeps `dotnet test` a single
+   command. Never commit the jars. (2) Commit the XSLT pre-compiled from the v3.0.20 `.sch` files
+   under `Validation/Rules/`, with a `SOURCE.md` giving the upstream repo, tag, commit `261c458`, the
+   ISO skeleton commit `77dcd36`, and the EUPL-1.2 notice for the CEN rules. Also commit the
+   generator (a script or test-only helper), so the next upstream release can be regenerated. (3)
+   Compile each XSLT once per process into a cached `XsltExecutable` and create a new transformer per
+   call. (4) Return a result type with the failed asserts (id, flag, text, location), treating
+   `flag="fatal"` as blocking and `warning` as non-blocking. Validate against the UBL 2.1 XSD first,
+   using vendored OASIS XSDs (the whole `xsd/` tree of UBL-2.1.zip is about 4.9 MB; vendor only the files
+   `UBL-Invoice-2.1.xsd` transitively imports), only if that is reasonable; otherwise skip the XSD step and
+   record that. (5) Carry over the day-026 lows: JSON nulls in required strings pass
+   `OrderJson.Parse`; there is no BuyerReference/OrderReference or PaymentTerms fallback; non-S VAT
+   categories have no exemption reason. Test (5) against the real Schematron now: for example, an
+   order without a buyer reference must fail PEPPOL-EN16931-R003.
+   Also from the day-027 review: (6) Harden parsing against XXE. Parse input with a .NET `XmlReader`
+   (`DtdProcessing.Prohibit`, `XmlResolver = null`) and pass Saxon the parsed tree, or set the
+   parser's security features. Add a test with an external-entity payload. (7) Pin a SHA-256 for
+   each downloaded jar and fail on mismatch, and document that the first build needs network access.
+   (8) Pin the latest Saxon-HE 12.x (12.5 was an arbitrary choice). Saxon 13 on IKVM (Java SE 8)
+   is unverified and may be a long-term ceiling. (9) Add the upstream `rules/examples` files as
+   conformance tests, because the ISO skeleton is not Peppol's own build tooling. (10) Measure warm
+   per-invoice latency, add a parallel-validation test, and never share `XsltCompiler` across
+   threads. (11) Trim `runtimes/` output with a `RuntimeIdentifier`.
 3. **Provider abstraction.** Define `IPeppolAccessPointClient` (send outbound document, receive
    inbound document/list). **First checkpoint:** confirm Recommand's and Storecove's public docs
    (no signup) actually describe request/response/webhook payload shapes in enough detail to build
@@ -116,7 +151,9 @@ Each slice leaves `dotnet test` (and, from Slice 5 on, `dotnet run` for the API 
 5. **Inbound flow.** Minimal ASP.NET Core endpoint that accepts an inbound Peppol document payload
    (shape modeled on the chosen provider's documented webhook/poll format), parses it into a
    normalized `InboundInvoice` model, with tests against fixture payloads (valid and malformed).
-6. **Configured Commerce extension contract.** Document and stub (interfaces + a fake in-memory
+6. **Configured Commerce extension contract.** First, check Optimizely's public docs for the target framework of Configured Commerce extensions.
+   The day-027 reviewer said, unverified, that it has historically been .NET Framework 4.8. If so,
+   multi-target `BePeppolCommerce.Core` (IKVM supports net472). Document and stub (interfaces + a fake in-memory
    implementation, not a real plugin) the two integration points a real Configured Commerce
    extension would implement: an order/invoice-completion source (`IOrderInvoiceSource`) and a
    credential/config provider. This slice is done only when the doc covers, concretely, for each
