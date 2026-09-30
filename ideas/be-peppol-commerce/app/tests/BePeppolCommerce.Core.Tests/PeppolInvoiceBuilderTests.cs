@@ -120,6 +120,43 @@ public class PeppolInvoiceBuilderTests
         Assert.Equal("125.00", line.Element(Cbc + "LineExtensionAmount")!.Value);
     }
 
+    // Null strings are reported by member path; null objects or lines by the structural check.
+    [Theory]
+    [InlineData("invoiceNumber", "invoiceNumber")]
+    [InlineData("currencyCode", "currencyCode")]
+    [InlineData("seller.name", "seller.name")]
+    [InlineData("seller.endpointId", "seller.endpointId")]
+    [InlineData("buyer.endpointSchemeId", "buyer.endpointSchemeId")]
+    [InlineData("buyer.address.countryCode", "buyer.address.countryCode")]
+    [InlineData("lines.1.description", "lines[1].description")]
+    [InlineData("lines.2.id", "lines[2].id")]
+    [InlineData("lines.0.vatCategory", "lines[0].vatCategory")]
+    [InlineData("seller.address", "missing seller, buyer, an address, or lines")]
+    [InlineData("lines.0", "missing seller, buyer, an address, or lines")]
+    public void OrderJson_ExplicitNullForNestedRequiredMember_Throws(string path, string expectedInMessage)
+    {
+        var json = File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "Fixtures", "sample-order.json"));
+        System.Text.Json.Nodes.JsonNode node = System.Text.Json.Nodes.JsonNode.Parse(json)!;
+        var parts = path.Split('.');
+        foreach (var part in parts[..^1])
+            node = int.TryParse(part, out var i) ? node[i]! : node[part]!;
+        if (int.TryParse(parts[^1], out var index)) node.AsArray()[index] = null;
+        else node.AsObject()[parts[^1]] = null;
+
+        var ex = Assert.ThrowsAny<JsonException>(() => OrderJson.Parse(node.Root.ToJsonString()));
+        Assert.Contains(expectedInMessage, ex.Message);
+    }
+
+    [Fact]
+    public void OrderJson_EmptyRequiredString_Throws()
+    {
+        var json = File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "Fixtures", "sample-order.json"))
+            .Replace("\"INV-2026-0001\"", "\"  \"");
+
+        var ex = Assert.ThrowsAny<JsonException>(() => OrderJson.Parse(json));
+        Assert.Contains("invoiceNumber", ex.Message);
+    }
+
     [Theory]
     [InlineData("lines")]
     [InlineData("seller")]
@@ -133,8 +170,8 @@ public class PeppolInvoiceBuilderTests
         Assert.ThrowsAny<JsonException>(() => OrderJson.Parse(doc.ToJsonString()));
     }
 
-    // Note: the result of this test would fail Peppol rules R003/BR-CO-25 (no buyer/order reference,
-    // no due date or payment terms). It only checks element omission; BIS validity is Slice 2.
+    // Note: this output fails Peppol R003 and BR-CO-25 (no buyer reference, no due date or payment
+    // terms). That is intended: PeppolValidatorTests checks the validator reports both.
     [Fact]
     public void Build_OmitsOptionalElementsWhenAbsent()
     {
