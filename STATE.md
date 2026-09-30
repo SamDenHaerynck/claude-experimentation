@@ -5,7 +5,7 @@ Phase: 3 Build
 Slice: 2b of 11, complete (next: 3)
 Next action: Slice 3 (provider abstraction) in `ideas/be-peppol-commerce/PLAN.md`. First install the
 .NET 8 SDK (`RUNBOOK.md` "Build environment") and run `dotnet test` in `ideas/be-peppol-commerce/app`
-(38 should pass). Then do the Slice 3 checkpoint before writing any code: WebFetch Recommand's and
+(40 should pass; if Maven Central returns 429, wait and rerun). Then do the Slice 3 checkpoint before writing any code: WebFetch Recommand's and
 Storecove's public API docs (no signup) and record, with the fetched URLs, whether each documents
 the send request/response and the inbound webhook or poll payload well enough to build a fake. Pick
 the first provider from that (fall back to Billit if both are thin). Then define
@@ -15,12 +15,13 @@ Read first: OWNER.md, RUNBOOK.md, ideas/be-peppol-commerce/PLAN.md (Slice 3),
 ideas/be-peppol-commerce/app/README.md, ideas/be-peppol-commerce/VALIDATION.md (provider sections),
 ideas/be-peppol-commerce/app/src/BePeppolCommerce.Core/Validation/PeppolValidator.cs
 Notes for owner:
-- (Owner) Day 028 committed the Peppol BIS 3.0.20 Schematron, compiled to XSLT, inside the public
-  repo (`app/src/BePeppolCommerce.Core/Validation/Rules/`). The CEN rule file says EUPL-1.2. The
-  Peppol rule file only says it uses CEN terms "with permission" and gives no licence, and the
-  OpenPEPPOL repo has no LICENSE file. So its redistribution terms are unconfirmed. If you know
-  OpenPEPPOL's terms, a line in `SIGNALS.md` settles it. Otherwise the fallback is to generate the
-  XSLT at build time from a pinned clone instead of committing it.
+- (Owner) Licensing of the Peppol rules (day 028). OpenPEPPOL's BIS guide
+  (`guide/bis/introduction.adoc` in peppol-bis-invoice-3) says OpenPeppol AISBL holds the copyright,
+  and that the Peppol BIS document may not be redistributed without its consent. So the repo
+  commits nothing derived from the Peppol Schematron. The build downloads the pinned files and
+  compiles them at runtime. If you ship a product, check whether bundling the rules in a
+  distributed package needs OpenPeppol's consent. That question also decides Slice 5 and later
+  packaging.
 - (Owner) `be-peppol-commerce` won tournament round 1 (day 024, 20/25, no hard disqualifier) — full
   Deep Check evidence in `ideas/be-peppol-commerce/VALIDATION.md`. A validation kit is ready at
   `ideas/be-peppol-commerce/VALIDATION_KIT.md`: outreach messages (EN/NL), a landing-page draft, and

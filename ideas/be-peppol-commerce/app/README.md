@@ -28,25 +28,29 @@ It does **not** yet do the following:
 ## How validation works
 
 Saxon-HE 12.10 (Java, MPL-2.0) runs the Schematron rules. IKVM 8.16.1 compiles its jar into a .NET
-assembly at build time. The first build downloads two jars from Maven Central into
-`src/BePeppolCommerce.Core/obj/jars/` and checks their SHA-256 against the values pinned in
-`BePeppolCommerce.Core.csproj`. A mismatch deletes the file and fails the build; building again
-retries. The jars are never committed.
+assembly at build time. The first build downloads the following into `src/BePeppolCommerce.Core/obj/`:
 
-The Schematron is committed pre-compiled as XSLT in `src/BePeppolCommerce.Core/Validation/Rules/`
-(see `SOURCE.md` there for the upstream tag, licences and how to regenerate it with
-`tools/RulesGen`). The UBL 2.1 schemas are vendored unmodified in `Validation/Schemas/UBL-2.1/`
-with the OASIS notice.
+- two jars from Maven Central
+- the two official Schematron files from OpenPEPPOL/peppol-bis-invoice-3 v3.0.20
 
-Measured on the session container (day 028): the first validation in a process takes about 3 to 4 s
-(stylesheet compilation); after that about 25 ms per invoice for all three checks. The build output
-is large (about 340 MB in `tests/.../bin`, mostly IKVM runtime images for every platform).
+Each file is checked against a SHA-256 pinned in `BePeppolCommerce.Core.csproj`. A mismatch
+deletes the file and fails the build; building again retries. None of these files is committed:
+the Peppol rules may not be redistributed (see `Validation/Rules/SOURCE.md`). The ISO Schematron
+skeleton (MIT) is committed in `Validation/Skeleton/`. The UBL 2.1 schemas are vendored unmodified
+in `Validation/Schemas/UBL-2.1/`, with the OASIS notice.
+
+Measured on the session container (day 028): the first validation in a process takes about 4 to 6 s,
+because it compiles the rules. After that, about 25 ms per invoice for all three checks. The build
+output is large, about 340 MB in `tests/.../bin`, mostly IKVM runtime images for every platform.
+
+Schematron findings carry an XPath in `Location`. XSD findings carry a line and position when
+the input was a string, and an empty `Location` for an `XDocument` built in memory.
 
 ## Prerequisites
 
 - .NET 8 SDK (`dotnet --list-sdks` should show an `8.0.x` entry). `global.json` asks for 8.0.100
   or newer and rolls forward to a newer major SDK if that is all you have installed.
-- Network access on the first build (NuGet packages, and the two Saxon jars from Maven Central).
+- Network access on the first build (NuGet, Maven Central, raw.githubusercontent.com).
   No Java install is needed.
 
 ## Run the tests
@@ -57,18 +61,18 @@ From this directory (`ideas/be-peppol-commerce/app`):
 dotnet test
 ```
 
-The first run takes about a minute (restore, jar download, IKVM compiling the jars). All 38 tests
-should pass. If the build fails with a SHA-256 mismatch, Maven Central probably rate-limited the
-download (it answers HTTP 429 with a short text body); run `dotnet test` again.
+The first run takes about a minute (restore, jar download, IKVM compiling the jars). All 40 tests
+should pass. If a download fails (Maven Central sometimes rate-limits with HTTP 429), or a file fails its
+SHA-256 check (the file is then deleted), wait a minute and run `dotnet test` again.
 
 ## Layout
 
 ```
 BePeppolCommerce.sln
 src/BePeppolCommerce.Core/          library: Model/ (order records, JSON parsing), Ubl/ (invoice builder),
-                                    Validation/ (validator, Rules/ XSLT, Schemas/ UBL 2.1 XSD)
+                                    Validation/ (validator, Skeleton/ ISO Schematron, Schemas/ UBL 2.1 XSD,
+                                    Rules/SOURCE.md provenance of the downloaded rules)
 tests/BePeppolCommerce.Core.Tests/  xUnit tests; Fixtures/sample-order.json is the sample order
-tools/RulesGen/                     maintainer tool to regenerate Validation/Rules (not in the solution)
 ```
 
 All party data in the fixture is fictitious. There are no secrets or credentials anywhere in this

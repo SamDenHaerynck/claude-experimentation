@@ -2,6 +2,9 @@ using System.Xml;
 using System.Xml.Linq;
 using net.sf.saxon.s9api;
 using JStringReader = java.io.StringReader;
+using InputSource = org.xml.sax.InputSource;
+using SAXParserFactory = javax.xml.parsers.SAXParserFactory;
+using SAXSource = javax.xml.transform.sax.SAXSource;
 using StreamSource = javax.xml.transform.stream.StreamSource;
 
 namespace BePeppolCommerce.Core.Validation;
@@ -11,7 +14,8 @@ namespace BePeppolCommerce.Core.Validation;
 /// <param name="RuleId">The assert id, for example "BR-CO-16" or "PEPPOL-EN16931-R003".</param>
 /// <param name="Flag">The assert flag as written in the rules: "fatal" or "warning".</param>
 /// <param name="Message">The assert text.</param>
-/// <param name="Location">XPath of the node the assert failed on.</param>
+/// <param name="Location">For Schematron findings, the XPath of the node the assert failed on. XSD
+/// findings carry line/position only when the document was loaded with line info, else "".</param>
 public sealed record ValidationFinding(string RuleSet, string RuleId, string Flag, string Message, string Location)
 {
     /// <summary>Only "warning" is non-blocking. Any other or missing flag blocks, to fail safe.</summary>
@@ -28,8 +32,8 @@ public sealed record ValidationResult(IReadOnlyList<ValidationFinding> Findings)
 /// <summary>
 /// Validates a UBL invoice or credit note against the UBL 2.1 XSD (vendored OASIS schemas), then
 /// the official EN16931 (CEN 1.3.15) and Peppol BIS Billing 3.0 (3.0.20) Schematron rules, run by
-/// Saxon-HE. The rules are the committed XSLT in Validation/Rules/ (see SOURCE.md). Findings from
-/// all three are returned together.
+/// Saxon-HE. The rules are compiled from the pinned upstream .sch files on first use, which takes a
+/// few seconds (see Validation/Rules/SOURCE.md). Findings from all three are returned together.
 /// Thread-safe: the compiled stylesheets are shared, and each call gets its own transformer.
 /// </summary>
 public static class PeppolValidator
@@ -65,14 +69,14 @@ public static class PeppolValidator
             return new ValidationResult([new ValidationFinding("BePeppolCommerce", RootElementRuleId, "fatal",
                 $"Root element must be a UBL 2.1 Invoice or CreditNote, found '{root?.ToString() ?? "(none)"}'.", "/")]);
 
-        // The document is re-serialised from the in-memory tree, so it carries no DOCTYPE and no
-        // entity references for Saxon's parser to act on.
-        var text = invoice.ToString(SaveOptions.DisableFormatting);
+        // Only the root element is serialised, so a DOCTYPE on the XDocument (and any external DTD or
+        // parameter entity it names) never reaches Saxon. Saxon's own parser also refuses DOCTYPEs.
+        var text = invoice.Root!.ToString(SaveOptions.DisableFormatting);
         var findings = new List<ValidationFinding>(UblSchema.Validate(invoice));
         foreach (var (name, xslt) in Rules.Value)
         {
             var transformer = xslt.load();
-            transformer.setSource(new StreamSource(new JStringReader(text)));
+            transformer.setSource(NoDoctypeSource(text));
             var destination = new XdmDestination();
             transformer.setDestination(destination);
             transformer.transform();
@@ -87,26 +91,26 @@ public static class PeppolValidator
         return new ValidationResult(findings);
     }
 
+    private static SAXSource NoDoctypeSource(string text)
+    {
+        var factory = SAXParserFactory.newInstance();
+        factory.setNamespaceAware(true);
+        factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+        factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+        factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+        return new SAXSource(factory.newSAXParser().getXMLReader(), new InputSource(new JStringReader(text)));
+    }
+
     public static XDocument ParseUntrusted(string xml)
     {
         var settings = new XmlReaderSettings { DtdProcessing = DtdProcessing.Prohibit, XmlResolver = null };
         using var reader = XmlReader.Create(new StringReader(xml), settings);
-        return XDocument.Load(reader);
+        return XDocument.Load(reader, LoadOptions.SetLineInfo);
     }
 
     private static (string, XsltExecutable)[] LoadRules()
     {
         var processor = new Processor(false);
-        var assembly = typeof(PeppolValidator).Assembly;
-        var rules = RuleSets.Select(name =>
-        {
-            using var stream = assembly.GetManifestResourceStream($"BePeppolCommerce.Rules.{name}.xslt")
-                ?? throw new InvalidOperationException($"Embedded rules {name}.xslt not found.");
-            using var sr = new StreamReader(stream);
-            // A new compiler per stylesheet: XsltCompiler is not thread-safe, XsltExecutable is.
-            var source = new StreamSource(new JStringReader(sr.ReadToEnd()), $"urn:bepeppol:rules:{name}.xslt");
-            return (name, processor.newXsltCompiler().compile(source));
-        }).ToArray();
-        return rules;
+        return RuleSets.Select(name => (name, SchematronCompiler.Compile(processor, name))).ToArray();
     }
 }

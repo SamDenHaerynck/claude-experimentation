@@ -120,19 +120,20 @@ public class PeppolInvoiceBuilderTests
         Assert.Equal("125.00", line.Element(Cbc + "LineExtensionAmount")!.Value);
     }
 
+    // Null strings are reported by member path; null objects or lines by the structural check.
     [Theory]
-    [InlineData("invoiceNumber")]
-    [InlineData("currencyCode")]
-    [InlineData("seller.name")]
-    [InlineData("seller.endpointId")]
-    [InlineData("buyer.endpointSchemeId")]
-    [InlineData("seller.address")]
-    [InlineData("buyer.address.countryCode")]
-    [InlineData("lines.0")]
-    [InlineData("lines.1.description")]
-    [InlineData("lines.2.id")]
-    [InlineData("lines.0.vatCategory")]
-    public void OrderJson_ExplicitNullForNestedRequiredMember_Throws(string path)
+    [InlineData("invoiceNumber", "invoiceNumber")]
+    [InlineData("currencyCode", "currencyCode")]
+    [InlineData("seller.name", "seller.name")]
+    [InlineData("seller.endpointId", "seller.endpointId")]
+    [InlineData("buyer.endpointSchemeId", "buyer.endpointSchemeId")]
+    [InlineData("buyer.address.countryCode", "buyer.address.countryCode")]
+    [InlineData("lines.1.description", "lines[1].description")]
+    [InlineData("lines.2.id", "lines[2].id")]
+    [InlineData("lines.0.vatCategory", "lines[0].vatCategory")]
+    [InlineData("seller.address", "missing seller, buyer, an address, or lines")]
+    [InlineData("lines.0", "missing seller, buyer, an address, or lines")]
+    public void OrderJson_ExplicitNullForNestedRequiredMember_Throws(string path, string expectedInMessage)
     {
         var json = File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "Fixtures", "sample-order.json"));
         System.Text.Json.Nodes.JsonNode node = System.Text.Json.Nodes.JsonNode.Parse(json)!;
@@ -142,7 +143,8 @@ public class PeppolInvoiceBuilderTests
         if (int.TryParse(parts[^1], out var index)) node.AsArray()[index] = null;
         else node.AsObject()[parts[^1]] = null;
 
-        Assert.ThrowsAny<JsonException>(() => OrderJson.Parse(node.Root.ToJsonString()));
+        var ex = Assert.ThrowsAny<JsonException>(() => OrderJson.Parse(node.Root.ToJsonString()));
+        Assert.Contains(expectedInMessage, ex.Message);
     }
 
     [Fact]

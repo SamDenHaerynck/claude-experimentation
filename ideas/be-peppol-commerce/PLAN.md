@@ -129,13 +129,15 @@ Each slice leaves `dotnet test` (and, from Slice 5 on, `dotnet run` for the API 
    conformance tests, because the ISO skeleton is not Peppol's own build tooling. (10) Measure warm
    per-invoice latency, add a parallel-validation test, and never share `XsltCompiler` across
    threads. (11) Trim `runtimes/` output with a `RuntimeIdentifier`.
-   *(Done, day 028: `PeppolValidator` runs the vendored UBL 2.1 XSD, then the committed CEN 1.3.15 and
-   Peppol 3.0.20 XSLT (Saxon-HE 12.10 via IKVM, jars SHA-256 pinned and downloaded by an MSBuild
-   target), plus a root-element guard. 38 tests pass, including R003, BR-CO-25, BR-E-10, XSD, XXE,
-   parallel runs and the required-string null checks. The nine upstream `rules/examples` files all
-   pass with zero findings when run locally, but they are **not vendored as tests**: the upstream
-   repo has no LICENSE file. (11) is deferred to Slice 5, where there is a publishable host to trim.
-   Warm latency is about 25 ms per invoice.)*
+   *(Done, day 028: `PeppolValidator` runs a root-element guard, then the vendored UBL 2.1 XSD, then
+   CEN 1.3.15 and Peppol 3.0.20, with Saxon-HE 12.10 via IKVM. The jars and the two upstream `.sch`
+   files are downloaded at build time with pinned SHA-256; the `.sch` files are compiled in memory
+   on first use and never committed, because OpenPeppol restricts redistribution (see
+   `app/src/BePeppolCommerce.Core/Validation/Rules/SOURCE.md`). 40 tests pass. They cover R003,
+   BR-CO-25, BR-E-10, the XSD, XXE (string input and an `XDocument` carrying a DOCTYPE), parallel
+   runs, and the required-string null checks. All nine upstream `rules/examples` files pass locally
+   with zero findings; they are not vendored, for the same licence reason. (11) is deferred to
+   Slice 5. Warm latency is about 25 ms per invoice.)*
 3. **Provider abstraction.** Define `IPeppolAccessPointClient` (send outbound document, receive
    inbound document/list). **First checkpoint:** confirm Recommand's and Storecove's public docs
    (no signup) actually describe request/response/webhook payload shapes in enough detail to build
@@ -159,7 +161,9 @@ Each slice leaves `dotnet test` (and, from Slice 5 on, `dotnet run` for the API 
    (shape modeled on the chosen provider's documented webhook/poll format), parses it into a
    normalized `InboundInvoice` model, with tests against fixture payloads (valid and malformed).
    Also (carried from 2b item 11): set a `RuntimeIdentifier` on the host's publish profile so
-   IKVM's per-platform `runtimes/` images are trimmed, and record the published size.
+   IKVM's per-platform `runtimes/` images are trimmed, and record the published size. Cap the
+   inbound payload size (for example `MaxCharactersInDocument` in `PeppolValidator.ParseUntrusted`
+   plus a request size limit), because validation builds two full trees (day-028 review).
 6. **Configured Commerce extension contract.** First, check Optimizely's public docs for the target framework of Configured Commerce extensions.
    The day-027 reviewer said, unverified, that it has historically been .NET Framework 4.8. If so,
    multi-target `BePeppolCommerce.Core` (IKVM supports net472). Document and stub (interfaces + a fake in-memory

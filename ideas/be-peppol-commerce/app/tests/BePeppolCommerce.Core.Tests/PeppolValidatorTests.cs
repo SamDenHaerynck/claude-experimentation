@@ -56,6 +56,9 @@ public class PeppolValidatorTests
         Assert.False(result.IsValid);
         var xsd = Assert.Single(result.Errors, e => e.RuleSet == "UBL-2.1-XSD");
         Assert.Contains("Bogus", xsd.Message);
+
+        var fromString = PeppolValidator.Validate(doc.ToString());
+        Assert.StartsWith("line ", Assert.Single(fromString.Errors, e => e.RuleSet == "UBL-2.1-XSD").Location);
     }
 
     [Fact]
@@ -100,6 +103,45 @@ public class PeppolValidatorTests
         var payload = "<!DOCTYPE Invoice [<!ENTITY xxe SYSTEM \"file:///etc/passwd\">]>\n" + body;
 
         Assert.Throws<XmlException>(() => PeppolValidator.Validate(payload));
+    }
+
+    [Fact]
+    public void ValidateXDocument_IgnoresDoctypeWithExternalDtd()
+    {
+        // An XDocument can carry a DOCTYPE naming an external DTD. It must never be fetched: the
+        // path does not exist, so any attempt would throw instead of validating.
+        var doc = PeppolInvoiceBuilder.Build(LoadSample());
+        doc.AddFirst(new XDocumentType("Invoice", null, "file:///nonexistent-bepeppol/x.dtd", null));
+
+        var result = PeppolValidator.Validate(doc);
+
+        Assert.True(result.IsValid);
+    }
+
+    [Fact]
+    public void ValidateXDocument_DoesNotFetchExternalDtdOverHttp()
+    {
+        using var listener = new System.Net.HttpListener();
+        var port = System.Net.NetworkInformation.IPGlobalProperties.GetIPGlobalProperties()
+            .GetActiveTcpListeners().Select(e => e.Port).DefaultIfEmpty(40000).Max() + 1;
+        var prefix = $"http://127.0.0.1:{port}/";
+        listener.Prefixes.Add(prefix);
+        listener.Start();
+        var hits = 0;
+        _ = Task.Run(async () =>
+        {
+            while (listener.IsListening)
+            {
+                try { var ctx = await listener.GetContextAsync(); Interlocked.Increment(ref hits); ctx.Response.Close(); }
+                catch { return; }
+            }
+        });
+        var doc = PeppolInvoiceBuilder.Build(LoadSample());
+        doc.AddFirst(new XDocumentType("Invoice", null, prefix + "x.dtd", null));
+
+        PeppolValidator.Validate(doc);
+
+        Assert.Equal(0, hits);
     }
 
     [Fact]

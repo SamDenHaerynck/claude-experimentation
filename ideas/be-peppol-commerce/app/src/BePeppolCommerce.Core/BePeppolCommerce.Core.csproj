@@ -43,25 +43,65 @@
     </IkvmReference>
   </ItemGroup>
 
-  <!-- Target batching: runs once per JavaJar. Downloads if missing, then always re-checks the hash
-       (a rate-limited Maven Central answers HTTP 429 with a small text body saved under the jar name). -->
-  <Target Name="DownloadJavaJars" BeforeTargets="GetIkvmReferenceItems;ResolveIkvmReferences;ResolveAssemblyReferences"
+  <!-- Target batching: runs once per JavaJar. Downloads if missing, then always re-checks the hash,
+       so a truncated or tampered file is caught. It must run before IKVM's
+       _UpdateIkvmReferenceItemsMetadata, which reads the jars. -->
+  <Target Name="DownloadJavaJars" BeforeTargets="_UpdateIkvmReferenceItemsMetadata;GetIkvmReferenceItems;ResolveIkvmReferences;ResolveAssemblyReferences"
           Outputs="%(JavaJar.Identity)">
     <PropertyGroup>
       <_JarPath>$(JavaJarDir)%(JavaJar.Identity)</_JarPath>
     </PropertyGroup>
     <DownloadFile Condition="!Exists('$(_JarPath)')" SourceUrl="%(JavaJar.Url)" DestinationFolder="$(JavaJarDir)"
-                  DestinationFileName="%(JavaJar.Identity)" Retries="4" RetryDelayMilliseconds="5000" />
+                  DestinationFileName="%(JavaJar.Identity)" Retries="5" RetryDelayMilliseconds="20000" />
     <GetFileHash Files="$(_JarPath)" Algorithm="SHA256">
       <Output TaskParameter="Hash" PropertyName="_JarHash" />
     </GetFileHash>
     <Delete Condition="'$(_JarHash)' != '%(JavaJar.Sha256)'" Files="$(_JarPath)" />
     <Error Condition="'$(_JarHash)' != '%(JavaJar.Sha256)'"
-           Text="%(JavaJar.Identity): SHA-256 $(_JarHash) does not match the pinned %(JavaJar.Sha256). The file was deleted; build again (Maven Central may have rate-limited the download)." />
+           Text="%(JavaJar.Identity): SHA-256 $(_JarHash) does not match the pinned %(JavaJar.Sha256). The file was deleted; build again." />
+  </Target>
+
+  <!--
+    The official EN16931 / Peppol BIS 3.0 Schematron, pinned to OpenPEPPOL/peppol-bis-invoice-3 tag
+    v3.0.20 (commit 261c458). OpenPeppol does not allow redistribution of the Peppol BIS without
+    consent, so the files are downloaded into obj/ at build time (SHA-256 checked) and embedded,
+    never committed. See Validation/Rules/SOURCE.md.
+  -->
+  <PropertyGroup>
+    <SchDir>$(MSBuildProjectDirectory)/obj/sch/</SchDir>
+    <PeppolRulesRaw>https://raw.githubusercontent.com/OpenPEPPOL/peppol-bis-invoice-3/261c458474e27d58a25be629cccac28883171c92/rules/sch</PeppolRulesRaw>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <SchFile Include="CEN-EN16931-UBL.sch">
+      <Url>$(PeppolRulesRaw)/CEN-EN16931-UBL.sch</Url>
+      <Sha256>bdcbb7b702cce55c7f8c789bef0cb9bebf6d376140c1776e683bd6d9bc0ad331</Sha256>
+    </SchFile>
+    <SchFile Include="PEPPOL-EN16931-UBL.sch">
+      <Url>$(PeppolRulesRaw)/PEPPOL-EN16931-UBL.sch</Url>
+      <Sha256>5ddf3a2f6633147b20b7805df9902d825af1a984f10014fcee186d4170364b1d</Sha256>
+    </SchFile>
+  </ItemGroup>
+
+  <Target Name="DownloadSchematron" BeforeTargets="AssignTargetPaths;PrepareResources" Outputs="%(SchFile.Identity)">
+    <PropertyGroup>
+      <_SchPath>$(SchDir)%(SchFile.Identity)</_SchPath>
+    </PropertyGroup>
+    <DownloadFile Condition="!Exists('$(_SchPath)')" SourceUrl="%(SchFile.Url)" DestinationFolder="$(SchDir)"
+                  DestinationFileName="%(SchFile.Identity)" Retries="5" RetryDelayMilliseconds="20000" />
+    <GetFileHash Files="$(_SchPath)" Algorithm="SHA256">
+      <Output TaskParameter="Hash" PropertyName="_SchHash" />
+    </GetFileHash>
+    <Delete Condition="'$(_SchHash)' != '%(SchFile.Sha256)'" Files="$(_SchPath)" />
+    <Error Condition="'$(_SchHash)' != '%(SchFile.Sha256)'"
+           Text="%(SchFile.Identity): SHA-256 $(_SchHash) does not match the pinned %(SchFile.Sha256). The file was deleted; build again." />
+    <ItemGroup>
+      <EmbeddedResource Include="$(_SchPath)" LogicalName="BePeppolCommerce.Sch.%(SchFile.Identity)" />
+    </ItemGroup>
   </Target>
 
   <ItemGroup>
-    <EmbeddedResource Include="Validation/Rules/*.xslt" LogicalName="BePeppolCommerce.Rules.%(Filename)%(Extension)" />
+    <EmbeddedResource Include="Validation/Skeleton/*.xsl" LogicalName="BePeppolCommerce.Skeleton.%(Filename)%(Extension)" />
     <EmbeddedResource Include="Validation/Schemas/UBL-2.1/**/*.xsd" LogicalName="BePeppolCommerce.Schemas.UBL-2.1/%(RecursiveDir)%(Filename)%(Extension)" />
   </ItemGroup>
 
