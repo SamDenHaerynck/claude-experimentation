@@ -5,7 +5,6 @@ using JStringReader = java.io.StringReader;
 using InputSource = org.xml.sax.InputSource;
 using SAXParserFactory = javax.xml.parsers.SAXParserFactory;
 using SAXSource = javax.xml.transform.sax.SAXSource;
-using StreamSource = javax.xml.transform.stream.StreamSource;
 
 namespace BePeppolCommerce.Core.Validation;
 

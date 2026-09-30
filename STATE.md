@@ -21,7 +21,13 @@ Notes for owner:
   commits nothing derived from the Peppol Schematron. The build downloads the pinned files and
   compiles them at runtime. If you ship a product, check whether bundling the rules in a
   distributed package needs OpenPeppol's consent. That question also decides Slice 5 and later
-  packaging.
+  packaging. Two related points:
+  - The built DLL embeds the two `.sch` files, so any published package redistributes them.
+  - History exposure. The first day-028 commit, `2428761`, pushed compiled Peppol/CEN XSLT to the
+    public branch `claude/blissful-maxwell-612ud9`. PR #31 was squash-merged, so those files are
+    not on `main`. They remain reachable through that branch until the next session resets it, and
+    through `refs/pull/31/head` permanently, unless GitHub Support purges it. The routine cannot
+    delete them. Whether that matters is your call.
 - (Owner) `be-peppol-commerce` won tournament round 1 (day 024, 20/25, no hard disqualifier) — full
   Deep Check evidence in `ideas/be-peppol-commerce/VALIDATION.md`. A validation kit is ready at
   `ideas/be-peppol-commerce/VALIDATION_KIT.md`: outreach messages (EN/NL), a landing-page draft, and
