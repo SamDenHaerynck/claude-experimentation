@@ -1,9 +1,68 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="IKVM" Version="8.16.1" />
+  </ItemGroup>
+
+  <!--
+    Saxon-HE (MPL-2.0) runs the official Peppol/EN16931 Schematron XSLT. It is a Java library, so
+    IKVM compiles it into a .NET assembly at build time. The jars are downloaded from Maven Central
+    into obj/ on the first build (needs network access), checked against the pinned SHA-256 below,
+    and never committed. The SHA-256 values were computed on day 028 from jars whose SHA-1 matched
+    the .sha1 files Maven Central publishes next to them.
+  -->
+  <PropertyGroup>
+    <JavaJarDir>$(MSBuildProjectDirectory)/obj/jars/</JavaJarDir>
+    <MavenCentral>https://repo1.maven.org/maven2</MavenCentral>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <JavaJar Include="Saxon-HE-12.10.jar">
+      <Url>$(MavenCentral)/net/sf/saxon/Saxon-HE/12.10/Saxon-HE-12.10.jar</Url>
+      <Sha256>b571af282f25d7301059f788b9a149aab8b5cdc14ef3d212dc5425d3dcbb9a97</Sha256>
+    </JavaJar>
+    <JavaJar Include="xmlresolver-5.3.3.jar">
+      <Url>$(MavenCentral)/org/xmlresolver/xmlresolver/5.3.3/xmlresolver-5.3.3.jar</Url>
+      <Sha256>1fe4d5b92f708dcdb82dbce12919e0171e6b5ca62c6dca6220483625098feb5f</Sha256>
+    </JavaJar>
+  </ItemGroup>
+
+  <ItemGroup>
+    <IkvmReference Include="$(JavaJarDir)Saxon-HE-12.10.jar">
+      <AssemblyName>Saxon.HE</AssemblyName>
+      <References>$(JavaJarDir)xmlresolver-5.3.3.jar</References>
+    </IkvmReference>
+    <IkvmReference Include="$(JavaJarDir)xmlresolver-5.3.3.jar">
+      <AssemblyName>xmlresolver</AssemblyName>
+    </IkvmReference>
+  </ItemGroup>
+
+  <!-- Target batching: runs once per JavaJar. Downloads if missing, then always re-checks the hash
+       (a rate-limited Maven Central answers HTTP 429 with a small text body saved under the jar name). -->
+  <Target Name="DownloadJavaJars" BeforeTargets="GetIkvmReferenceItems;ResolveIkvmReferences;ResolveAssemblyReferences"
+          Outputs="%(JavaJar.Identity)">
+    <PropertyGroup>
+      <_JarPath>$(JavaJarDir)%(JavaJar.Identity)</_JarPath>
+    </PropertyGroup>
+    <DownloadFile Condition="!Exists('$(_JarPath)')" SourceUrl="%(JavaJar.Url)" DestinationFolder="$(JavaJarDir)"
+                  DestinationFileName="%(JavaJar.Identity)" Retries="4" RetryDelayMilliseconds="5000" />
+    <GetFileHash Files="$(_JarPath)" Algorithm="SHA256">
+      <Output TaskParameter="Hash" PropertyName="_JarHash" />
+    </GetFileHash>
+    <Delete Condition="'$(_JarHash)' != '%(JavaJar.Sha256)'" Files="$(_JarPath)" />
+    <Error Condition="'$(_JarHash)' != '%(JavaJar.Sha256)'"
+           Text="%(JavaJar.Identity): SHA-256 $(_JarHash) does not match the pinned %(JavaJar.Sha256). The file was deleted; build again (Maven Central may have rate-limited the download)." />
+  </Target>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Validation/Rules/*.xslt" LogicalName="BePeppolCommerce.Rules.%(Filename)%(Extension)" />
+    <EmbeddedResource Include="Validation/Schemas/UBL-2.1/**/*.xsd" LogicalName="BePeppolCommerce.Schemas.UBL-2.1/%(RecursiveDir)%(Filename)%(Extension)" />
+  </ItemGroup>
 
 </Project>

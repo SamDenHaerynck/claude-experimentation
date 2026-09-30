@@ -1,23 +1,26 @@
 # State
-Day: 027
+Day: 028
 Idea: be-peppol-commerce
 Phase: 3 Build
-Slice: 2a of 11, complete (next: 2b)
-Next action: Slice 2b (wire in validation), following the "Approach, decided in 2a" block under
-Slice 2b in `ideas/be-peppol-commerce/PLAN.md`. First install the .NET 8 SDK (`RUNBOOK.md`
-"Build environment"). Then: (1) add NuGet `IKVM` 8.16.1 to `BePeppolCommerce.Core`, and get
-Saxon-HE 12.5 plus xmlresolver 5.2.2. Try `MavenReference` for 5 minutes at most; if it fails, use an
-MSBuild `DownloadFile` target and `IkvmReference`. Never commit the jars. (2) Regenerate the XSLT
-from OpenPEPPOL/peppol-bis-invoice-3 tag v3.0.20 with the ISO skeleton, the way
-`spikes/2a-schematron/Program.cs` does, and commit it under `Validation/Rules/` together with
-`SOURCE.md`. (3) Add a `PeppolValidator` that returns the failed asserts. (4) Add tests: the fixture
-passes; a broken fixture fails with the rule IDs; a missing buyer reference fails
-PEPPOL-EN16931-R003. Also fix the day-026 lows and apply the review carry-overs (6)-(11) in the Slice 2b block (XXE, jar hashes, conformance examples). If the slice runs long, split it into 2b (Schematron)
-and 2c (XSD + lows) in PLAN.md rather than overrunning.
-Read first: OWNER.md, RUNBOOK.md, ideas/be-peppol-commerce/PLAN.md (Stack + Slice 2b),
-ideas/be-peppol-commerce/spikes/2a-schematron/README.md and Program.cs,
-ideas/be-peppol-commerce/app/README.md, ideas/be-peppol-commerce/app/src/BePeppolCommerce.Core/Ubl/PeppolInvoiceBuilder.cs
+Slice: 2b of 11, complete (next: 3)
+Next action: Slice 3 (provider abstraction) in `ideas/be-peppol-commerce/PLAN.md`. First install the
+.NET 8 SDK (`RUNBOOK.md` "Build environment") and run `dotnet test` in `ideas/be-peppol-commerce/app`
+(38 should pass). Then do the Slice 3 checkpoint before writing any code: WebFetch Recommand's and
+Storecove's public API docs (no signup) and record, with the fetched URLs, whether each documents
+the send request/response and the inbound webhook or poll payload well enough to build a fake. Pick
+the first provider from that (fall back to Billit if both are thin). Then define
+`IPeppolAccessPointClient` in `src/BePeppolCommerce.Core/AccessPoint/`, implement the first client
+against a mocked `HttpMessageHandler` (no live endpoint or key), and add success and error tests.
+Read first: OWNER.md, RUNBOOK.md, ideas/be-peppol-commerce/PLAN.md (Slice 3),
+ideas/be-peppol-commerce/app/README.md, ideas/be-peppol-commerce/VALIDATION.md (provider sections),
+ideas/be-peppol-commerce/app/src/BePeppolCommerce.Core/Validation/PeppolValidator.cs
 Notes for owner:
+- (Owner) Day 028 committed the Peppol BIS 3.0.20 Schematron, compiled to XSLT, inside the public
+  repo (`app/src/BePeppolCommerce.Core/Validation/Rules/`). The CEN rule file says EUPL-1.2. The
+  Peppol rule file only says it uses CEN terms "with permission" and gives no licence, and the
+  OpenPEPPOL repo has no LICENSE file. So its redistribution terms are unconfirmed. If you know
+  OpenPEPPOL's terms, a line in `SIGNALS.md` settles it. Otherwise the fallback is to generate the
+  XSLT at build time from a pinned clone instead of committing it.
 - (Owner) `be-peppol-commerce` won tournament round 1 (day 024, 20/25, no hard disqualifier) — full
   Deep Check evidence in `ideas/be-peppol-commerce/VALIDATION.md`. A validation kit is ready at
   `ideas/be-peppol-commerce/VALIDATION_KIT.md`: outreach messages (EN/NL), a landing-page draft, and
@@ -25,7 +28,7 @@ Notes for owner:
   has been picked and its validation kit is ready"). The routine cannot contact anyone — running
   this kit (or not) is entirely up to you. Report results in `ideas/be-peppol-commerce/SIGNALS.md`
   when/if you do; write "stop" there to end the idea at any time. Still no `SIGNALS.md` as of day
-  027 — build proceeds without waiting, per `OWNER.md`.
+  028 — build proceeds without waiting, per `OWNER.md`.
 - (Owner) `PLAN.md` (day 025) scopes v1 honestly around a hard constraint: no license/instance
   exists for a real Optimizely Configured Commerce install, and the routine may never deploy or
   create accounts. So v1 builds the real engine (build/validate/send/receive a Peppol invoice via
@@ -44,4 +47,4 @@ Notes for owner:
   `SIGNALS.md` would save a session.
 Tournament round: 1 (won)
 Kills before 2026-09-23 rewrite: 14
-Last session: 2026-09-29, ended clean
+Last session: 2026-09-30, ended clean

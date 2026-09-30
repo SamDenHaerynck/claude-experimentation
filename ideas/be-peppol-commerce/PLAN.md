@@ -80,7 +80,7 @@ framework is needed for v1 — there is no UI.
 
 ## Slices
 
-Status: Slices 1 (day 026) and 2a (day 027) complete. Next: Slice 2b.
+Status: Slices 1 (day 026), 2a (day 027) and 2b (day 028) complete. Next: Slice 3.
 
 Each slice leaves `dotnet test` (and, from Slice 5 on, `dotnet run` for the API host) green.
 
@@ -129,6 +129,13 @@ Each slice leaves `dotnet test` (and, from Slice 5 on, `dotnet run` for the API 
    conformance tests, because the ISO skeleton is not Peppol's own build tooling. (10) Measure warm
    per-invoice latency, add a parallel-validation test, and never share `XsltCompiler` across
    threads. (11) Trim `runtimes/` output with a `RuntimeIdentifier`.
+   *(Done, day 028: `PeppolValidator` runs the vendored UBL 2.1 XSD, then the committed CEN 1.3.15 and
+   Peppol 3.0.20 XSLT (Saxon-HE 12.10 via IKVM, jars SHA-256 pinned and downloaded by an MSBuild
+   target), plus a root-element guard. 38 tests pass, including R003, BR-CO-25, BR-E-10, XSD, XXE,
+   parallel runs and the required-string null checks. The nine upstream `rules/examples` files all
+   pass with zero findings when run locally, but they are **not vendored as tests**: the upstream
+   repo has no LICENSE file. (11) is deferred to Slice 5, where there is a publishable host to trim.
+   Warm latency is about 25 ms per invoice.)*
 3. **Provider abstraction.** Define `IPeppolAccessPointClient` (send outbound document, receive
    inbound document/list). **First checkpoint:** confirm Recommand's and Storecove's public docs
    (no signup) actually describe request/response/webhook payload shapes in enough detail to build
@@ -151,6 +158,8 @@ Each slice leaves `dotnet test` (and, from Slice 5 on, `dotnet run` for the API 
 5. **Inbound flow.** Minimal ASP.NET Core endpoint that accepts an inbound Peppol document payload
    (shape modeled on the chosen provider's documented webhook/poll format), parses it into a
    normalized `InboundInvoice` model, with tests against fixture payloads (valid and malformed).
+   Also (carried from 2b item 11): set a `RuntimeIdentifier` on the host's publish profile so
+   IKVM's per-platform `runtimes/` images are trimmed, and record the published size.
 6. **Configured Commerce extension contract.** First, check Optimizely's public docs for the target framework of Configured Commerce extensions.
    The day-027 reviewer said, unverified, that it has historically been .NET Framework 4.8. If so,
    multi-target `BePeppolCommerce.Core` (IKVM supports net472). Document and stub (interfaces + a fake in-memory
