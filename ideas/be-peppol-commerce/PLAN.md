@@ -167,9 +167,12 @@ Each slice leaves `dotnet test` (and, from Slice 5 on, `dotnet run` for the API 
    auth, but that is a model summary and was not read raw. Recommand is the second provider (Slice 7),
    and its docs must be re-read raw first. Storecove was built first because its spec could be read
    directly. Built: `AccessPoint/IPeppolAccessPointClient.cs` (interface, result and error types) and
-   `AccessPoint/StorecoveClient.cs`, with 18 tests in `StorecoveClientTests.cs` against a stub
+   `AccessPoint/StorecoveClient.cs`, with 23 tests in `StorecoveClientTests.cs` against a stub
    `HttpMessageHandler`. Provider errors and transport errors come back as failed results; null
-   arguments and caller cancellation throw. 58 tests pass.)*
+   arguments and caller cancellation throw. 63 tests pass. Also unverified: Storecove uses its own
+   identifier scheme names (the spec's examples are "DE:VAT" and "FR:CTC"), and it points to an
+   external list for the rest, so the name for Belgian `0208` is unknown. `StorecoveOptions.SchemeMap`
+   carries the mapping, and Slice 8 must fill it from Storecove's receiver identifiers list.)*
 4. **Outbound flow end to end.** Wire fixture order → XML → validate → send through the Slice-3
    client, against an in-memory fake AP server (e.g. `WebApplicationFactory`/`HttpListener` test
    double), asserting the correct request shape reaches the fake server and a failure short-circuits

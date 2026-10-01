@@ -5,7 +5,7 @@ Phase: 3 Build
 Slice: 3 of 11, complete (next: 4)
 Next action: Slice 4 (outbound flow end to end) in `ideas/be-peppol-commerce/PLAN.md`. Install the
 .NET 8 SDK (`RUNBOOK.md` "Build environment") and run `dotnet test` in `ideas/be-peppol-commerce/app`
-(58 should pass; on a Maven Central 429, wait a minute and rerun). Then add an orchestrator in
+(63 should pass; on a Maven Central 429, wait a minute and rerun). Then add an orchestrator in
 `src/BePeppolCommerce.Core/` (for example `Outbound/OutboundInvoiceSender.cs`) that takes an `Order`,
 builds the XML with `PeppolInvoiceBuilder`, validates it with `PeppolValidator`, and only if
 `IsValid` calls `IPeppolAccessPointClient.SendAsync` with the buyer's endpoint as

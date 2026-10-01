@@ -7,8 +7,13 @@ using System.Text.Json.Serialization;
 
 namespace BePeppolCommerce.Core.AccessPoint;
 
-/// <summary>Settings for <see cref="StorecoveClient"/>. Never commit a real key; see Slice 8.</summary>
-public sealed record StorecoveOptions(string ApiKey, int LegalEntityId, Uri? BaseUri = null)
+/// <summary>
+/// Settings for <see cref="StorecoveClient"/>. Never commit a real key; see Slice 8.
+/// <paramref name="SchemeMap"/> maps a Peppol ICD scheme (for example "0208") to Storecove's own
+/// scheme name. The spec's examples use names like "DE:VAT" and "FR:CTC" and refer to an external
+/// list for the rest, so the Belgian mapping is not yet confirmed. Unmapped schemes are sent as is.
+/// </summary>
+public sealed record StorecoveOptions(string ApiKey, int LegalEntityId, Uri? BaseUri = null, IReadOnlyDictionary<string, string>? SchemeMap = null)
 {
     public static readonly Uri DefaultBaseUri = new("https://api.storecove.com/api/v2/");
 }
@@ -39,6 +44,8 @@ public sealed class StorecoveClient : IPeppolAccessPointClient
         if (string.IsNullOrWhiteSpace(options.ApiKey))
             throw new ArgumentException("Storecove API key is required.", nameof(options));
         var b = options.BaseUri ?? StorecoveOptions.DefaultBaseUri;
+        if (b.Scheme != Uri.UriSchemeHttps && !b.IsLoopback)
+            throw new ArgumentException("Base URI must be https (plain http is allowed only for loopback test servers).", nameof(options));
         _baseUri = b.AbsoluteUri.EndsWith('/') ? b : new Uri(b.AbsoluteUri + "/");
     }
 
@@ -48,13 +55,14 @@ public sealed class StorecoveClient : IPeppolAccessPointClient
         var body = new
         {
             legalEntityId = _options.LegalEntityId,
-            idempotencyGuid = document.IdempotencyKey,
+            idempotencyGuid = document.IdempotencyKey?.ToString("D"),
             routing = new
             {
-                eIdentifiers = new[] { new { scheme = document.Recipient.Scheme, id = document.Recipient.Id } },
+                eIdentifiers = new[] { new { scheme = MapScheme(document.Recipient.Scheme), id = document.Recipient.Id } },
             },
             document = new
             {
+                // The spec's documentType enum has "invoice" for both invoices and credit notes.
                 documentType = "invoice",
                 rawDocumentData = new
                 {
@@ -85,10 +93,12 @@ public sealed class StorecoveClient : IPeppolAccessPointClient
         return await SendCore(request, async (response, status) =>
         {
             var doc = await ReadJson<Transportable>(response, cancellationToken);
+            if (doc?.Guid is { } g && !(Guid.TryParse(g, out var got) && got == guid))
+                return AccessPointResult<InboundDocument>.Fail(status, new AccessPointError("client", "Response guid does not match the requested document."));
             var xml = DecodeOriginal(doc?.Original);
             return xml is null
                 ? AccessPointResult<InboundDocument>.Fail(status, new AccessPointError("client", "Response had no usable 'original' document."))
-                : AccessPointResult<InboundDocument>.Ok(new InboundDocument(doc!.Guid ?? guid.ToString("D"), xml), status);
+                : AccessPointResult<InboundDocument>.Ok(new InboundDocument(guid.ToString("D"), xml), status);
         }, cancellationToken);
     }
 
@@ -97,8 +107,8 @@ public sealed class StorecoveClient : IPeppolAccessPointClient
     internal static string? DecodeOriginal(string? original)
     {
         if (string.IsNullOrWhiteSpace(original)) return null;
-        var trimmed = original.TrimStart();
-        if (trimmed.StartsWith('<')) return original;
+        var trimmed = original.TrimStart('\uFEFF').TrimStart();
+        if (trimmed.StartsWith('<')) return trimmed;
         try
         {
             var text = Encoding.UTF8.GetString(Convert.FromBase64String(trimmed));
@@ -109,6 +119,9 @@ public sealed class StorecoveClient : IPeppolAccessPointClient
             return null;
         }
     }
+
+    private string MapScheme(string scheme) =>
+        _options.SchemeMap is { } map && map.TryGetValue(scheme, out var mapped) ? mapped : scheme;
 
     private HttpRequestMessage NewRequest(HttpMethod method, string relative)
     {
@@ -146,9 +159,10 @@ public sealed class StorecoveClient : IPeppolAccessPointClient
                 {
                     return await onSuccess(response, status);
                 }
-                catch (JsonException ex)
+                catch (Exception ex) when (ex is JsonException or InvalidOperationException or NotSupportedException)
                 {
-                    return AccessPointResult<T>.Fail(status, new AccessPointError("client", "Malformed JSON: " + ex.Message));
+                    // InvalidOperationException/NotSupportedException: unsupported charset or content type.
+                    return AccessPointResult<T>.Fail(status, new AccessPointError("client", "Unreadable response: " + ex.Message));
                 }
             }
 

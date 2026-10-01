@@ -9,6 +9,7 @@ public class StorecoveClientTests
 {
     private const string Xml = "<Invoice xmlns=\"urn:oasis:names:specification:ubl:schema:xsd:Invoice-2\"/>";
     private const string Guid1 = "3f1c2a8e-5b7d-4c1e-9a0f-2d6b8e4c7a11";
+    private const string IdemGuid = "9b2e7c41-0d3a-4f6e-8c15-7a9d2b4e6f80";
     private static readonly PeppolParticipant Buyer = new("0208", "0123456789");
 
     private sealed class StubHandler(Func<HttpRequestMessage, HttpResponseMessage> respond) : HttpMessageHandler
@@ -38,7 +39,7 @@ public class StorecoveClientTests
     {
         var (client, handler) = Create(_ => Json(HttpStatusCode.OK, $"{{\"guid\":\"{Guid1}\"}}"));
 
-        var result = await client.SendAsync(new OutboundDocument(Xml, Buyer, "idem-1"));
+        var result = await client.SendAsync(new OutboundDocument(Xml, Buyer, Guid.Parse(IdemGuid)));
 
         Assert.True(result.Success);
         Assert.Equal(Guid1, result.Value);
@@ -51,7 +52,7 @@ public class StorecoveClientTests
         using var body = JsonDocument.Parse(handler.Body!);
         var root = body.RootElement;
         Assert.Equal(42, root.GetProperty("legalEntityId").GetInt32());
-        Assert.Equal("idem-1", root.GetProperty("idempotencyGuid").GetString());
+        Assert.Equal(IdemGuid, root.GetProperty("idempotencyGuid").GetString());
         var id = root.GetProperty("routing").GetProperty("eIdentifiers")[0];
         Assert.Equal("0208", id.GetProperty("scheme").GetString());
         Assert.Equal("0123456789", id.GetProperty("id").GetString());
@@ -201,10 +202,67 @@ public class StorecoveClientTests
     public async Task CustomBaseUri_WithoutTrailingSlash_KeepsPath()
     {
         var handler = new StubHandler(_ => Json(HttpStatusCode.OK, $"{{\"guid\":\"{Guid1}\"}}"));
-        var client = new StorecoveClient(new HttpClient(handler), new StorecoveOptions("k", 1, new Uri("http://fake.local/api/v2")));
+        var client = new StorecoveClient(new HttpClient(handler), new StorecoveOptions("k", 1, new Uri("http://localhost:5099/api/v2")));
 
         await client.SendAsync(new OutboundDocument(Xml, Buyer));
 
-        Assert.Equal("http://fake.local/api/v2/document_submissions", handler.Request!.RequestUri!.ToString());
+        Assert.Equal("http://localhost:5099/api/v2/document_submissions", handler.Request!.RequestUri!.ToString());
+    }
+
+    [Fact]
+    public void Constructor_RejectsPlainHttpToNonLoopbackHost()
+    {
+        Assert.Throws<ArgumentException>(() => new StorecoveClient(new HttpClient(), new StorecoveOptions("k", 1, new Uri("http://api.example.com/"))));
+    }
+
+    [Fact]
+    public async Task Send_SchemeMap_TranslatesIcdScheme()
+    {
+        var handler = new StubHandler(_ => Json(HttpStatusCode.OK, $"{{\"guid\":\"{Guid1}\"}}"));
+        var map = new Dictionary<string, string> { ["0208"] = "XX:TEST" };
+        var client = new StorecoveClient(new HttpClient(handler), new StorecoveOptions("k", 1, SchemeMap: map));
+
+        await client.SendAsync(new OutboundDocument(Xml, Buyer));
+
+        using var body = JsonDocument.Parse(handler.Body!);
+        Assert.Equal("XX:TEST", body.RootElement.GetProperty("routing").GetProperty("eIdentifiers")[0].GetProperty("scheme").GetString());
+    }
+
+    [Fact]
+    public async Task GetInbound_RawXmlWithBom_ReturnsXml()
+    {
+        var (client, _) = Create(_ => Json(HttpStatusCode.OK, JsonSerializer.Serialize(new { guid = Guid1, original = "\uFEFF" + Xml })));
+
+        var result = await client.GetInboundAsync(Guid1);
+
+        Assert.True(result.Success);
+        Assert.Equal(Xml, result.Value!.UblXml);
+    }
+
+    [Fact]
+    public async Task GetInbound_GuidMismatch_ReturnsFailure()
+    {
+        var (client, _) = Create(_ => Json(HttpStatusCode.OK,
+            JsonSerializer.Serialize(new { guid = "00000000-0000-0000-0000-000000000001", original = Xml })));
+
+        var result = await client.GetInboundAsync(Guid1);
+
+        Assert.False(result.Success);
+    }
+
+    [Fact]
+    public async Task Send_UnsupportedCharset_ReturnsFailureNotException()
+    {
+        var (client, _) = Create(_ =>
+        {
+            var content = new ByteArrayContent(Encoding.UTF8.GetBytes("{}"));
+            content.Headers.TryAddWithoutValidation("Content-Type", "application/json; charset=bogus-charset");
+            return new HttpResponseMessage(HttpStatusCode.OK) { Content = content };
+        });
+
+        var result = await client.SendAsync(new OutboundDocument(Xml, Buyer));
+
+        Assert.False(result.Success);
+        Assert.Equal("client", Assert.Single(result.Errors).Source);
     }
 }

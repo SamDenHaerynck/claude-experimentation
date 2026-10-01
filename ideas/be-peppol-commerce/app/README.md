@@ -22,7 +22,9 @@ The idea and its evidence are in `../VALIDATION.md`, and the full plan is in `..
   It is **tested only against a stubbed `HttpMessageHandler`** and has never called the real
   service. Two points still need checking against a real response: the spec does not say how a received
   document's `original` field is encoded (the client accepts raw XML or base64), and it does not
-  define the webhook body.
+  define the webhook body. Storecove also names identifier schemes its own way (the spec's examples are
+  "DE:VAT" and "FR:CTC"). The Belgian name is not confirmed, so `StorecoveOptions.SchemeMap` must
+  map `0208` to it. Unmapped schemes are sent unchanged.
 
 It does **not** yet do the following:
 
@@ -69,7 +71,7 @@ From this directory (`ideas/be-peppol-commerce/app`):
 dotnet test
 ```
 
-The first run takes about a minute (restore, jar download, IKVM compiling the jars). All 58 tests
+The first run takes about a minute (restore, jar download, IKVM compiling the jars). All 63 tests
 should pass. If a download fails (Maven Central sometimes rate-limits with HTTP 429), or a file fails its
 SHA-256 check (the file is then deleted), wait a minute and run `dotnet test` again.
 

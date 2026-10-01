@@ -7,7 +7,7 @@ public sealed record PeppolParticipant(string Scheme, string Id)
 }
 
 /// <summary>An outbound UBL document, already validated by the caller.</summary>
-public sealed record OutboundDocument(string UblXml, PeppolParticipant Recipient, string? IdempotencyKey = null);
+public sealed record OutboundDocument(string UblXml, PeppolParticipant Recipient, Guid? IdempotencyKey = null);
 
 /// <summary>An inbound document as fetched from the Access Point.</summary>
 public sealed record InboundDocument(string ProviderDocumentId, string UblXml);
