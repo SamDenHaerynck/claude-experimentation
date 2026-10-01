@@ -1,19 +1,23 @@
 # State
-Day: 028
+Day: 029
 Idea: be-peppol-commerce
 Phase: 3 Build
-Slice: 2b of 11, complete (next: 3)
-Next action: Slice 3 (provider abstraction) in `ideas/be-peppol-commerce/PLAN.md`. First install the
+Slice: 3 of 11, complete (next: 4)
+Next action: Slice 4 (outbound flow end to end) in `ideas/be-peppol-commerce/PLAN.md`. Install the
 .NET 8 SDK (`RUNBOOK.md` "Build environment") and run `dotnet test` in `ideas/be-peppol-commerce/app`
-(40 should pass; if Maven Central returns 429, wait and rerun). Then do the Slice 3 checkpoint before writing any code: WebFetch Recommand's and
-Storecove's public API docs (no signup) and record, with the fetched URLs, whether each documents
-the send request/response and the inbound webhook or poll payload well enough to build a fake. Pick
-the first provider from that (fall back to Billit if both are thin). Then define
-`IPeppolAccessPointClient` in `src/BePeppolCommerce.Core/AccessPoint/`, implement the first client
-against a mocked `HttpMessageHandler` (no live endpoint or key), and add success and error tests.
-Read first: OWNER.md, RUNBOOK.md, ideas/be-peppol-commerce/PLAN.md (Slice 3),
-ideas/be-peppol-commerce/app/README.md, ideas/be-peppol-commerce/VALIDATION.md (provider sections),
-ideas/be-peppol-commerce/app/src/BePeppolCommerce.Core/Validation/PeppolValidator.cs
+(63 should pass; on a Maven Central 429, wait a minute and rerun). Then add an orchestrator in
+`src/BePeppolCommerce.Core/` (for example `Outbound/OutboundInvoiceSender.cs`) that takes an `Order`,
+builds the XML with `PeppolInvoiceBuilder`, validates it with `PeppolValidator`, and only if
+`IsValid` calls `IPeppolAccessPointClient.SendAsync` with the buyer's endpoint as
+`PeppolParticipant`. It returns one result that says whether the invoice failed validation, failed
+to send, or was sent. Test it against an in-memory fake HTTP server running `StorecoveClient`
+(`StubHandler` style, or Kestrel on a loopback port). Assert that the fake receives the base64 UBL
+for the sample fixture, and that an order without a buyer reference never reaches the fake.
+Read first: OWNER.md, RUNBOOK.md, ideas/be-peppol-commerce/PLAN.md (Slices 3-4),
+ideas/be-peppol-commerce/app/README.md,
+ideas/be-peppol-commerce/app/src/BePeppolCommerce.Core/AccessPoint/IPeppolAccessPointClient.cs,
+ideas/be-peppol-commerce/app/src/BePeppolCommerce.Core/AccessPoint/StorecoveClient.cs,
+ideas/be-peppol-commerce/app/tests/BePeppolCommerce.Core.Tests/StorecoveClientTests.cs
 Notes for owner:
 - (Owner) Licensing of the Peppol rules (day 028). OpenPEPPOL's BIS guide
   (`guide/bis/introduction.adoc` in peppol-bis-invoice-3) says OpenPeppol AISBL holds the copyright,
@@ -54,4 +58,4 @@ Notes for owner:
   `SIGNALS.md` would save a session.
 Tournament round: 1 (won)
 Kills before 2026-09-23 rewrite: 14
-Last session: 2026-09-30, ended clean
+Last session: 2026-10-01, ended clean

@@ -80,7 +80,7 @@ framework is needed for v1 — there is no UI.
 
 ## Slices
 
-Status: Slices 1 (day 026), 2a (day 027) and 2b (day 028) complete. Next: Slice 3.
+Status: Slices 1 (day 026), 2a (day 027), 2b (day 028) and 3 (day 029) complete. Next: Slice 4.
 
 Each slice leaves `dotnet test` (and, from Slice 5 on, `dotnet run` for the API host) green.
 
@@ -153,6 +153,26 @@ Each slice leaves `dotnet test` (and, from Slice 5 on, `dotnet run` for the API 
    reverse-engineering an undocumented shape.
    Implement the first concrete client against a mocked `HttpMessageHandler` — no live endpoint, no
    live key. Tests cover a success response and an error response.
+   *(Done, day 029. Checkpoint: Storecove publishes a machine-readable Swagger 2.0 spec at
+   https://api.storecove.com/api/v2/openapi.json, fetched with curl and read directly. It defines
+   `POST /document_submissions` (body `DocumentSubmission` with `legalEntityId`, `idempotencyGuid`,
+   `routing.eIdentifiers[{scheme,id}]`, `document.rawDocumentData{document (base64), parseStrategy:
+   "ubl"}`; 200 returns `{guid}`, 422 returns an array of `ErrorModel{source,details}`), Bearer auth,
+   and `GET /received_documents/{guid}/{format}` returning `Transportable{guid, direction, original}`.
+   The spec does not define the `received_document` webhook body beyond naming its `document_guid`
+   property, and does not say how `original` is encoded. The client accepts raw XML or base64 and
+   this must be checked against a real response. Recommand: https://docs.recommand.eu/ links an API
+   reference generated from an OpenAPI spec. A WebFetch summary of
+   https://docs.recommand.eu/docs/sending-invoices described `POST /api/v1/{companyId}/send` with Basic
+   auth, but that is a model summary and was not read raw. Recommand is the second provider (Slice 7),
+   and its docs must be re-read raw first. Storecove was built first because its spec could be read
+   directly. Built: `AccessPoint/IPeppolAccessPointClient.cs` (interface, result and error types) and
+   `AccessPoint/StorecoveClient.cs`, with 23 tests in `StorecoveClientTests.cs` against a stub
+   `HttpMessageHandler`. Provider errors and transport errors come back as failed results; null
+   arguments and caller cancellation throw. 63 tests pass. Also unverified: Storecove uses its own
+   identifier scheme names (the spec's examples are "DE:VAT" and "FR:CTC"), and it points to an
+   external list for the rest, so the name for Belgian `0208` is unknown. `StorecoveOptions.SchemeMap`
+   carries the mapping, and Slice 8 must fill it from Storecove's receiver identifiers list.)*
 4. **Outbound flow end to end.** Wire fixture order → XML → validate → send through the Slice-3
    client, against an in-memory fake AP server (e.g. `WebApplicationFactory`/`HttpListener` test
    double), asserting the correct request shape reaches the fake server and a failure short-circuits
