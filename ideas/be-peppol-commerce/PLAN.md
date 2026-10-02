@@ -80,7 +80,7 @@ framework is needed for v1 — there is no UI.
 
 ## Slices
 
-Status: Slices 1 (day 026), 2a (day 027), 2b (day 028) and 3 (day 029) complete. Next: Slice 4.
+Status: Slices 1 (day 026), 2a (day 027), 2b (day 028), 3 (day 029) and 4 (day 030) complete. Next: Slice 5.
 
 Each slice leaves `dotnet test` (and, from Slice 5 on, `dotnet run` for the API host) green.
 

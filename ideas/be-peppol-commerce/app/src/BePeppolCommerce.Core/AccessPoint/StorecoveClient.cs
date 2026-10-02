@@ -22,8 +22,8 @@ public sealed record StorecoveOptions(string ApiKey, int LegalEntityId, Uri? Bas
 /// Storecove API v2 client, written against the public OpenAPI spec at
 /// https://api.storecove.com/api/v2/openapi.json (fetched day 029). Sends the UBL as
 /// <c>rawDocumentData</c> with <c>parseStrategy=ubl</c> and fetches received documents with
-/// <c>format=original</c>. Tested only against a mocked <see cref="HttpMessageHandler"/>; it has
-/// never been run against the live service.
+/// <c>format=original</c>. Tested only against a mocked <see cref="HttpMessageHandler"/> and a fake
+/// server on a loopback port (Slice 4); it has never been run against the live service.
 /// </summary>
 public sealed class StorecoveClient : IPeppolAccessPointClient
 {

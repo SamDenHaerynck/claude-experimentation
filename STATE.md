@@ -1,23 +1,27 @@
 # State
-Day: 029
+Day: 030
 Idea: be-peppol-commerce
 Phase: 3 Build
-Slice: 3 of 11, complete (next: 4)
-Next action: Slice 4 (outbound flow end to end) in `ideas/be-peppol-commerce/PLAN.md`. Install the
-.NET 8 SDK (`RUNBOOK.md` "Build environment") and run `dotnet test` in `ideas/be-peppol-commerce/app`
-(63 should pass; on a Maven Central 429, wait a minute and rerun). Then add an orchestrator in
-`src/BePeppolCommerce.Core/` (for example `Outbound/OutboundInvoiceSender.cs`) that takes an `Order`,
-builds the XML with `PeppolInvoiceBuilder`, validates it with `PeppolValidator`, and only if
-`IsValid` calls `IPeppolAccessPointClient.SendAsync` with the buyer's endpoint as
-`PeppolParticipant`. It returns one result that says whether the invoice failed validation, failed
-to send, or was sent. Test it against an in-memory fake HTTP server running `StorecoveClient`
-(`StubHandler` style, or Kestrel on a loopback port). Assert that the fake receives the base64 UBL
-for the sample fixture, and that an order without a buyer reference never reaches the fake.
-Read first: OWNER.md, RUNBOOK.md, ideas/be-peppol-commerce/PLAN.md (Slices 3-4),
+Slice: 4 of 11, complete (next: 5)
+Next action: Slice 5 (inbound flow) in `ideas/be-peppol-commerce/PLAN.md`. Install the .NET 8 SDK
+(`RUNBOOK.md` "Build environment") and run `dotnet test` in `ideas/be-peppol-commerce/app` (73 should
+pass; on a Maven Central 429, wait a minute and rerun). Then: (1) add a normalized `InboundInvoice`
+record and a parser in `src/BePeppolCommerce.Core/Inbound/` that takes UBL XML via
+`PeppolValidator.ParseUntrusted` (add a `MaxCharactersInDocument` cap there) and extracts invoice
+number, issue date, currency, seller/buyer name and endpoint, line count and payable amount, returning
+a failure result (not an exception) for malformed XML or a non-Invoice root; (2) add
+`src/BePeppolCommerce.Api/` (ASP.NET Core minimal API, add to `BePeppolCommerce.sln`) with one POST
+route that accepts a webhook body carrying a provider document id, fetches the document with
+`IPeppolAccessPointClient.GetInboundAsync`, parses it and returns the normalized model, with a request
+size limit. Storecove's webhook body shape is NOT defined in its spec (day 029), so model a minimal
+`{ "guid": "..." }` body and say so in the README. Test with `WebApplicationFactory` (or fakes) using
+a fixture built from the sample order, plus malformed and oversized cases. If time is short, split
+off the `RuntimeIdentifier` publish-size trim to Slice 5b in `PLAN.md` rather than overrunning.
+Read first: OWNER.md, RUNBOOK.md, ideas/be-peppol-commerce/PLAN.md (Slice 5),
 ideas/be-peppol-commerce/app/README.md,
 ideas/be-peppol-commerce/app/src/BePeppolCommerce.Core/AccessPoint/IPeppolAccessPointClient.cs,
-ideas/be-peppol-commerce/app/src/BePeppolCommerce.Core/AccessPoint/StorecoveClient.cs,
-ideas/be-peppol-commerce/app/tests/BePeppolCommerce.Core.Tests/StorecoveClientTests.cs
+ideas/be-peppol-commerce/app/src/BePeppolCommerce.Core/Validation/PeppolValidator.cs,
+ideas/be-peppol-commerce/app/tests/BePeppolCommerce.Core.Tests/OutboundInvoiceSenderTests.cs (fake AP pattern)
 Notes for owner:
 - (Owner) Licensing of the Peppol rules (day 028). OpenPEPPOL's BIS guide
   (`guide/bis/introduction.adoc` in peppol-bis-invoice-3) says OpenPeppol AISBL holds the copyright,
@@ -56,6 +60,9 @@ Notes for owner:
   review also raised an unverified point: Configured Commerce extensions may have to target .NET
   Framework 4.8, not .NET 8. Slice 6 checks this first. If you already know the answer, a line in
   `SIGNALS.md` would save a session.
+- (Owner) Day 030: the outbound flow derives a Storecove idempotency key from the invoice content
+  when the caller passes none. Storecove's spec does not say how long it remembers a key or whether
+  rejected submissions count. If you have a Storecove sandbox, that is worth one check before Slice 8.
 Tournament round: 1 (won)
 Kills before 2026-09-23 rewrite: 14
-Last session: 2026-10-01, ended clean
+Last session: 2026-10-02, ended clean
