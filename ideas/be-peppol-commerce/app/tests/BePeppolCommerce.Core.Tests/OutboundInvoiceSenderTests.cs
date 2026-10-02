@@ -38,26 +38,34 @@ public class OutboundInvoiceSenderTests
             _listener.Start();
             _loop = Task.Run(async () =>
             {
-                while (_listener.IsListening)
+                while (true)
                 {
                     HttpListenerContext ctx;
                     try { ctx = await _listener.GetContextAsync(); }
-                    catch (Exception ex) when (ex is HttpListenerException or ObjectDisposedException) { return; }
-                    using (var reader = new StreamReader(ctx.Request.InputStream, Encoding.UTF8))
-                        Requests.Enqueue((ctx.Request.HttpMethod, ctx.Request.Url!.AbsolutePath, ctx.Request.Headers["Authorization"], await reader.ReadToEndAsync()));
-                    var bytes = Encoding.UTF8.GetBytes(responseJson);
-                    ctx.Response.StatusCode = status;
-                    ctx.Response.ContentType = "application/json";
-                    ctx.Response.ContentLength64 = bytes.Length;
-                    await ctx.Response.OutputStream.WriteAsync(bytes);
-                    ctx.Response.Close();
+                    catch (Exception ex) when (ex is HttpListenerException or ObjectDisposedException or InvalidOperationException) { return; }
+                    try
+                    {
+                        using (var reader = new StreamReader(ctx.Request.InputStream, Encoding.UTF8))
+                            Requests.Enqueue((ctx.Request.HttpMethod, ctx.Request.Url!.AbsolutePath, ctx.Request.Headers["Authorization"], await reader.ReadToEndAsync()));
+                        var bytes = Encoding.UTF8.GetBytes(responseJson);
+                        ctx.Response.StatusCode = status;
+                        ctx.Response.ContentType = "application/json";
+                        ctx.Response.ContentLength64 = bytes.Length;
+                        await ctx.Response.OutputStream.WriteAsync(bytes);
+                        ctx.Response.Close();
+                    }
+                    catch (Exception ex) when (ex is HttpListenerException or ObjectDisposedException or IOException)
+                    {
+                        // The client went away or the listener stopped mid-response; keep serving.
+                    }
                 }
             });
         }
 
         public OutboundInvoiceSender CreateSender()
         {
-            var client = new StorecoveClient(new HttpClient(), new StorecoveOptions("test-key-placeholder", 42, BaseUri));
+            // No proxy: an HTTP_PROXY variable without 127.0.0.1 in NO_PROXY would otherwise divert the loopback calls.
+            var client = new StorecoveClient(new HttpClient(new SocketsHttpHandler { UseProxy = false }), new StorecoveOptions("test-key-placeholder", 42, BaseUri));
             return new OutboundInvoiceSender(client);
         }
 
@@ -98,7 +106,7 @@ public class OutboundInvoiceSenderTests
 
         using var body = JsonDocument.Parse(request.Body);
         var root = body.RootElement;
-        Assert.Equal(OutboundInvoiceSender.DeriveIdempotencyKey(order).ToString("D"), root.GetProperty("idempotencyGuid").GetString());
+        Assert.Equal(OutboundInvoiceSender.DeriveIdempotencyKey(order, result.UblXml!).ToString("D"), root.GetProperty("idempotencyGuid").GetString());
         var id = root.GetProperty("routing").GetProperty("eIdentifiers")[0];
         Assert.Equal("0208", id.GetProperty("scheme").GetString());
         Assert.Equal("0000000196", id.GetProperty("id").GetString()); // the buyer, not the seller
@@ -186,13 +194,39 @@ public class OutboundInvoiceSenderTests
     }
 
     [Fact]
-    public void DerivedIdempotencyKey_IsStablePerInvoiceAndDiffersAcrossInvoices()
+    public async Task DerivedIdempotencyKey_IsStableForRetryAndChangesWhenInvoiceIsCorrected()
     {
+        await using var ap = new FakeAccessPoint(200, $"{{\"guid\":\"{SubmissionGuid}\"}}");
+        var sender = ap.CreateSender();
         var order = LoadSample();
 
-        Assert.Equal(OutboundInvoiceSender.DeriveIdempotencyKey(order), OutboundInvoiceSender.DeriveIdempotencyKey(LoadSample()));
-        Assert.NotEqual(OutboundInvoiceSender.DeriveIdempotencyKey(order),
-            OutboundInvoiceSender.DeriveIdempotencyKey(order with { InvoiceNumber = "INV-2026-0002" }));
+        await sender.SendAsync(order);
+        await sender.SendAsync(LoadSample()); // retry of the same invoice
+        await sender.SendAsync(order with { Buyer = order.Buyer with { EndpointId = "0000000295" } }); // corrected recipient
+
+        var keys = ap.Requests.Select(r => JsonDocument.Parse(r.Body).RootElement.GetProperty("idempotencyGuid").GetString()).ToList();
+        Assert.Equal(3, keys.Count);
+        Assert.Equal(keys[0], keys[1]);
+        Assert.NotEqual(keys[0], keys[2]);
+    }
+
+    [Fact]
+    public void DerivedIdempotencyKey_IsRfc4122Version5()
+    {
+        var key = OutboundInvoiceSender.DeriveIdempotencyKey(LoadSample(), "<Invoice/>").ToString("D");
+
+        Assert.Equal('5', key[14]);
+        Assert.Contains(key[19], "89ab");
+    }
+
+    [Fact]
+    public void DerivedIdempotencyKey_FieldsCannotRunTogether()
+    {
+        var order = LoadSample();
+        var a = order with { InvoiceNumber = "A|B" };
+        var b = order with { InvoiceNumber = "A" };
+
+        Assert.NotEqual(OutboundInvoiceSender.DeriveIdempotencyKey(a, "|<x/>"), OutboundInvoiceSender.DeriveIdempotencyKey(b, "B||<x/>"));
     }
 
     [Fact]

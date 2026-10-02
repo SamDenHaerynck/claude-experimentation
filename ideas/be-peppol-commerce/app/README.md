@@ -29,9 +29,11 @@ The idea and its evidence are in `../VALIDATION.md`, and the full plan is in `..
   order, then UBL XML, then validation, then send to the buyer's endpoint (`EndpointSchemeId` and
   `EndpointId`) through any `IPeppolAccessPointClient`. It returns `ValidationFailed` (nothing was
   sent; the findings say why), `SendFailed` (valid, but the provider refused it or was unreachable)
-  or `Sent` (with the provider's submission id). Without an explicit idempotency key, it derives a
-  stable one from the seller's endpoint and the invoice number, so a retry of the same invoice
-  reuses the key. Tested against a fake Access Point on a loopback HTTP port, through the real
+  or `Sent` (with the provider's submission id). Without an explicit idempotency key, it derives
+  one from the seller's endpoint, the invoice number, the recipient and the exact XML, so a retry of
+  an unchanged invoice reuses the key and a corrected one gets a new key. How Storecove treats a
+  reused key (how long it remembers it, and whether rejected submissions count) is not in its spec
+  and is unverified. Tested against a fake Access Point on a loopback HTTP port, through the real
   `StorecoveClient`.
 
 It does **not** yet do the following:
@@ -78,7 +80,7 @@ From this directory (`ideas/be-peppol-commerce/app`):
 dotnet test
 ```
 
-The first run takes about a minute (restore, jar download, IKVM compiling the jars). All 71 tests
+The first run takes about a minute (restore, jar download, IKVM compiling the jars). All 73 tests
 should pass. If a download fails (Maven Central sometimes rate-limits with HTTP 429), or a file fails its
 SHA-256 check (the file is then deleted), wait a minute and run `dotnet test` again.
 
