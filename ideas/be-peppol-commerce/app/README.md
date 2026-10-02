@@ -4,7 +4,7 @@ A .NET 8 library that turns an order record into a Peppol BIS Billing 3.0 UBL in
 built as the engine for a future Optimizely Configured Commerce connector for Belgian e-invoicing.
 The idea and its evidence are in `../VALIDATION.md`, and the full plan is in `../PLAN.md`.
 
-**Status: Slices 1, 2a, 2b and 3 of 11 done.** Right now it:
+**Status: Slices 1, 2a, 2b, 3 and 4 of 11 done.** Right now it:
 
 - parses an order from JSON (`BePeppolCommerce.Core.Model.OrderJson`), rejecting null or empty
   required values
@@ -25,14 +25,21 @@ The idea and its evidence are in `../VALIDATION.md`, and the full plan is in `..
   define the webhook body. Storecove also names identifier schemes its own way (the spec's examples are
   "DE:VAT" and "FR:CTC"). The Belgian name is not confirmed, so `StorecoveOptions.SchemeMap` must
   map `0208` to it. Unmapped schemes are sent unchanged.
+- runs the outbound flow in one call (`BePeppolCommerce.Core.Outbound.OutboundInvoiceSender`):
+  order, then UBL XML, then validation, then send to the buyer's endpoint (`EndpointSchemeId` and
+  `EndpointId`) through any `IPeppolAccessPointClient`. It returns `ValidationFailed` (nothing was
+  sent; the findings say why), `SendFailed` (valid, but the provider refused it or was unreachable)
+  or `Sent` (with the provider's submission id). Without an explicit idempotency key, it derives a
+  stable one from the seller's endpoint and the invoice number, so a retry of the same invoice
+  reuses the key. Tested against a fake Access Point on a loopback HTTP port, through the real
+  `StorecoveClient`.
 
 It does **not** yet do the following:
 
 - emit a VAT exemption reason, an order reference or payment terms. Orders that need them (VAT
   category E/Z/O..., no buyer reference, no due date) are built, but the validator then reports
   BR-E-10, PEPPOL-EN16931-R003 or BR-CO-25, so they are caught before sending.
-- send or receive anything end to end. The provider client is not yet wired to the builder and
-  validator (Slice 4), and there is no API host for inbound webhooks yet (Slice 5).
+- receive anything. There is no API host for inbound webhooks yet (Slice 5).
 - integrate with Optimizely Configured Commerce.
 
 ## How validation works
@@ -71,7 +78,7 @@ From this directory (`ideas/be-peppol-commerce/app`):
 dotnet test
 ```
 
-The first run takes about a minute (restore, jar download, IKVM compiling the jars). All 63 tests
+The first run takes about a minute (restore, jar download, IKVM compiling the jars). All 71 tests
 should pass. If a download fails (Maven Central sometimes rate-limits with HTTP 429), or a file fails its
 SHA-256 check (the file is then deleted), wait a minute and run `dotnet test` again.
 
@@ -79,7 +86,7 @@ SHA-256 check (the file is then deleted), wait a minute and run `dotnet test` ag
 
 ```
 BePeppolCommerce.sln
-src/BePeppolCommerce.Core/          library: AccessPoint/ (provider interface, Storecove client), Model/ (order records, JSON parsing), Ubl/ (invoice builder),
+src/BePeppolCommerce.Core/          library: AccessPoint/ (provider interface, Storecove client), Outbound/ (build, validate, send), Model/ (order records, JSON parsing), Ubl/ (invoice builder),
                                     Validation/ (validator, Skeleton/ ISO Schematron, Schemas/ UBL 2.1 XSD,
                                     Rules/SOURCE.md provenance of the downloaded rules)
 tests/BePeppolCommerce.Core.Tests/  xUnit tests; Fixtures/sample-order.json is the sample order
