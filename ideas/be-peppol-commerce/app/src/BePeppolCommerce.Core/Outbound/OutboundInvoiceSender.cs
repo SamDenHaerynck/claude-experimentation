@@ -53,7 +53,10 @@ public sealed class OutboundInvoiceSender
     /// Builds, validates and sends the invoice for <paramref name="order"/> to the buyer's Peppol
     /// endpoint. When <paramref name="idempotencyKey"/> is null, a key is derived from the invoice
     /// itself (see <see cref="DeriveIdempotencyKey"/>), so retrying an unchanged invoice reuses the
-    /// same key and a corrected invoice gets a new one.
+    /// same key and a corrected invoice gets a new one. Any change to the builder's output (for
+    /// example a library upgrade between a failed send and its retry) also changes the derived key,
+    /// which could deliver the invoice twice; callers that retry should keep the key from the first
+    /// attempt and pass it explicitly.
     /// </summary>
     public async Task<OutboundResult> SendAsync(Order order, Guid? idempotencyKey = null, CancellationToken cancellationToken = default)
     {
@@ -80,7 +83,8 @@ public sealed class OutboundInvoiceSender
 
     /// <summary>
     /// A stable GUID from the seller's endpoint, the invoice number, the recipient and the exact UBL
-    /// XML: the first 16 bytes of their SHA-256, with the RFC 4122 version (5) and variant bits set.
+    /// XML: the first 16 bytes of their SHA-256, with the RFC 9562 version 8 (custom hash) and variant
+    /// bits set. It is not a v5 UUID, which would use SHA-1 and a namespace.
     /// Fields are length-prefixed so different inputs cannot run together. The builder is
     /// deterministic, so the same order always gets the same key; any change to the invoice or its
     /// recipient gets a different one. How long Storecove remembers a key, and whether it remembers
@@ -99,7 +103,7 @@ public sealed class OutboundInvoiceSender
             input.Append(field.Length).Append(':').Append(field).Append('|');
         var bytes = SHA256.HashData(Encoding.UTF8.GetBytes(input.ToString()))[..16];
         // Big-endian (RFC 4122) byte order: version in the high nibble of byte 6, variant in byte 8.
-        bytes[6] = (byte)((bytes[6] & 0x0F) | 0x50);
+        bytes[6] = (byte)((bytes[6] & 0x0F) | 0x80);
         bytes[8] = (byte)((bytes[8] & 0x3F) | 0x80);
         return new Guid(bytes, bigEndian: true);
     }

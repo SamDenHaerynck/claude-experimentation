@@ -56,7 +56,8 @@ public class OutboundInvoiceSenderTests
                     }
                     catch (Exception ex) when (ex is HttpListenerException or ObjectDisposedException or IOException)
                     {
-                        // The client went away or the listener stopped mid-response; keep serving.
+                        // The client went away or the listener stopped mid-response; fail it fast and keep serving.
+                        try { ctx.Response.Abort(); } catch (ObjectDisposedException) { }
                     }
                 }
             });
@@ -211,11 +212,11 @@ public class OutboundInvoiceSenderTests
     }
 
     [Fact]
-    public void DerivedIdempotencyKey_IsRfc4122Version5()
+    public void DerivedIdempotencyKey_IsRfc9562Version8()
     {
         var key = OutboundInvoiceSender.DeriveIdempotencyKey(LoadSample(), "<Invoice/>").ToString("D");
 
-        Assert.Equal('5', key[14]);
+        Assert.Equal('8', key[14]);
         Assert.Contains(key[19], "89ab");
     }
 
