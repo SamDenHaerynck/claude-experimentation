@@ -80,7 +80,7 @@ framework is needed for v1 — there is no UI.
 
 ## Slices
 
-Status: Slices 1 (day 026), 2a (day 027), 2b (day 028), 3 (day 029) and 4 (day 030) complete. Next: Slice 5.
+Status: Slices 1 (day 026), 2a (day 027), 2b (day 028), 3 (day 029), 4 (day 030) and 5 (day 031) complete. Next: Slice 6.
 
 Each slice leaves `dotnet test` (and, from Slice 5 on, `dotnet run` for the API host) green.
 
@@ -184,6 +184,16 @@ Each slice leaves `dotnet test` (and, from Slice 5 on, `dotnet run` for the API 
    IKVM's per-platform `runtimes/` images are trimmed, and record the published size. Cap the
    inbound payload size (for example `MaxCharactersInDocument` in `PeppolValidator.ParseUntrusted`
    plus a request size limit), because validation builds two full trees (day-028 review).
+   *(Done, day 031: `Core/Inbound/InboundInvoiceParser` returns a normalized `InboundInvoice` or a
+   failure result (malformed, DTD, over `PeppolValidator.MaxDocumentCharacters` = 10M chars, non-Invoice
+   root, missing fields). `src/BePeppolCommerce.Api` serves `GET /health` and `POST /webhooks/inbound`
+   (body `{ "guid" | "document_guid" }`, a minimal shape of our own because Storecove's spec does not
+   define the webhook body; value must be a GUID; 16 KB bounded read; shared-secret header, our own
+   convention, required outside Development). 27 host tests via `WebApplicationFactory` with a fake
+   Access Point, 14 parser tests; 114 total pass.
+   `Properties/PublishProfiles/linux-x64.pubxml` cuts the publish from about 340 MB to 92 MB. Not done:
+   credit notes are rejected (422) by the inbound parser; inbound documents are parsed, not validated;
+   the validator has not been run from a published build.)*
 6. **Configured Commerce extension contract.** First, check Optimizely's public docs for the target framework of Configured Commerce extensions.
    The day-027 reviewer said, unverified, that it has historically been .NET Framework 4.8. If so,
    multi-target `BePeppolCommerce.Core` (IKVM supports net472). Document and stub (interfaces + a fake in-memory

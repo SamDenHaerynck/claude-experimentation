@@ -1,27 +1,25 @@
 # State
-Day: 030
+Day: 031
 Idea: be-peppol-commerce
 Phase: 3 Build
-Slice: 4 of 11, complete (next: 5)
-Next action: Slice 5 (inbound flow) in `ideas/be-peppol-commerce/PLAN.md`. Install the .NET 8 SDK
-(`RUNBOOK.md` "Build environment") and run `dotnet test` in `ideas/be-peppol-commerce/app` (73 should
-pass; on a Maven Central 429, wait a minute and rerun). Then: (1) add a normalized `InboundInvoice`
-record and a parser in `src/BePeppolCommerce.Core/Inbound/` that takes UBL XML via
-`PeppolValidator.ParseUntrusted` (add a `MaxCharactersInDocument` cap there) and extracts invoice
-number, issue date, currency, seller/buyer name and endpoint, line count and payable amount, returning
-a failure result (not an exception) for malformed XML or a non-Invoice root; (2) add
-`src/BePeppolCommerce.Api/` (ASP.NET Core minimal API, add to `BePeppolCommerce.sln`) with one POST
-route that accepts a webhook body carrying a provider document id, fetches the document with
-`IPeppolAccessPointClient.GetInboundAsync`, parses it and returns the normalized model, with a request
-size limit. Storecove's webhook body shape is NOT defined in its spec (day 029), so model a minimal
-`{ "guid": "..." }` body and say so in the README. Test with `WebApplicationFactory` (or fakes) using
-a fixture built from the sample order, plus malformed and oversized cases. If time is short, split
-off the `RuntimeIdentifier` publish-size trim to Slice 5b in `PLAN.md` rather than overrunning.
-Read first: OWNER.md, RUNBOOK.md, ideas/be-peppol-commerce/PLAN.md (Slice 5),
+Slice: 5 of 11, complete (next: 6)
+Next action: Slice 6 (Configured Commerce extension contract) in `ideas/be-peppol-commerce/PLAN.md`.
+Install the .NET 8 SDK (`RUNBOOK.md` "Build environment") and run `dotnet test` in
+`ideas/be-peppol-commerce/app` (114 should pass; on a Maven Central 429, wait a minute and rerun).
+Then, first, check Optimizely's public docs (docs.developers.optimizely.com, Configured Commerce
+section) for the target framework of Configured Commerce extensions, and record the answer with the
+URL you actually fetched in `DECISIONS.md`. If it is .NET Framework 4.8, multi-target
+`BePeppolCommerce.Core` (`net8.0;net472`) only if it fits in the session; otherwise record it as a
+Slice 6b. Then add `src/BePeppolCommerce.Core/Integration/` with `IOrderInvoiceSource` and a
+credential/config provider interface plus in-memory fakes, and a contract doc
+(`ideas/be-peppol-commerce/app/docs/CONFIGURED_COMMERCE_CONTRACT.md`) covering, per interface, full
+signatures, lifetime/threading, the error contract (throws vs. failure result) and where credentials
+come from at runtime. Tests: the fakes drive `OutboundInvoiceSender` end to end.
+Read first: OWNER.md, RUNBOOK.md, ideas/be-peppol-commerce/PLAN.md (Slice 6),
 ideas/be-peppol-commerce/app/README.md,
+ideas/be-peppol-commerce/app/src/BePeppolCommerce.Core/Outbound/OutboundInvoiceSender.cs,
 ideas/be-peppol-commerce/app/src/BePeppolCommerce.Core/AccessPoint/IPeppolAccessPointClient.cs,
-ideas/be-peppol-commerce/app/src/BePeppolCommerce.Core/Validation/PeppolValidator.cs,
-ideas/be-peppol-commerce/app/tests/BePeppolCommerce.Core.Tests/OutboundInvoiceSenderTests.cs (fake AP pattern)
+ideas/be-peppol-commerce/app/src/BePeppolCommerce.Api/Program.cs
 Notes for owner:
 - (Owner) Licensing of the Peppol rules (day 028). OpenPEPPOL's BIS guide
   (`guide/bis/introduction.adoc` in peppol-bis-invoice-3) says OpenPeppol AISBL holds the copyright,
@@ -63,6 +61,10 @@ Notes for owner:
 - (Owner) Day 030: the outbound flow derives a Storecove idempotency key from the invoice content
   when the caller passes none. Storecove's spec does not say how long it remembers a key or whether
   rejected submissions count. If you have a Storecove sandbox, that is worth one check before Slice 8.
+- (Owner) Day 031: the inbound webhook (`POST /webhooks/inbound`) uses a body shape and an
+  `X-Webhook-Secret` header that are this project's own conventions, because Storecove's public spec
+  defines neither its webhook body nor its webhook authentication. With a Storecove sandbox, one real
+  webhook delivery would settle both.
 Tournament round: 1 (won)
 Kills before 2026-09-23 rewrite: 14
-Last session: 2026-10-02, ended clean
+Last session: 2026-10-03, ended clean

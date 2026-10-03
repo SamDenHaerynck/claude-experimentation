@@ -11,6 +11,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{14582F29
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BePeppolCommerce.Core.Tests", "tests\BePeppolCommerce.Core.Tests\BePeppolCommerce.Core.Tests.csproj", "{494A8C49-D540-4753-8ACB-7434FEF6E3F4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BePeppolCommerce.Api", "src\BePeppolCommerce.Api\BePeppolCommerce.Api.csproj", "{FA3E1E0B-B445-4D06-AD63-971EE9F3E770}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BePeppolCommerce.Api.Tests", "tests\BePeppolCommerce.Api.Tests\BePeppolCommerce.Api.Tests.csproj", "{C918DC4E-C13C-45A3-BCF3-19FF7BD53F75}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -28,9 +32,19 @@ Global
 		{494A8C49-D540-4753-8ACB-7434FEF6E3F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{494A8C49-D540-4753-8ACB-7434FEF6E3F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{494A8C49-D540-4753-8ACB-7434FEF6E3F4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FA3E1E0B-B445-4D06-AD63-971EE9F3E770}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FA3E1E0B-B445-4D06-AD63-971EE9F3E770}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FA3E1E0B-B445-4D06-AD63-971EE9F3E770}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FA3E1E0B-B445-4D06-AD63-971EE9F3E770}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C918DC4E-C13C-45A3-BCF3-19FF7BD53F75}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C918DC4E-C13C-45A3-BCF3-19FF7BD53F75}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C918DC4E-C13C-45A3-BCF3-19FF7BD53F75}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C918DC4E-C13C-45A3-BCF3-19FF7BD53F75}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{8F4B40BD-8376-4A2E-B933-BAA7E8B9D214} = {FB12F7F0-8182-4ED1-975C-810070F5EA6C}
 		{494A8C49-D540-4753-8ACB-7434FEF6E3F4} = {14582F29-E500-46B5-ABA7-7A32832A2229}
+		{FA3E1E0B-B445-4D06-AD63-971EE9F3E770} = {FB12F7F0-8182-4ED1-975C-810070F5EA6C}
+		{C918DC4E-C13C-45A3-BCF3-19FF7BD53F75} = {14582F29-E500-46B5-ABA7-7A32832A2229}
 	EndGlobalSection
 EndGlobal
