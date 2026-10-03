@@ -4,7 +4,7 @@ A .NET 8 library that turns an order record into a Peppol BIS Billing 3.0 UBL in
 built as the engine for a future Optimizely Configured Commerce connector for Belgian e-invoicing.
 The idea and its evidence are in `../VALIDATION.md`, and the full plan is in `../PLAN.md`.
 
-**Status: Slices 1, 2a, 2b, 3 and 4 of 11 done.** Right now it:
+**Status: Slices 1, 2a, 2b, 3, 4 and 5 of 11 done.** Right now it:
 
 - parses an order from JSON (`BePeppolCommerce.Core.Model.OrderJson`), rejecting null or empty
   required values
@@ -36,12 +36,21 @@ The idea and its evidence are in `../VALIDATION.md`, and the full plan is in `..
   and is unverified. Tested against a fake Access Point on a loopback HTTP port, through the real
   `StorecoveClient`.
 
+- receives invoices (`BePeppolCommerce.Api`, an ASP.NET Core minimal API). `POST /webhooks/inbound`
+  takes a small JSON body naming a received document, fetches that document from the Access Point
+  with `GetInboundAsync`, and returns a normalized `InboundInvoice` (invoice number, issue date,
+  currency, seller and buyer name and Peppol endpoint, line count, payable amount), parsed by
+  `BePeppolCommerce.Core.Inbound.InboundInvoiceParser`. **The webhook body is this project's own
+  minimal shape**, `{ "guid": "<document id>" }` (or `document_guid`, the property name Storecove's
+  spec mentions), because Storecove's public spec does not define its webhook body. Match it to a
+  real delivery before production. The parser does not run the Peppol rules on received
+  documents; call `PeppolValidator` for that.
+
 It does **not** yet do the following:
 
 - emit a VAT exemption reason, an order reference or payment terms. Orders that need them (VAT
   category E/Z/O..., no buyer reference, no due date) are built, but the validator then reports
   BR-E-10, PEPPOL-EN16931-R003 or BR-CO-25, so they are caught before sending.
-- receive anything. There is no API host for inbound webhooks yet (Slice 5).
 - integrate with Optimizely Configured Commerce.
 
 ## How validation works
@@ -80,9 +89,53 @@ From this directory (`ideas/be-peppol-commerce/app`):
 dotnet test
 ```
 
-The first run takes about a minute (restore, jar download, IKVM compiling the jars). All 73 tests
-should pass. If a download fails (Maven Central sometimes rate-limits with HTTP 429), or a file fails its
+The first run takes about a minute (restore, jar download, IKVM compiling the jars). All 105 tests
+should pass (87 in `BePeppolCommerce.Core.Tests`, 18 in `BePeppolCommerce.Api.Tests`). If a download fails (Maven Central sometimes rate-limits with HTTP 429), or a file fails its
 SHA-256 check (the file is then deleted), wait a minute and run `dotnet test` again.
+
+## Run the API host
+
+```
+dotnet run --project src/BePeppolCommerce.Api
+```
+
+It listens on http://localhost:5080. `GET /health` answers `{"status":"ok"}`. Without an Access
+Point API key, `POST /webhooks/inbound` answers 503. To point it at Storecove, set configuration
+(environment variables shown; see `src/BePeppolCommerce.Api/.env.example`, placeholders only):
+
+- `Storecove__ApiKey`, `Storecove__LegalEntityId`, `Storecove__BaseUri` (defaults to
+  `https://api.storecove.com/api/v2/`)
+- `Webhook__Secret` (optional): when set, requests must send the same value in the
+  `X-Webhook-Secret` header. This is this project's convention; how Storecove authenticates its
+  webhooks is not in its public spec, so check before relying on it.
+
+This host has never been connected to a real Storecove account. Example call:
+
+```
+curl -X POST http://localhost:5080/webhooks/inbound -H "Content-Type: application/json" \
+  -d '{"guid":"0b6f2a3c-1d4e-4f5a-8b9c-0d1e2f3a4b5c"}'
+```
+
+Responses: 200 with `{ providerDocumentId, invoice }`; 400 if the body is not a JSON object with a
+non-empty string `guid`/`document_guid`; 401 on a wrong or missing secret (when configured); 413
+above 16 KB; 502 if the Access Point fetch failed (details are logged, not returned); 422 if the
+fetched document is not a parseable UBL Invoice (credit notes are not handled yet); 503 if no
+provider is configured.
+
+Received documents are parsed with DTDs prohibited and a cap of 10 million characters
+(`PeppolValidator.MaxDocumentCharacters`, a defensive limit chosen here, not a Peppol rule).
+
+## Publish
+
+```
+dotnet publish src/BePeppolCommerce.Api -p:PublishProfile=linux-x64
+```
+
+Output goes to `src/BePeppolCommerce.Api/bin/publish/linux-x64/` and is framework-dependent (the
+target machine needs the ASP.NET Core 8 runtime). Measured day 031: about 92 MB, against about
+340 MB for a publish without a RuntimeIdentifier (IKVM ships images for every platform). The
+published host started and answered `/health`; the validator has not yet been exercised from a
+published build. For Windows, copy the profile and set `win-x64`.
 
 ## Layout
 
@@ -91,8 +144,11 @@ BePeppolCommerce.sln
 src/BePeppolCommerce.Core/          library: AccessPoint/ (provider interface, Storecove client), Outbound/ (build, validate, send), Model/ (order records, JSON parsing), Ubl/ (invoice builder),
                                     Validation/ (validator, Skeleton/ ISO Schematron, Schemas/ UBL 2.1 XSD,
                                     Rules/SOURCE.md provenance of the downloaded rules)
+src/BePeppolCommerce.Core/Inbound/  received-invoice parser and normalized model
+src/BePeppolCommerce.Api/           ASP.NET Core host: /health and POST /webhooks/inbound
 tests/BePeppolCommerce.Core.Tests/  xUnit tests; Fixtures/sample-order.json is the sample order
+tests/BePeppolCommerce.Api.Tests/   host tests through WebApplicationFactory with a fake Access Point
 ```
 
 All party data in the fixture is fictitious. There are no secrets or credentials anywhere in this
-project, and no `.env` file is needed yet.
+project. `src/BePeppolCommerce.Api/.env.example` lists the configuration keys with placeholder values.

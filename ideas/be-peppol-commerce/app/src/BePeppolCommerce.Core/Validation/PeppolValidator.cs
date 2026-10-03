@@ -100,9 +100,25 @@ public static class PeppolValidator
         return new SAXSource(factory.newSAXParser().getXMLReader(), new InputSource(new JStringReader(text)));
     }
 
+    /// <summary>
+    /// Upper bound on the characters <see cref="ParseUntrusted"/> accepts (10 million, roughly 10 MB of
+    /// ASCII XML). Validation builds two full trees per document, so an unbounded input is a memory
+    /// risk. This is a defensive cap chosen for this library, not a Peppol limit.
+    /// </summary>
+    public const long MaxDocumentCharacters = 10_000_000;
+
+    /// <summary>
+    /// Parses untrusted XML with DTDs prohibited, no resolver, and at most
+    /// <see cref="MaxDocumentCharacters"/> characters. Throws <see cref="XmlException"/> otherwise.
+    /// </summary>
     public static XDocument ParseUntrusted(string xml)
     {
-        var settings = new XmlReaderSettings { DtdProcessing = DtdProcessing.Prohibit, XmlResolver = null };
+        var settings = new XmlReaderSettings
+        {
+            DtdProcessing = DtdProcessing.Prohibit,
+            XmlResolver = null,
+            MaxCharactersInDocument = MaxDocumentCharacters,
+        };
         using var reader = XmlReader.Create(new StringReader(xml), settings);
         return XDocument.Load(reader, LoadOptions.SetLineInfo);
     }
