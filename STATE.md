@@ -5,7 +5,7 @@ Phase: 3 Build
 Slice: 5 of 11, complete (next: 6)
 Next action: Slice 6 (Configured Commerce extension contract) in `ideas/be-peppol-commerce/PLAN.md`.
 Install the .NET 8 SDK (`RUNBOOK.md` "Build environment") and run `dotnet test` in
-`ideas/be-peppol-commerce/app` (112 should pass; on a Maven Central 429, wait a minute and rerun).
+`ideas/be-peppol-commerce/app` (114 should pass; on a Maven Central 429, wait a minute and rerun).
 Then, first, check Optimizely's public docs (docs.developers.optimizely.com, Configured Commerce
 section) for the target framework of Configured Commerce extensions, and record the answer with the
 URL you actually fetched in `DECISIONS.md`. If it is .NET Framework 4.8, multi-target

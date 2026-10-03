@@ -201,6 +201,8 @@ public class InboundWebhookTests
     [Theory]
     [InlineData("not a uri")]
     [InlineData("http://api.example.invalid/")]
+    [InlineData("/api/v2/")]
+    [InlineData("ftp://localhost/")]
     public void InvalidBaseUri_FailsAtStartup(string baseUri)
     {
         using var factory = new WebApplicationFactory<Program>().WithWebHostBuilder(b =>

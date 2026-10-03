@@ -89,8 +89,8 @@ From this directory (`ideas/be-peppol-commerce/app`):
 dotnet test
 ```
 
-The first run takes about a minute (restore, jar download, IKVM compiling the jars). All 112 tests
-should pass (87 in `BePeppolCommerce.Core.Tests`, 25 in `BePeppolCommerce.Api.Tests`). If a download fails (Maven Central sometimes rate-limits with HTTP 429), or a file fails its
+The first run takes about a minute (restore, jar download, IKVM compiling the jars). All 114 tests
+should pass (87 in `BePeppolCommerce.Core.Tests`, 27 in `BePeppolCommerce.Api.Tests`). If a download fails (Maven Central sometimes rate-limits with HTTP 429), or a file fails its
 SHA-256 check (the file is then deleted), wait a minute and run `dotnet test` again.
 
 ## Run the API host
@@ -105,8 +105,8 @@ API key, `POST /webhooks/inbound` answers 503. To point it at Storecove, set con
 (environment variables shown; see `src/BePeppolCommerce.Api/.env.example`, placeholders only):
 
 - `Storecove__ApiKey`, `Storecove__LegalEntityId`, `Storecove__BaseUri` (defaults to
-  `https://api.storecove.com/api/v2/`). A `BaseUri` that is not an absolute URI, or is plain http
-  to anything but loopback, stops the host at startup instead of falling back to the live API.
+  `https://api.storecove.com/api/v2/`). A `BaseUri` that is not an absolute https URI (plain http is allowed
+  only to loopback) stops the host at startup instead of falling back to the live API.
 - `Webhook__Secret`: requests must send the same value in the `X-Webhook-Secret` header. **Outside
   Development the webhook answers 503 until this is set**, because its response exposes the received
   invoice's parties and amounts. In Development an unset secret disables the check (a warning is
