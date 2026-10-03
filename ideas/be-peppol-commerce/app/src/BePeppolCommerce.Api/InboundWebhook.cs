@@ -11,7 +11,9 @@ namespace BePeppolCommerce.Api;
 public sealed class InboundWebhookOptions
 {
     /// <summary>
-    /// Optional shared secret. When set, requests must carry it in the <c>X-Webhook-Secret</c> header.
+    /// Shared secret that requests must carry in the <c>X-Webhook-Secret</c> header. Outside the
+    /// Development environment the webhook answers 503 until it is set, because the response exposes
+    /// the received invoice's parties and amounts. In Development an unset secret means no check.
     /// This is this project's own convention: Storecove's public spec does not describe how its
     /// webhooks authenticate, so match this to the provider's real mechanism before production.
     /// </summary>
@@ -24,7 +26,7 @@ public sealed record InboundWebhookResponse(string ProviderDocumentId, InboundIn
 /// <summary>
 /// Webhook for "a document was received". Storecove's public OpenAPI spec does not define the webhook
 /// body (day 029), so this accepts a minimal JSON object carrying the received document's id as
-/// <c>guid</c> or <c>document_guid</c> (the property name the spec mentions). The handler fetches the
+/// <c>guid</c> or <c>document_guid</c> (the property name the spec mentions); the value must be a GUID. The handler fetches the
 /// document from the Access Point, parses it and returns the normalized invoice.
 /// </summary>
 public static class InboundWebhook
@@ -35,11 +37,13 @@ public static class InboundWebhook
     /// <summary>The webhook body only carries an id, so anything above this is refused (413).</summary>
     public const int MaxBodyBytes = 16 * 1024;
 
-    public static async Task<IResult> Handle(HttpContext http, IOptions<InboundWebhookOptions> options, ILoggerFactory loggers)
+    public static async Task<IResult> Handle(HttpContext http, IOptions<InboundWebhookOptions> options, IHostEnvironment environment, ILoggerFactory loggers)
     {
         var log = loggers.CreateLogger(typeof(InboundWebhook));
 
         var secret = options.Value.Secret;
+        if (string.IsNullOrEmpty(secret) && !environment.IsDevelopment())
+            return Results.Problem("Webhook:Secret is not configured.", statusCode: StatusCodes.Status503ServiceUnavailable);
         if (!string.IsNullOrEmpty(secret) && !SecretMatches(http.Request.Headers[SecretHeader].ToString(), secret))
             return Results.Problem("Missing or wrong webhook secret.", statusCode: StatusCodes.Status401Unauthorized);
 
@@ -52,7 +56,7 @@ public static class InboundWebhook
 
         var documentId = DocumentId(body);
         if (documentId is null)
-            return Results.Problem("Body must be a JSON object with a non-empty string 'guid' or 'document_guid'.", statusCode: StatusCodes.Status400BadRequest);
+            return Results.Problem("Body must be a JSON object with a 'guid' or 'document_guid' string holding a GUID.", statusCode: StatusCodes.Status400BadRequest);
 
         if (http.RequestServices.GetService<IPeppolAccessPointClient>() is not { } client)
             return Results.Problem("No Access Point provider is configured (set Storecove:ApiKey).", statusCode: StatusCodes.Status503ServiceUnavailable);
@@ -62,7 +66,7 @@ public static class InboundWebhook
         {
             log.LogWarning("Fetching inbound document {DocumentId} failed (HTTP {Status}): {Errors}",
                 documentId, fetched.HttpStatus, string.Join("; ", fetched.Errors.Select(e => $"{e.Source}: {e.Details}")));
-            return Results.Problem($"Could not fetch document {documentId} from the Access Point.", statusCode: StatusCodes.Status502BadGateway);
+            return Results.Problem("Could not fetch the document from the Access Point.", statusCode: StatusCodes.Status502BadGateway);
         }
 
         var parsed = InboundInvoiceParser.Parse(fetched.Value!.UblXml);
@@ -91,6 +95,8 @@ public static class InboundWebhook
         return total > MaxBodyBytes ? null : buffer[..total];
     }
 
+    // Returns the id in canonical GUID form, so nothing caller-supplied beyond a GUID reaches the
+    // provider, the logs or the response.
     private static string? DocumentId(byte[] body)
     {
         try
@@ -99,8 +105,8 @@ public static class InboundWebhook
             if (json.RootElement.ValueKind != JsonValueKind.Object) return null;
             foreach (var name in new[] { "guid", "document_guid" })
                 if (json.RootElement.TryGetProperty(name, out var value) && value.ValueKind == JsonValueKind.String
-                    && !string.IsNullOrWhiteSpace(value.GetString()))
-                    return value.GetString()!.Trim();
+                    && Guid.TryParse(value.GetString(), out var guid))
+                    return guid.ToString("D");
             return null;
         }
         catch (JsonException)

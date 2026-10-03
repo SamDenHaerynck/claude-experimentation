@@ -89,8 +89,8 @@ From this directory (`ideas/be-peppol-commerce/app`):
 dotnet test
 ```
 
-The first run takes about a minute (restore, jar download, IKVM compiling the jars). All 105 tests
-should pass (87 in `BePeppolCommerce.Core.Tests`, 18 in `BePeppolCommerce.Api.Tests`). If a download fails (Maven Central sometimes rate-limits with HTTP 429), or a file fails its
+The first run takes about a minute (restore, jar download, IKVM compiling the jars). All 112 tests
+should pass (87 in `BePeppolCommerce.Core.Tests`, 25 in `BePeppolCommerce.Api.Tests`). If a download fails (Maven Central sometimes rate-limits with HTTP 429), or a file fails its
 SHA-256 check (the file is then deleted), wait a minute and run `dotnet test` again.
 
 ## Run the API host
@@ -99,14 +99,18 @@ SHA-256 check (the file is then deleted), wait a minute and run `dotnet test` ag
 dotnet run --project src/BePeppolCommerce.Api
 ```
 
-It listens on http://localhost:5080. `GET /health` answers `{"status":"ok"}`. Without an Access
-Point API key, `POST /webhooks/inbound` answers 503. To point it at Storecove, set configuration
+It listens on http://localhost:5080 in the Development environment (set by
+`Properties/launchSettings.json`). `GET /health` answers `{"status":"ok"}`. Without an Access Point
+API key, `POST /webhooks/inbound` answers 503. To point it at Storecove, set configuration
 (environment variables shown; see `src/BePeppolCommerce.Api/.env.example`, placeholders only):
 
 - `Storecove__ApiKey`, `Storecove__LegalEntityId`, `Storecove__BaseUri` (defaults to
-  `https://api.storecove.com/api/v2/`)
-- `Webhook__Secret` (optional): when set, requests must send the same value in the
-  `X-Webhook-Secret` header. This is this project's convention; how Storecove authenticates its
+  `https://api.storecove.com/api/v2/`). A `BaseUri` that is not an absolute URI, or is plain http
+  to anything but loopback, stops the host at startup instead of falling back to the live API.
+- `Webhook__Secret`: requests must send the same value in the `X-Webhook-Secret` header. **Outside
+  Development the webhook answers 503 until this is set**, because its response exposes the received
+  invoice's parties and amounts. In Development an unset secret disables the check (a warning is
+  logged at startup). This header is this project's convention; how Storecove authenticates its
   webhooks is not in its public spec, so check before relying on it.
 
 This host has never been connected to a real Storecove account. Example call:
@@ -116,11 +120,11 @@ curl -X POST http://localhost:5080/webhooks/inbound -H "Content-Type: applicatio
   -d '{"guid":"0b6f2a3c-1d4e-4f5a-8b9c-0d1e2f3a4b5c"}'
 ```
 
-Responses: 200 with `{ providerDocumentId, invoice }`; 400 if the body is not a JSON object with a
-non-empty string `guid`/`document_guid`; 401 on a wrong or missing secret (when configured); 413
+Responses: 200 with `{ providerDocumentId, invoice }`; 400 if the body is not a JSON object whose
+`guid`/`document_guid` is a GUID string; 401 on a wrong or missing secret (when configured); 413
 above 16 KB; 502 if the Access Point fetch failed (details are logged, not returned); 422 if the
 fetched document is not a parseable UBL Invoice (credit notes are not handled yet); 503 if no
-provider is configured.
+provider is configured, or outside Development if no secret is configured.
 
 Received documents are parsed with DTDs prohibited and a cap of 10 million characters
 (`PeppolValidator.MaxDocumentCharacters`, a defensive limit chosen here, not a Peppol rule).

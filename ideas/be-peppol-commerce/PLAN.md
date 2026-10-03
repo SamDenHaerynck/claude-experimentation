@@ -188,8 +188,9 @@ Each slice leaves `dotnet test` (and, from Slice 5 on, `dotnet run` for the API 
    failure result (malformed, DTD, over `PeppolValidator.MaxDocumentCharacters` = 10M chars, non-Invoice
    root, missing fields). `src/BePeppolCommerce.Api` serves `GET /health` and `POST /webhooks/inbound`
    (body `{ "guid" | "document_guid" }`, a minimal shape of our own because Storecove's spec does not
-   define the webhook body; 16 KB bounded read; optional shared-secret header, also our own convention).
-   18 host tests via `WebApplicationFactory` with a fake Access Point, 14 parser tests; 105 total pass.
+   define the webhook body; value must be a GUID; 16 KB bounded read; shared-secret header, our own
+   convention, required outside Development). 25 host tests via `WebApplicationFactory` with a fake
+   Access Point, 14 parser tests; 112 total pass.
    `Properties/PublishProfiles/linux-x64.pubxml` cuts the publish from about 340 MB to 92 MB. Not done:
    credit notes are rejected (422) by the inbound parser; inbound documents are parsed, not validated;
    the validator has not been run from a published build.)*

@@ -43,11 +43,11 @@ public class InboundWebhookTests
     private static FakeAccessPoint Returning(string xml) =>
         new(id => AccessPointResult<InboundDocument>.Ok(new InboundDocument(id, xml), 200));
 
-    private static HttpClient Client(IPeppolAccessPointClient? accessPoint, string? secret = null)
+    private static HttpClient Client(IPeppolAccessPointClient? accessPoint, string? secret = null, string environment = "Development")
     {
         var factory = new WebApplicationFactory<Program>().WithWebHostBuilder(b =>
         {
-            b.UseEnvironment("Testing");
+            b.UseEnvironment(environment);
             if (secret is not null) b.UseSetting("Webhook:Secret", secret);
             b.ConfigureTestServices(services =>
             {
@@ -99,6 +99,8 @@ public class InboundWebhookTests
     [InlineData("""{ "guid": "" }""")]
     [InlineData("""{ "guid": 42 }""")]
     [InlineData("""{ "guid": null }""")]
+    [InlineData("""{ "guid": "not-a-guid" }""")]
+    [InlineData("""{ "guid": "0b6f2a3c-1d4e-4f5a-8b9c-0d1e2f3a4b5c\nforged log line" }""")]
     public async Task Webhook_BadBody_Returns400WithoutFetching(string json)
     {
         var fake = Returning(SampleInvoiceXml());
@@ -155,6 +157,60 @@ public class InboundWebhookTests
 
         Assert.Equal(HttpStatusCode.BadGateway, response.StatusCode);
         Assert.DoesNotContain("secret-ish", await response.Content.ReadAsStringAsync());
+    }
+
+    [Fact]
+    public async Task Webhook_OutsideDevelopmentWithoutSecret_Returns503WithoutFetching()
+    {
+        var fake = Returning(SampleInvoiceXml());
+
+        var response = await Client(fake, environment: "Production").PostAsync(InboundWebhook.Route, Json($$"""{ "guid": "{{DocumentGuid}}" }"""));
+
+        Assert.Equal(HttpStatusCode.ServiceUnavailable, response.StatusCode);
+        Assert.Empty(fake.Fetched);
+    }
+
+    [Fact]
+    public async Task Webhook_OutsideDevelopmentWithSecret_Works()
+    {
+        var fake = Returning(SampleInvoiceXml());
+        var request = new HttpRequestMessage(HttpMethod.Post, InboundWebhook.Route) { Content = Json($$"""{ "guid": "{{DocumentGuid.ToUpperInvariant()}}" }""") };
+        request.Headers.Add(InboundWebhook.SecretHeader, "s3cret-placeholder");
+
+        var response = await Client(fake, secret: "s3cret-placeholder", environment: "Production").SendAsync(request);
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Equal([DocumentGuid], fake.Fetched); // canonical lower-case form
+    }
+
+    [Fact]
+    public void ApiKeyConfigured_RegistersStorecoveClient()
+    {
+        using var factory = new WebApplicationFactory<Program>().WithWebHostBuilder(b =>
+        {
+            b.UseEnvironment("Development");
+            b.UseSetting("Storecove:ApiKey", "placeholder-not-a-real-key");
+            b.UseSetting("Storecove:LegalEntityId", "1");
+        });
+
+        using var scope = factory.Services.CreateScope();
+
+        Assert.IsType<StorecoveClient>(scope.ServiceProvider.GetRequiredService<IPeppolAccessPointClient>());
+    }
+
+    [Theory]
+    [InlineData("not a uri")]
+    [InlineData("http://api.example.invalid/")]
+    public void InvalidBaseUri_FailsAtStartup(string baseUri)
+    {
+        using var factory = new WebApplicationFactory<Program>().WithWebHostBuilder(b =>
+        {
+            b.UseEnvironment("Development");
+            b.UseSetting("Storecove:ApiKey", "placeholder-not-a-real-key");
+            b.UseSetting("Storecove:BaseUri", baseUri);
+        });
+
+        Assert.Throws<InvalidOperationException>(() => factory.Services);
     }
 
     [Fact]
