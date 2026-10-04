@@ -4,7 +4,7 @@ A .NET 8 library that turns an order record into a Peppol BIS Billing 3.0 UBL in
 built as the engine for a future Optimizely Configured Commerce connector for Belgian e-invoicing.
 The idea and its evidence are in `../VALIDATION.md`, and the full plan is in `../PLAN.md`.
 
-**Status: Slices 1, 2a, 2b, 3, 4 and 5 of 11 done.** Right now it:
+**Status: Slices 1, 2a, 2b, 3, 4, 5 and 6 of 11 done.** Right now it:
 
 - parses an order from JSON (`BePeppolCommerce.Core.Model.OrderJson`), rejecting null or empty
   required values
@@ -45,13 +45,23 @@ The idea and its evidence are in `../VALIDATION.md`, and the full plan is in `..
   spec mentions), because Storecove's public spec does not define its webhook body. Match it to a
   real delivery before production. The parser does not run the Peppol rules on received
   documents; call `PeppolValidator` for that.
+- defines the contract a Configured Commerce extension would implement
+  (`BePeppolCommerce.Core.Integration`, documented in `docs/CONFIGURED_COMMERCE_CONTRACT.md`):
+  `IOrderInvoiceSource` (a queue of orders to invoice, with an idempotency key fixed at queue time)
+  and `IAccessPointSettingsProvider` (provider name, API key, account id at runtime).
+  `OutboundDispatcher.RunOnceAsync` drains the queue through `OutboundInvoiceSender` and records each
+  result as sent, retryable failure (transport error, 408, 429, 5xx) or permanent failure
+  (validation, other 4xx). It is tested only with the in-memory fakes in the same namespace.
 
 It does **not** yet do the following:
 
 - emit a VAT exemption reason, an order reference or payment terms. Orders that need them (VAT
   category E/Z/O..., no buyer reference, no due date) are built, but the validator then reports
   BR-E-10, PEPPOL-EN16931-R003 or BR-CO-25, so they are caught before sending.
-- integrate with Optimizely Configured Commerce.
+- run inside Optimizely Configured Commerce. The contract above has never been built against a real
+  install. The library targets `net8.0`, so it needs Configured Commerce release 5.2.2512 or later
+  with the Extensions project retargeted to `net8.0`/`net10.0`; installs still on `net48` cannot
+  use it (see the contract doc).
 
 ## How validation works
 
@@ -89,8 +99,8 @@ From this directory (`ideas/be-peppol-commerce/app`):
 dotnet test
 ```
 
-The first run takes about a minute (restore, jar download, IKVM compiling the jars). All 114 tests
-should pass (87 in `BePeppolCommerce.Core.Tests`, 27 in `BePeppolCommerce.Api.Tests`). If a download fails (Maven Central sometimes rate-limits with HTTP 429), or a file fails its
+The first run takes about a minute (restore, jar download, IKVM compiling the jars). All 133 tests
+should pass (106 in `BePeppolCommerce.Core.Tests`, 27 in `BePeppolCommerce.Api.Tests`). If a download fails (Maven Central sometimes rate-limits with HTTP 429), or a file fails its
 SHA-256 check (the file is then deleted), wait a minute and run `dotnet test` again.
 
 ## Run the API host
@@ -145,12 +155,13 @@ published build. For Windows, copy the profile and set `win-x64`.
 
 ```
 BePeppolCommerce.sln
-src/BePeppolCommerce.Core/          library: AccessPoint/ (provider interface, Storecove client), Outbound/ (build, validate, send), Model/ (order records, JSON parsing), Ubl/ (invoice builder),
+src/BePeppolCommerce.Core/          library: AccessPoint/ (provider interface, Storecove client), Integration/ (Configured Commerce contract, dispatcher, fakes), Outbound/ (build, validate, send), Model/ (order records, JSON parsing), Ubl/ (invoice builder),
                                     Validation/ (validator, Skeleton/ ISO Schematron, Schemas/ UBL 2.1 XSD,
                                     Rules/SOURCE.md provenance of the downloaded rules)
 src/BePeppolCommerce.Core/Inbound/  received-invoice parser and normalized model
 src/BePeppolCommerce.Api/           ASP.NET Core host: /health and POST /webhooks/inbound
 tests/BePeppolCommerce.Core.Tests/  xUnit tests; Fixtures/sample-order.json is the sample order
+docs/CONFIGURED_COMMERCE_CONTRACT.md  what a Configured Commerce extension implements
 tests/BePeppolCommerce.Api.Tests/   host tests through WebApplicationFactory with a fake Access Point
 ```
 
