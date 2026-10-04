@@ -1,24 +1,25 @@
 # State
-Day: 031
+Day: 032
 Idea: be-peppol-commerce
 Phase: 3 Build
-Slice: 5 of 11, complete (next: 6)
-Next action: Slice 6 (Configured Commerce extension contract) in `ideas/be-peppol-commerce/PLAN.md`.
+Slice: 6 of 11, complete (next: 7)
+Next action: Slice 7 (second provider, Recommand) in `ideas/be-peppol-commerce/PLAN.md`.
 Install the .NET 8 SDK (`RUNBOOK.md` "Build environment") and run `dotnet test` in
-`ideas/be-peppol-commerce/app` (114 should pass; on a Maven Central 429, wait a minute and rerun).
-Then, first, check Optimizely's public docs (docs.developers.optimizely.com, Configured Commerce
-section) for the target framework of Configured Commerce extensions, and record the answer with the
-URL you actually fetched in `DECISIONS.md`. If it is .NET Framework 4.8, multi-target
-`BePeppolCommerce.Core` (`net8.0;net472`) only if it fits in the session; otherwise record it as a
-Slice 6b. Then add `src/BePeppolCommerce.Core/Integration/` with `IOrderInvoiceSource` and a
-credential/config provider interface plus in-memory fakes, and a contract doc
-(`ideas/be-peppol-commerce/app/docs/CONFIGURED_COMMERCE_CONTRACT.md`) covering, per interface, full
-signatures, lifetime/threading, the error contract (throws vs. failure result) and where credentials
-come from at runtime. Tests: the fakes drive `OutboundInvoiceSender` end to end.
-Read first: OWNER.md, RUNBOOK.md, ideas/be-peppol-commerce/PLAN.md (Slice 6),
+`ideas/be-peppol-commerce/app` (141 should pass). Then fetch Recommand's API docs raw with curl
+(https://docs.recommand.eu/ links an OpenAPI-generated reference; find and download the spec JSON
+itself, not a WebFetch summary) and record the send endpoint, auth scheme, request/response shape
+and the received-document fetch endpoint, with URLs, in `DECISIONS.md`. If the raw spec cannot be
+obtained in about 10 minutes, record that and fall back to Billit per Slice 3's note. Then add
+`AccessPoint/RecommandClient.cs` implementing `IPeppolAccessPointClient` against a stub
+`HttpMessageHandler` (success, provider error, transport error), and add a `"recommand"` case to
+`AccessPointClientFactory.Create` in `Integration/OutboundDispatcher.cs` plus a factory test. Also
+let the API host choose its provider from config (`AccessPoint:Provider`), keeping the existing
+`Storecove` section working.
+Read first: OWNER.md, RUNBOOK.md, ideas/be-peppol-commerce/PLAN.md (Slices 3 and 7),
 ideas/be-peppol-commerce/app/README.md,
-ideas/be-peppol-commerce/app/src/BePeppolCommerce.Core/Outbound/OutboundInvoiceSender.cs,
 ideas/be-peppol-commerce/app/src/BePeppolCommerce.Core/AccessPoint/IPeppolAccessPointClient.cs,
+ideas/be-peppol-commerce/app/src/BePeppolCommerce.Core/AccessPoint/StorecoveClient.cs,
+ideas/be-peppol-commerce/app/src/BePeppolCommerce.Core/Integration/OutboundDispatcher.cs,
 ideas/be-peppol-commerce/app/src/BePeppolCommerce.Api/Program.cs
 Notes for owner:
 - (Owner) Licensing of the Peppol rules (day 028). OpenPEPPOL's BIS guide
@@ -57,7 +58,11 @@ Notes for owner:
   gives full official rule coverage but is heavy: 337 MB of build output before trimming. The
   review also raised an unverified point: Configured Commerce extensions may have to target .NET
   Framework 4.8, not .NET 8. Slice 6 checks this first. If you already know the answer, a line in
-  `SIGNALS.md` would save a session.
+  `SIGNALS.md` would save a session. **Answered day 032** from Optimizely's migration guide:
+  Extensions ship `net48` and can be retargeted to `net8.0`/`net10.0` from release 5.2.2512 (steps
+  start at build 5.2.2604.725-lts). The library stays `net8.0`, so installs that have not migrated
+  cannot use v1. How many Belgian installs have migrated is unknown; if you know, note it in
+  `SIGNALS.md`, because it decides whether `net48` support is worth a later slice.
 - (Owner) Day 030: the outbound flow derives a Storecove idempotency key from the invoice content
   when the caller passes none. Storecove's spec does not say how long it remembers a key or whether
   rejected submissions count. If you have a Storecove sandbox, that is worth one check before Slice 8.
@@ -67,4 +72,4 @@ Notes for owner:
   webhook delivery would settle both.
 Tournament round: 1 (won)
 Kills before 2026-09-23 rewrite: 14
-Last session: 2026-10-03, ended clean
+Last session: 2026-10-04, ended clean

@@ -80,7 +80,7 @@ framework is needed for v1 — there is no UI.
 
 ## Slices
 
-Status: Slices 1 (day 026), 2a (day 027), 2b (day 028), 3 (day 029), 4 (day 030) and 5 (day 031) complete. Next: Slice 6.
+Status: Slices 1 (day 026), 2a (day 027), 2b (day 028), 3 (day 029), 4 (day 030), 5 (day 031) and 6 (day 032) complete. Next: Slice 7.
 
 Each slice leaves `dotnet test` (and, from Slice 5 on, `dotnet run` for the API host) green.
 
@@ -204,6 +204,21 @@ Each slice leaves `dotnet test` (and, from Slice 5 on, `dotnet run` for the API 
    expectations (singleton vs. per-request, thread-safety); the error contract (what throws vs. what
    returns a failure result, and for which conditions); and where credentials are expected to come
    from at runtime. A description in prose without these four elements does not satisfy this slice.
+   *(Done, day 032. Target framework: Optimizely's migration guide
+   (https://docs.optimizely.com/configured-commerce/docs/net7-framework-to-net-migration, fetched raw)
+   says `Extensions.csproj` ships `net48` only and can be retargeted to `net8.0` (or `net48;net8.0`)
+   on releases 5.2.2512 to 5.2.2604 and to `net10.0` (or `net48;net10.0`) from 5.2.2605; its steps
+   start from build 5.2.2604.725-lts or newer. Market risk: how many installs have migrated is
+   unknown (no evidence found). So the
+   library stays `net8.0`; `net48` multi-targeting is out of scope for v1 and must be stated in
+   `HANDOFF.md` (installs on `net48` cannot use it). Built `Integration/`: `IOrderInvoiceSource`
+   (queue with an idempotency key fixed at queue time; `MarkSentAsync`/`MarkFailedAsync`),
+   `IAccessPointSettingsProvider`, `AccessPointClientFactory`, `OutboundDispatcher` (drains the queue,
+   classifies failures as retryable or permanent), and in-memory fakes. Contract doc:
+   `app/docs/CONFIGURED_COMMERCE_CONTRACT.md`, with the four elements per interface and the
+   Configured Commerce side's unverified points listed (order-submit handler chain, order mapping
+   API, queue storage, job scheduling, settings API). 27 new tests, 141 total. Three pre-merge review rounds changed failure handling (timeouts, 401/403/404,
+   stopping the run, retry ordering); details are in the day-032 log.)*
 7. **Second provider.** Implement the second client (whichever of Recommand/Storecove wasn't built
    in Slice 3) behind the same `IPeppolAccessPointClient` interface, proving the abstraction holds
    without changes to Slices 1-2 and 4-6. Config-driven provider selection (e.g. an enum/string in
