@@ -56,9 +56,11 @@ public sealed class OutboundDispatcher
 
     /// <summary>
     /// Sends up to <paramref name="batchSize"/> pending invoices, one at a time. When the settings
-    /// provider returns null, nothing is read or sent and the summary says not configured. A failure on
-    /// one invoice is recorded on that invoice and the run continues; exceptions from the source, the
-    /// settings provider or the client factory escape, as does cancellation.
+    /// provider returns null, nothing is read or sent and the summary says not configured. A permanent
+    /// failure is recorded on that invoice and the run continues. The first retryable failure (provider
+    /// unreachable, client timeout, 408, 429, 5xx) is recorded and ends the run, so an outage is not hit
+    /// with the whole batch. Exceptions from the source, the settings provider or the client factory
+    /// escape, as does cancellation of <paramref name="cancellationToken"/>.
     /// </summary>
     public async Task<DispatchSummary> RunOnceAsync(int batchSize = 20, CancellationToken cancellationToken = default)
     {
@@ -76,10 +78,18 @@ public sealed class OutboundDispatcher
             {
                 result = await sender.SendAsync(item.Order, item.IdempotencyKey, cancellationToken);
             }
+            catch (OperationCanceledException) when (!cancellationToken.IsCancellationRequested)
+            {
+                // Not the caller's cancellation: a client-side timeout. Same as an unreachable provider.
+                await _source.MarkFailedAsync(item.SourceId,
+                    new DispatchFailure("Access Point unavailable", true, ["Timed out."]), cancellationToken);
+                retryable++;
+                break;
+            }
             catch (Exception ex) when (ex is not OperationCanceledException)
             {
-                // A bug or bad data the builder did not anticipate. Retrying would fail the same way and
-                // block the queue, so the invoice is parked for a person to look at.
+                // A bug or bad data the builder did not anticipate. Retrying would fail the same way, so
+                // the invoice is parked for a person to look at.
                 await _source.MarkFailedAsync(item.SourceId,
                     new DispatchFailure("Unexpected error", false, [$"{ex.GetType().Name}: {ex.Message}"]), cancellationToken);
                 permanent++;
@@ -88,6 +98,8 @@ public sealed class OutboundDispatcher
 
             if (result.Status == OutboundStatus.Sent)
             {
+                // If this call fails after the provider accepted the invoice, the invoice stays queued and
+                // is sent again next run; only the idempotency key prevents a duplicate (unverified for Storecove).
                 await _source.MarkSentAsync(item.SourceId, result.SubmissionId!, cancellationToken);
                 sent++;
                 continue;
@@ -95,7 +107,14 @@ public sealed class OutboundDispatcher
 
             var failure = ToFailure(result);
             await _source.MarkFailedAsync(item.SourceId, failure, cancellationToken);
-            if (failure.Retryable) retryable++; else permanent++;
+            if (!failure.Retryable)
+            {
+                permanent++;
+                continue;
+            }
+            // The provider is down or throttling: stop, rather than send the rest of the batch into the outage.
+            retryable++;
+            break;
         }
         return new DispatchSummary(true, sent, retryable, permanent);
     }
@@ -103,6 +122,8 @@ public sealed class OutboundDispatcher
     /// <summary>
     /// Validation failures and provider rejections (4xx other than 408 and 429) need a change to the
     /// order, so they are permanent. No HTTP status (transport error), 408, 429 and 5xx are retryable.
+    /// A 409 is treated as a rejection; whether a provider answers a reused idempotency key with 409
+    /// (meaning the invoice was in fact delivered) is unverified.
     /// </summary>
     public static DispatchFailure ToFailure(OutboundResult result)
     {

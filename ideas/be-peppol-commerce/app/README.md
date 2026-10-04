@@ -50,8 +50,8 @@ The idea and its evidence are in `../VALIDATION.md`, and the full plan is in `..
   `IOrderInvoiceSource` (a queue of orders to invoice, with an idempotency key fixed at queue time)
   and `IAccessPointSettingsProvider` (provider name, API key, account id at runtime).
   `OutboundDispatcher.RunOnceAsync` drains the queue through `OutboundInvoiceSender` and records each
-  result as sent, retryable failure (transport error, 408, 429, 5xx) or permanent failure
-  (validation, other 4xx). It is tested only with the in-memory fakes in the same namespace.
+  result as sent, retryable failure (transport error, timeout, 408, 429, 5xx; this ends the run) or
+  permanent failure (validation, other 4xx). It is tested only with the in-memory fakes in the same namespace.
 
 It does **not** yet do the following:
 
@@ -59,8 +59,8 @@ It does **not** yet do the following:
   category E/Z/O..., no buyer reference, no due date) are built, but the validator then reports
   BR-E-10, PEPPOL-EN16931-R003 or BR-CO-25, so they are caught before sending.
 - run inside Optimizely Configured Commerce. The contract above has never been built against a real
-  install. The library targets `net8.0`, so it needs Configured Commerce release 5.2.2512 or later
-  with the Extensions project retargeted to `net8.0`/`net10.0`; installs still on `net48` cannot
+  install. The library targets `net8.0`, so it needs a Configured Commerce install whose Extensions
+  project has been retargeted to `net8.0`/`net10.0` (documented from build 5.2.2604.725-lts on); installs still on `net48` cannot
   use it (see the contract doc).
 
 ## How validation works
@@ -99,8 +99,8 @@ From this directory (`ideas/be-peppol-commerce/app`):
 dotnet test
 ```
 
-The first run takes about a minute (restore, jar download, IKVM compiling the jars). All 133 tests
-should pass (106 in `BePeppolCommerce.Core.Tests`, 27 in `BePeppolCommerce.Api.Tests`). If a download fails (Maven Central sometimes rate-limits with HTTP 429), or a file fails its
+The first run takes about a minute (restore, jar download, IKVM compiling the jars). All 135 tests
+should pass (108 in `BePeppolCommerce.Core.Tests`, 27 in `BePeppolCommerce.Api.Tests`). If a download fails (Maven Central sometimes rate-limits with HTTP 429), or a file fails its
 SHA-256 check (the file is then deleted), wait a minute and run `dotnet test` again.
 
 ## Run the API host

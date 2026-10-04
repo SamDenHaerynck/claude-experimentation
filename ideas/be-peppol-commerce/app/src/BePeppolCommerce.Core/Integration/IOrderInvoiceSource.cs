@@ -32,7 +32,8 @@ public interface IOrderInvoiceSource
 {
     /// <summary>
     /// Returns up to <paramref name="maxCount"/> invoices that are queued and not yet sent or
-    /// permanently failed, oldest first. Returns an empty list when there is nothing to do, never null.
+    /// permanently failed: never-attempted invoices oldest first, then retryable failures least
+    /// recently attempted first, so a failing invoice cannot hold up newer ones. Returns an empty list when there is nothing to do, never null.
     /// </summary>
     Task<IReadOnlyList<PendingInvoice>> GetPendingAsync(int maxCount, CancellationToken cancellationToken = default);
 

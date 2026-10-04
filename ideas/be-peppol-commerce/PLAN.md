@@ -207,7 +207,9 @@ Each slice leaves `dotnet test` (and, from Slice 5 on, `dotnet run` for the API 
    *(Done, day 032. Target framework: Optimizely's migration guide
    (https://docs.optimizely.com/configured-commerce/docs/net7-framework-to-net-migration, fetched raw)
    says `Extensions.csproj` ships `net48` only and can be retargeted to `net8.0` (or `net48;net8.0`)
-   on releases 5.2.2512 to 5.2.2604 and to `net10.0` (or `net48;net10.0`) from 5.2.2605. So the
+   on releases 5.2.2512 to 5.2.2604 and to `net10.0` (or `net48;net10.0`) from 5.2.2605; its steps
+   start from build 5.2.2604.725-lts or newer. Market risk: how many installs have migrated is
+   unknown (no evidence found). So the
    library stays `net8.0`; `net48` multi-targeting is out of scope for v1 and must be stated in
    `HANDOFF.md` (installs on `net48` cannot use it). Built `Integration/`: `IOrderInvoiceSource`
    (queue with an idempotency key fixed at queue time; `MarkSentAsync`/`MarkFailedAsync`),
@@ -215,7 +217,8 @@ Each slice leaves `dotnet test` (and, from Slice 5 on, `dotnet run` for the API 
    classifies failures as retryable or permanent), and in-memory fakes. Contract doc:
    `app/docs/CONFIGURED_COMMERCE_CONTRACT.md`, with the four elements per interface and the
    Configured Commerce side's unverified points listed (order-submit handler chain, order mapping
-   API, queue storage, job scheduling, settings API). 19 new tests, 133 total.)*
+   API, queue storage, job scheduling, settings API). 21 new tests, 135 total. The first review's findings (timeout handling, outage stopping the run,
+   retry ordering) are in the day-032 log.)*
 7. **Second provider.** Implement the second client (whichever of Recommand/Storecove wasn't built
    in Slice 3) behind the same `IPeppolAccessPointClient` interface, proving the abstraction holds
    without changes to Slices 1-2 and 4-6. Config-driven provider selection (e.g. an enum/string in
