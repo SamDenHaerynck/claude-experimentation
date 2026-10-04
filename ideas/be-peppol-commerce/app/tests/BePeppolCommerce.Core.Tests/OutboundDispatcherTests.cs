@@ -137,8 +137,11 @@ public class OutboundDispatcherTests
     [InlineData(429, true)]
     [InlineData(500, true)]
     [InlineData(502, true)]
+    [InlineData(401, true)]
+    [InlineData(403, true)]
+    [InlineData(404, true)]
     [InlineData(400, false)]
-    [InlineData(401, false)]
+    [InlineData(409, false)]
     [InlineData(422, false)]
     public async Task Send_failures_are_classified_by_http_status(int? status, bool retryable)
     {
@@ -151,12 +154,14 @@ public class OutboundDispatcherTests
 
         var failure = source.Failed["ORD-1"];
         Assert.Equal(retryable, failure.Retryable);
+        Assert.Equal(status is 401 or 403 or 404 ? "Access Point configuration error"
+            : retryable ? "Access Point unavailable" : "Rejected by Access Point", failure.Reason);
         Assert.Equal(["provider: nope"], failure.Details);
         Assert.Equal(retryable ? 1 : 0, (await source.GetPendingAsync(10)).Count);
     }
 
     [Fact]
-    public async Task Unexpected_exception_parks_that_invoice_and_the_run_continues()
+    public async Task Unexpected_exception_parks_that_invoice_and_stops_the_run()
     {
         var source = new InMemoryOrderInvoiceSource();
         source.Enqueue("ORD-1", LoadSample());
@@ -164,8 +169,9 @@ public class OutboundDispatcherTests
         var client = new ScriptedClient { Throw = new InvalidOperationException("boom") };
         var (dispatcher, _) = Create(source, client, Settings);
 
-        Assert.Equal(new DispatchSummary(true, 0, 0, 2), await dispatcher.RunOnceAsync());
+        Assert.Equal(new DispatchSummary(true, 0, 0, 1), await dispatcher.RunOnceAsync());
         Assert.Equal(["InvalidOperationException: boom"], source.Failed["ORD-1"].Details);
+        Assert.Equal("ORD-2", Assert.Single(await source.GetPendingAsync(10)).SourceId);
     }
 
     [Fact]
@@ -218,6 +224,36 @@ public class OutboundDispatcherTests
         Assert.Equal(new DispatchSummary(true, 2, 0, 0), await dispatcher.RunOnceAsync());
         Assert.Equal("sub-2", source.Sent["ORD-2"]);
         Assert.Equal("sub-1", source.Sent["ORD-1"]);
+    }
+
+    [Fact]
+    public async Task Orders_queued_after_a_retryable_failure_go_ahead_of_it()
+    {
+        var source = new InMemoryOrderInvoiceSource();
+        source.Enqueue("ORD-1", LoadSample());
+        var client = new ScriptedClient(AccessPointResult<string>.Fail(503, new AccessPointError("http", "down")));
+        var (dispatcher, _) = Create(source, client, Settings);
+        await dispatcher.RunOnceAsync();
+
+        source.Enqueue("ORD-2", LoadSample() with { InvoiceNumber = "INV-2" });
+        source.Enqueue("ORD-3", LoadSample() with { InvoiceNumber = "INV-3" });
+
+        Assert.Equal(["ORD-2", "ORD-3", "ORD-1"], (await source.GetPendingAsync(10)).Select(p => p.SourceId));
+    }
+
+    [Fact]
+    public async Task Caller_cancellation_after_the_provider_accepted_still_records_the_send()
+    {
+        var source = new InMemoryOrderInvoiceSource();
+        source.Enqueue("ORD-1", LoadSample());
+        source.Enqueue("ORD-2", LoadSample() with { InvoiceNumber = "INV-2" });
+        using var cts = new CancellationTokenSource();
+        var client = new ScriptedClient { BeforeSend = cts.Cancel };
+        var (dispatcher, _) = Create(source, client, Settings);
+
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(() => dispatcher.RunOnceAsync(cancellationToken: cts.Token));
+        Assert.Equal("sub-1", source.Sent["ORD-1"]);
+        Assert.Equal("ORD-2", Assert.Single(await source.GetPendingAsync(10)).SourceId);
     }
 
     [Fact]

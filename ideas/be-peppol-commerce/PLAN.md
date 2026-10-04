@@ -217,8 +217,8 @@ Each slice leaves `dotnet test` (and, from Slice 5 on, `dotnet run` for the API 
    classifies failures as retryable or permanent), and in-memory fakes. Contract doc:
    `app/docs/CONFIGURED_COMMERCE_CONTRACT.md`, with the four elements per interface and the
    Configured Commerce side's unverified points listed (order-submit handler chain, order mapping
-   API, queue storage, job scheduling, settings API). 21 new tests, 135 total. The first review's findings (timeout handling, outage stopping the run,
-   retry ordering) are in the day-032 log.)*
+   API, queue storage, job scheduling, settings API). 26 new tests, 140 total. Two pre-merge review rounds changed failure handling (timeouts, 401/403/404,
+   stopping the run, retry ordering); details are in the day-032 log.)*
 7. **Second provider.** Implement the second client (whichever of Recommand/Storecove wasn't built
    in Slice 3) behind the same `IPeppolAccessPointClient` interface, proving the abstraction holds
    without changes to Slices 1-2 and 4-6. Config-driven provider selection (e.g. an enum/string in

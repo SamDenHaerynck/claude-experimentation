@@ -107,16 +107,21 @@ public static DispatchFailure ToFailure(OutboundResult result);
 - Normal wiring: `clientFactory = s => AccessPointClientFactory.Create(s, httpClient)`, with an
   `HttpClient` from `IHttpClientFactory` or a long-lived instance; the caller owns it.
 - Failure classification: validation failure → permanent. Send failure with no HTTP status
-  (transport error), a client-side timeout, 408, 429 or 5xx → retryable. Any other 4xx → permanent,
-  including 409; whether a provider answers a reused idempotency key with 409 (which would mean the
+  (transport error), a client-side timeout, 408, 429 or 5xx → retryable (`"Access Point unavailable"`).
+  401, 403 or 404 → retryable (`"Access Point configuration error"`): they point at the API key or
+  account id, not the order, so the invoice waits until the settings are fixed. Any other 4xx →
+  permanent (`"Rejected by Access Point"`), including 409; whether a provider answers a reused idempotency key with 409 (which would mean the
   invoice was in fact delivered) is unverified.
-- A permanent failure is recorded and the run continues with the next invoice. The first retryable
-  failure is recorded and **ends the run**, so a provider outage gets one request per run, not the
-  whole batch.
+- A permanent failure caused by the invoice is recorded and the run continues with the next invoice.
+  The first retryable failure is recorded and **ends the run**, so a provider outage or a bad key
+  gets one request per run, not the whole batch.
 - An unexpected exception while sending one invoice parks that invoice as permanent
-  (`Reason = "Unexpected error"`) and the run continues. Cancellation of the caller's token stops
-  the run and records nothing for the invoice in flight; an `OperationCanceledException` with the
-  caller's token not cancelled (a client timeout) is a retryable failure.
+  (`Reason = "Unexpected error"`) and also ends the run, so an environment fault (for example a
+  disposed `HttpClient`) parks one invoice, not the batch.
+- Cancellation of the caller's token is checked before each invoice and stops the run. If it
+  happens during a send, the run throws; an outcome the provider already returned is still recorded
+  (the source is called with `CancellationToken.None` after a send). An `OperationCanceledException`
+  with the caller's token not cancelled (a client timeout) is a retryable failure.
 - There is no retry limit or back-off beyond that: a retryable invoice is tried again on every run,
   behind newer invoices. The host decides when to give up, for example by marking it non-retryable
   after N attempts. **Gap**, noted for review.

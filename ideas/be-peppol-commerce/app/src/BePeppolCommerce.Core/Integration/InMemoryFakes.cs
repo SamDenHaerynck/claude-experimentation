@@ -6,21 +6,22 @@ namespace BePeppolCommerce.Core.Integration;
 /// <summary>
 /// Test and demo implementation of <see cref="IOrderInvoiceSource"/>. Thread-safe. Not durable: the
 /// queue is lost when the process ends, so it must never stand in for a real host's storage.
-/// Retryable failures go to the back of the queue, which satisfies the ordering rule in
-/// <see cref="IOrderInvoiceSource.GetPendingAsync"/>.
+/// The queue holds never-attempted invoices first, then retryable failures in the order they failed,
+/// which is the ordering rule in <see cref="IOrderInvoiceSource.GetPendingAsync"/>.
 /// </summary>
 public sealed class InMemoryOrderInvoiceSource : IOrderInvoiceSource
 {
     private readonly object _gate = new();
     private readonly List<PendingInvoice> _queue = new();
+    private readonly HashSet<string> _retrying = new();
     private readonly ConcurrentDictionary<string, string> _sent = new();
     private readonly ConcurrentDictionary<string, DispatchFailure> _failed = new();
 
     /// <summary>Submission id per sent invoice.</summary>
-    public IReadOnlyDictionary<string, string> Sent => _sent;
+    public IReadOnlyDictionary<string, string> Sent => new Dictionary<string, string>(_sent);
 
     /// <summary>Latest failure per invoice; cleared when the invoice is sent or queued again.</summary>
-    public IReadOnlyDictionary<string, DispatchFailure> Failed => _failed;
+    public IReadOnlyDictionary<string, DispatchFailure> Failed => new Dictionary<string, DispatchFailure>(_failed);
 
     /// <summary>Queues an order. The idempotency key is fixed here, once, as a real host must do.</summary>
     public PendingInvoice Enqueue(string sourceId, Order order, Guid? idempotencyKey = null)
@@ -34,7 +35,8 @@ public sealed class InMemoryOrderInvoiceSource : IOrderInvoiceSource
                 throw new InvalidOperationException($"'{sourceId}' is already queued.");
             if (_sent.ContainsKey(sourceId))
                 throw new InvalidOperationException($"'{sourceId}' was already sent.");
-            _queue.Add(item);
+            // Ahead of the retrying invoices, which sit at the back.
+            _queue.Insert(_queue.Count - _retrying.Count, item);
             _failed.TryRemove(sourceId, out _);
         }
         return item;
@@ -55,6 +57,7 @@ public sealed class InMemoryOrderInvoiceSource : IOrderInvoiceSource
         lock (_gate)
         {
             _queue.RemoveAt(IndexOf(sourceId));
+            _retrying.Remove(sourceId);
             _sent[sourceId] = submissionId;
             _failed.TryRemove(sourceId, out _);
         }
@@ -70,7 +73,12 @@ public sealed class InMemoryOrderInvoiceSource : IOrderInvoiceSource
             var index = IndexOf(sourceId);
             var item = _queue[index];
             _queue.RemoveAt(index);
-            if (failure.Retryable) _queue.Add(item);
+            _retrying.Remove(sourceId);
+            if (failure.Retryable)
+            {
+                _queue.Add(item);
+                _retrying.Add(sourceId);
+            }
             _failed[sourceId] = failure;
         }
         return Task.CompletedTask;

@@ -57,9 +57,11 @@ public sealed class OutboundDispatcher
     /// <summary>
     /// Sends up to <paramref name="batchSize"/> pending invoices, one at a time. When the settings
     /// provider returns null, nothing is read or sent and the summary says not configured. A permanent
-    /// failure is recorded on that invoice and the run continues. The first retryable failure (provider
-    /// unreachable, client timeout, 408, 429, 5xx) is recorded and ends the run, so an outage is not hit
-    /// with the whole batch. Exceptions from the source, the settings provider or the client factory
+    /// failure caused by the invoice itself is recorded and the run continues. The first retryable
+    /// failure (provider unreachable, client timeout, 401, 403, 404, 408, 429, 5xx) is recorded and ends
+    /// the run, so an outage or a bad API key is not hit with the whole batch. An unexpected exception
+    /// parks that invoice and also ends the run. Once a send has been attempted, its result is recorded
+    /// with <see cref="CancellationToken.None"/>. Exceptions from the source, the settings provider or the client factory
     /// escape, as does cancellation of <paramref name="cancellationToken"/>.
     /// </summary>
     public async Task<DispatchSummary> RunOnceAsync(int batchSize = 20, CancellationToken cancellationToken = default)
@@ -73,6 +75,7 @@ public sealed class OutboundDispatcher
         int sent = 0, retryable = 0, permanent = 0;
         foreach (var item in await _source.GetPendingAsync(batchSize, cancellationToken))
         {
+            cancellationToken.ThrowIfCancellationRequested();
             OutboundResult result;
             try
             {
@@ -82,37 +85,40 @@ public sealed class OutboundDispatcher
             {
                 // Not the caller's cancellation: a client-side timeout. Same as an unreachable provider.
                 await _source.MarkFailedAsync(item.SourceId,
-                    new DispatchFailure("Access Point unavailable", true, ["Timed out."]), cancellationToken);
+                    new DispatchFailure("Access Point unavailable", true, ["Timed out."]), CancellationToken.None);
                 retryable++;
                 break;
             }
             catch (Exception ex) when (ex is not OperationCanceledException)
             {
-                // A bug or bad data the builder did not anticipate. Retrying would fail the same way, so
-                // the invoice is parked for a person to look at.
+                // A bug, bad data the builder did not anticipate, or a broken environment (for example a
+                // disposed HttpClient). The invoice is parked for a person to look at, and the run stops so
+                // an environment fault parks one invoice, not the whole batch.
                 await _source.MarkFailedAsync(item.SourceId,
-                    new DispatchFailure("Unexpected error", false, [$"{ex.GetType().Name}: {ex.Message}"]), cancellationToken);
+                    new DispatchFailure("Unexpected error", false, [$"{ex.GetType().Name}: {ex.Message}"]), CancellationToken.None);
                 permanent++;
-                continue;
+                break;
             }
 
             if (result.Status == OutboundStatus.Sent)
             {
-                // If this call fails after the provider accepted the invoice, the invoice stays queued and
-                // is sent again next run; only the idempotency key prevents a duplicate (unverified for Storecove).
-                await _source.MarkSentAsync(item.SourceId, result.SubmissionId!, cancellationToken);
+                // The provider has accepted the invoice, so this is recorded even if the caller cancels. If
+                // the call fails anyway, the invoice stays queued and is sent again next run; only the
+                // idempotency key prevents a duplicate (unverified for Storecove).
+                await _source.MarkSentAsync(item.SourceId, result.SubmissionId!, CancellationToken.None);
                 sent++;
                 continue;
             }
 
             var failure = ToFailure(result);
-            await _source.MarkFailedAsync(item.SourceId, failure, cancellationToken);
+            await _source.MarkFailedAsync(item.SourceId, failure, CancellationToken.None);
             if (!failure.Retryable)
             {
                 permanent++;
                 continue;
             }
-            // The provider is down or throttling: stop, rather than send the rest of the batch into the outage.
+            // The provider is down, throttling or refusing our credentials: stop, rather than send the rest
+            // of the batch into the same failure.
             retryable++;
             break;
         }
@@ -120,8 +126,11 @@ public sealed class OutboundDispatcher
     }
 
     /// <summary>
-    /// Validation failures and provider rejections (4xx other than 408 and 429) need a change to the
-    /// order, so they are permanent. No HTTP status (transport error), 408, 429 and 5xx are retryable.
+    /// Validation failures and provider rejections of the document (4xx other than 401, 403, 404, 408
+    /// and 429) need a change to the order, so they are permanent. No HTTP status (transport error),
+    /// 408, 429 and 5xx are retryable. 401, 403 and 404 point at the API key or account id, not the
+    /// order, so they are retryable too, with their own reason, and the invoice waits until the
+    /// settings are fixed.
     /// A 409 is treated as a rejection; whether a provider answers a reused idempotency key with 409
     /// (meaning the invoice was in fact delivered) is unverified.
     /// </summary>
@@ -133,8 +142,12 @@ public sealed class OutboundDispatcher
                 result.Validation.Errors.Select(f => $"{f.RuleId}: {f.Message}").ToArray());
 
         var send = result.Send!;
-        var retryable = send.HttpStatus is null or 408 or 429 or >= 500;
-        return new DispatchFailure(retryable ? "Access Point unavailable" : "Rejected by Access Point", retryable,
-            send.Errors.Select(e => $"{e.Source}: {e.Details}").ToArray());
+        var details = send.Errors.Select(e => $"{e.Source}: {e.Details}").ToArray();
+        return send.HttpStatus switch
+        {
+            401 or 403 or 404 => new DispatchFailure("Access Point configuration error", true, details),
+            null or 408 or 429 or >= 500 => new DispatchFailure("Access Point unavailable", true, details),
+            _ => new DispatchFailure("Rejected by Access Point", false, details),
+        };
     }
 }

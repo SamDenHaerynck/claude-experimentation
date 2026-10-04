@@ -50,8 +50,8 @@ The idea and its evidence are in `../VALIDATION.md`, and the full plan is in `..
   `IOrderInvoiceSource` (a queue of orders to invoice, with an idempotency key fixed at queue time)
   and `IAccessPointSettingsProvider` (provider name, API key, account id at runtime).
   `OutboundDispatcher.RunOnceAsync` drains the queue through `OutboundInvoiceSender` and records each
-  result as sent, retryable failure (transport error, timeout, 408, 429, 5xx; this ends the run) or
-  permanent failure (validation, other 4xx). It is tested only with the in-memory fakes in the same namespace.
+  result as sent, retryable failure (transport error, timeout, 401, 403, 404, 408, 429, 5xx; this
+  ends the run) or permanent failure (validation, other 4xx). It is tested only with the in-memory fakes in the same namespace.
 
 It does **not** yet do the following:
 
@@ -99,8 +99,8 @@ From this directory (`ideas/be-peppol-commerce/app`):
 dotnet test
 ```
 
-The first run takes about a minute (restore, jar download, IKVM compiling the jars). All 135 tests
-should pass (108 in `BePeppolCommerce.Core.Tests`, 27 in `BePeppolCommerce.Api.Tests`). If a download fails (Maven Central sometimes rate-limits with HTTP 429), or a file fails its
+The first run takes about a minute (restore, jar download, IKVM compiling the jars). All 140 tests
+should pass (113 in `BePeppolCommerce.Core.Tests`, 27 in `BePeppolCommerce.Api.Tests`). If a download fails (Maven Central sometimes rate-limits with HTTP 429), or a file fails its
 SHA-256 check (the file is then deleted), wait a minute and run `dotnet test` again.
 
 ## Run the API host
@@ -161,8 +161,8 @@ src/BePeppolCommerce.Core/          library: AccessPoint/ (provider interface, S
 src/BePeppolCommerce.Core/Inbound/  received-invoice parser and normalized model
 src/BePeppolCommerce.Api/           ASP.NET Core host: /health and POST /webhooks/inbound
 tests/BePeppolCommerce.Core.Tests/  xUnit tests; Fixtures/sample-order.json is the sample order
-docs/CONFIGURED_COMMERCE_CONTRACT.md  what a Configured Commerce extension implements
 tests/BePeppolCommerce.Api.Tests/   host tests through WebApplicationFactory with a fake Access Point
+docs/CONFIGURED_COMMERCE_CONTRACT.md  what a Configured Commerce extension implements
 ```
 
 All party data in the fixture is fictitious. There are no secrets or credentials anywhere in this
