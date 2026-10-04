@@ -18,10 +18,10 @@ public sealed class InMemoryOrderInvoiceSource : IOrderInvoiceSource
     private readonly ConcurrentDictionary<string, DispatchFailure> _failed = new();
 
     /// <summary>Submission id per sent invoice.</summary>
-    public IReadOnlyDictionary<string, string> Sent => new Dictionary<string, string>(_sent);
+    public IReadOnlyDictionary<string, string> Sent { get { lock (_gate) return new Dictionary<string, string>(_sent); } }
 
     /// <summary>Latest failure per invoice; cleared when the invoice is sent or queued again.</summary>
-    public IReadOnlyDictionary<string, DispatchFailure> Failed => new Dictionary<string, DispatchFailure>(_failed);
+    public IReadOnlyDictionary<string, DispatchFailure> Failed { get { lock (_gate) return new Dictionary<string, DispatchFailure>(_failed); } }
 
     /// <summary>Queues an order. The idempotency key is fixed here, once, as a real host must do.</summary>
     public PendingInvoice Enqueue(string sourceId, Order order, Guid? idempotencyKey = null)

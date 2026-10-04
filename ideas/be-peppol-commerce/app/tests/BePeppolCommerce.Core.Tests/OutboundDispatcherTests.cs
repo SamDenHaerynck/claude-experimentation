@@ -137,6 +137,7 @@ public class OutboundDispatcherTests
     [InlineData(429, true)]
     [InlineData(500, true)]
     [InlineData(502, true)]
+    [InlineData(202, false)]
     [InlineData(401, true)]
     [InlineData(403, true)]
     [InlineData(404, true)]
@@ -154,14 +155,18 @@ public class OutboundDispatcherTests
 
         var failure = source.Failed["ORD-1"];
         Assert.Equal(retryable, failure.Retryable);
-        Assert.Equal(status is 401 or 403 or 404 ? "Access Point configuration error"
-            : retryable ? "Access Point unavailable" : "Rejected by Access Point", failure.Reason);
+        Assert.Equal(status switch
+        {
+            202 => "Accepted by Access Point, response unreadable",
+            401 or 403 or 404 => "Access Point configuration error",
+            _ => retryable ? "Access Point unavailable" : "Rejected by Access Point",
+        }, failure.Reason);
         Assert.Equal(["provider: nope"], failure.Details);
         Assert.Equal(retryable ? 1 : 0, (await source.GetPendingAsync(10)).Count);
     }
 
     [Fact]
-    public async Task Unexpected_exception_parks_that_invoice_and_stops_the_run()
+    public async Task Unexpected_exception_keeps_that_invoice_queued_and_stops_the_run()
     {
         var source = new InMemoryOrderInvoiceSource();
         source.Enqueue("ORD-1", LoadSample());
@@ -169,9 +174,11 @@ public class OutboundDispatcherTests
         var client = new ScriptedClient { Throw = new InvalidOperationException("boom") };
         var (dispatcher, _) = Create(source, client, Settings);
 
-        Assert.Equal(new DispatchSummary(true, 0, 0, 1), await dispatcher.RunOnceAsync());
-        Assert.Equal(["InvalidOperationException: boom"], source.Failed["ORD-1"].Details);
-        Assert.Equal("ORD-2", Assert.Single(await source.GetPendingAsync(10)).SourceId);
+        Assert.Equal(new DispatchSummary(true, 0, 1, 0), await dispatcher.RunOnceAsync());
+        var failure = source.Failed["ORD-1"];
+        Assert.True(failure.Retryable);
+        Assert.Equal(["InvalidOperationException: boom"], failure.Details);
+        Assert.Equal(["ORD-2", "ORD-1"], (await source.GetPendingAsync(10)).Select(p => p.SourceId));
     }
 
     [Fact]
@@ -239,6 +246,11 @@ public class OutboundDispatcherTests
         source.Enqueue("ORD-3", LoadSample() with { InvoiceNumber = "INV-3" });
 
         Assert.Equal(["ORD-2", "ORD-3", "ORD-1"], (await source.GetPendingAsync(10)).Select(p => p.SourceId));
+
+        // Once ORD-1 leaves the queue, new orders go to the back again (the retrying set stays in step).
+        await source.MarkFailedAsync("ORD-1", new DispatchFailure("Rejected by Access Point", false, []));
+        source.Enqueue("ORD-4", LoadSample() with { InvoiceNumber = "INV-4" });
+        Assert.Equal(["ORD-2", "ORD-3", "ORD-4"], (await source.GetPendingAsync(10)).Select(p => p.SourceId));
     }
 
     [Fact]

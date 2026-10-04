@@ -99,8 +99,8 @@ From this directory (`ideas/be-peppol-commerce/app`):
 dotnet test
 ```
 
-The first run takes about a minute (restore, jar download, IKVM compiling the jars). All 140 tests
-should pass (113 in `BePeppolCommerce.Core.Tests`, 27 in `BePeppolCommerce.Api.Tests`). If a download fails (Maven Central sometimes rate-limits with HTTP 429), or a file fails its
+The first run takes about a minute (restore, jar download, IKVM compiling the jars). All 141 tests
+should pass (114 in `BePeppolCommerce.Core.Tests`, 27 in `BePeppolCommerce.Api.Tests`). If a download fails (Maven Central sometimes rate-limits with HTTP 429), or a file fails its
 SHA-256 check (the file is then deleted), wait a minute and run `dotnet test` again.
 
 ## Run the API host

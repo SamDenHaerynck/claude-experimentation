@@ -5,7 +5,7 @@ Phase: 3 Build
 Slice: 6 of 11, complete (next: 7)
 Next action: Slice 7 (second provider, Recommand) in `ideas/be-peppol-commerce/PLAN.md`.
 Install the .NET 8 SDK (`RUNBOOK.md` "Build environment") and run `dotnet test` in
-`ideas/be-peppol-commerce/app` (140 should pass). Then fetch Recommand's API docs raw with curl
+`ideas/be-peppol-commerce/app` (141 should pass). Then fetch Recommand's API docs raw with curl
 (https://docs.recommand.eu/ links an OpenAPI-generated reference; find and download the spec JSON
 itself, not a WebFetch summary) and record the send endpoint, auth scheme, request/response shape
 and the received-document fetch endpoint, with URLs, in `DECISIONS.md`. If the raw spec cannot be

@@ -60,7 +60,7 @@ public sealed class OutboundDispatcher
     /// failure caused by the invoice itself is recorded and the run continues. The first retryable
     /// failure (provider unreachable, client timeout, 401, 403, 404, 408, 429, 5xx) is recorded and ends
     /// the run, so an outage or a bad API key is not hit with the whole batch. An unexpected exception
-    /// parks that invoice and also ends the run. Once a send has been attempted, its result is recorded
+    /// is recorded the same way (retryable) and also ends the run. Once a send has been attempted, its result is recorded
     /// with <see cref="CancellationToken.None"/>. Exceptions from the source, the settings provider or the client factory
     /// escape, as does cancellation of <paramref name="cancellationToken"/>.
     /// </summary>
@@ -92,11 +92,11 @@ public sealed class OutboundDispatcher
             catch (Exception ex) when (ex is not OperationCanceledException)
             {
                 // A bug, bad data the builder did not anticipate, or a broken environment (for example a
-                // disposed HttpClient). The invoice is parked for a person to look at, and the run stops so
-                // an environment fault parks one invoice, not the whole batch.
+                // disposed HttpClient). Kept queued as retryable, behind newer invoices, and the run stops, so
+                // a lasting environment fault does not park the queue one invoice per run.
                 await _source.MarkFailedAsync(item.SourceId,
-                    new DispatchFailure("Unexpected error", false, [$"{ex.GetType().Name}: {ex.Message}"]), CancellationToken.None);
-                permanent++;
+                    new DispatchFailure("Unexpected error", true, [$"{ex.GetType().Name}: {ex.Message}"]), CancellationToken.None);
+                retryable++;
                 break;
             }
 
@@ -130,7 +130,9 @@ public sealed class OutboundDispatcher
     /// and 429) need a change to the order, so they are permanent. No HTTP status (transport error),
     /// 408, 429 and 5xx are retryable. 401, 403 and 404 point at the API key or account id, not the
     /// order, so they are retryable too, with their own reason, and the invoice waits until the
-    /// settings are fixed.
+    /// settings are fixed (whether a provider also answers 404 for an unknown receiver is unverified).
+    /// A 2xx status on a failed send means the provider accepted the invoice but its response could not
+    /// be read: permanent, with its own reason, because re-queuing it with a new key could deliver it twice.
     /// A 409 is treated as a rejection; whether a provider answers a reused idempotency key with 409
     /// (meaning the invoice was in fact delivered) is unverified.
     /// </summary>
@@ -145,6 +147,7 @@ public sealed class OutboundDispatcher
         var details = send.Errors.Select(e => $"{e.Source}: {e.Details}").ToArray();
         return send.HttpStatus switch
         {
+            >= 200 and < 300 => new DispatchFailure("Accepted by Access Point, response unreadable", false, details),
             401 or 403 or 404 => new DispatchFailure("Access Point configuration error", true, details),
             null or 408 or 429 or >= 500 => new DispatchFailure("Access Point unavailable", true, details),
             _ => new DispatchFailure("Rejected by Access Point", false, details),
