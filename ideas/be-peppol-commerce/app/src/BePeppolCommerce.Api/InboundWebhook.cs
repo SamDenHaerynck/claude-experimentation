@@ -1,6 +1,7 @@
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using BePeppolCommerce.Core.AccessPoint;
 using BePeppolCommerce.Core.Inbound;
 using Microsoft.Extensions.Options;
@@ -26,11 +27,18 @@ public sealed record InboundWebhookResponse(string ProviderDocumentId, InboundIn
 /// <summary>
 /// Webhook for "a document was received". Storecove's public OpenAPI spec does not define the webhook
 /// body (day 029), so this accepts a minimal JSON object carrying the received document's id as
-/// <c>guid</c> or <c>document_guid</c> (the property name the spec mentions); the value must be a GUID. The handler fetches the
-/// document from the Access Point, parses it and returns the normalized invoice.
+/// <c>guid</c> or <c>document_guid</c> (the property name the spec mentions), whose value must be a
+/// GUID, or as <c>documentId</c>, whose value is a GUID or a Recommand-style id (letters, digits,
+/// '_' and '-', for example "doc_01JQ..."). All three names are this project's convention: neither
+/// provider's real webhook delivery is parsed yet. The handler fetches the document from the Access
+/// Point, parses it and returns the normalized invoice.
 /// </summary>
-public static class InboundWebhook
+public static partial class InboundWebhook
 {
+    // \z, not $: $ would also match before a trailing newline.
+    [GeneratedRegex(@"^[A-Za-z0-9_-]{1,128}\z")]
+    private static partial Regex ProviderIdPattern();
+
     public const string Route = "/webhooks/inbound";
     public const string SecretHeader = "X-Webhook-Secret";
 
@@ -56,10 +64,10 @@ public static class InboundWebhook
 
         var documentId = DocumentId(body);
         if (documentId is null)
-            return Results.Problem("Body must be a JSON object with a 'guid' or 'document_guid' string holding a GUID.", statusCode: StatusCodes.Status400BadRequest);
+            return Results.Problem("Body must be a JSON object with a 'guid' or 'document_guid' string holding a GUID, or a 'documentId' string.", statusCode: StatusCodes.Status400BadRequest);
 
         if (http.RequestServices.GetService<IPeppolAccessPointClient>() is not { } client)
-            return Results.Problem("No Access Point provider is configured (set Storecove:ApiKey).", statusCode: StatusCodes.Status503ServiceUnavailable);
+            return Results.Problem("No Access Point provider is configured (set Storecove:ApiKey or Recommand:ApiKey).", statusCode: StatusCodes.Status503ServiceUnavailable);
 
         var fetched = await client.GetInboundAsync(documentId, http.RequestAborted);
         if (!fetched.Success)
@@ -95,8 +103,8 @@ public static class InboundWebhook
         return total > MaxBodyBytes ? null : buffer[..total];
     }
 
-    // Returns the id in canonical GUID form, so nothing caller-supplied beyond a GUID reaches the
-    // provider, the logs or the response.
+    // Returns a GUID in canonical form, or a Recommand-style id checked against a strict pattern, so
+    // nothing caller-supplied beyond those reaches the provider, the logs or the response.
     private static string? DocumentId(byte[] body)
     {
         try
@@ -107,6 +115,12 @@ public static class InboundWebhook
                 if (json.RootElement.TryGetProperty(name, out var value) && value.ValueKind == JsonValueKind.String
                     && Guid.TryParse(value.GetString(), out var guid))
                     return guid.ToString("D");
+            if (json.RootElement.TryGetProperty("documentId", out var id) && id.ValueKind == JsonValueKind.String)
+            {
+                var text = id.GetString()!;
+                if (Guid.TryParse(text, out var g)) return g.ToString("D");
+                if (ProviderIdPattern().IsMatch(text)) return text;
+            }
             return null;
         }
         catch (JsonException)

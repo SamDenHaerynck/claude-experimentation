@@ -2,12 +2,14 @@ namespace BePeppolCommerce.Core.Integration;
 
 /// <summary>
 /// Access Point connection settings for one seller. <see cref="Provider"/> names the client ("storecove"
-/// today). <see cref="AccountId"/> is the provider's id for the sending company (Storecove calls it the
-/// legal entity id). <see cref="BaseUri"/> is null for the provider's production API.
+/// or "recommand"). <see cref="AccountId"/> is the provider's id for the sending company (Storecove: the
+/// legal entity id; Recommand: the company id). <see cref="BaseUri"/> is null for the provider's
+/// production API. <see cref="ApiSecret"/> is required by Recommand (Basic auth key and secret) and
+/// ignored by Storecove.
 /// </summary>
-public sealed record AccessPointSettings(string Provider, string ApiKey, string AccountId, Uri? BaseUri = null)
+public sealed record AccessPointSettings(string Provider, string ApiKey, string AccountId, Uri? BaseUri = null, string? ApiSecret = null)
 {
-    /// <summary>Hides the API key, so settings can be logged.</summary>
+    /// <summary>Hides the API key and secret, so settings can be logged.</summary>
     public override string ToString() => $"AccessPointSettings {{ Provider = {Provider}, AccountId = {AccountId}, BaseUri = {BaseUri} }}";
 }
 

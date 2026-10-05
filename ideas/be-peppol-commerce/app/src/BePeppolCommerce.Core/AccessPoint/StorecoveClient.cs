@@ -131,53 +131,18 @@ public sealed class StorecoveClient : IPeppolAccessPointClient
         return request;
     }
 
-    private async Task<AccessPointResult<T>> SendCore<T>(
+    private Task<AccessPointResult<T>> SendCore<T>(
         HttpRequestMessage request,
         Func<HttpResponseMessage, int, Task<AccessPointResult<T>>> onSuccess,
-        CancellationToken cancellationToken)
-    {
-        HttpResponseMessage response;
-        try
-        {
-            response = await _http.SendAsync(request, cancellationToken);
-        }
-        catch (HttpRequestException ex)
-        {
-            return AccessPointResult<T>.Fail(null, new AccessPointError("transport", ex.Message));
-        }
-        catch (TaskCanceledException ex) when (!cancellationToken.IsCancellationRequested)
-        {
-            return AccessPointResult<T>.Fail(null, new AccessPointError("transport", "Timed out: " + ex.Message));
-        }
-
-        using (response)
-        {
-            var status = (int)response.StatusCode;
-            if (response.IsSuccessStatusCode)
-            {
-                try
-                {
-                    return await onSuccess(response, status);
-                }
-                catch (Exception ex) when (ex is JsonException or InvalidOperationException or NotSupportedException)
-                {
-                    // InvalidOperationException/NotSupportedException: unsupported charset or content type.
-                    return AccessPointResult<T>.Fail(status, new AccessPointError("client", "Unreadable response: " + ex.Message));
-                }
-            }
-
-            return AccessPointResult<T>.Fail(status, await ReadErrors(response, cancellationToken));
-        }
-    }
+        CancellationToken cancellationToken) =>
+        AccessPointHttp.SendAsync(_http, request, onSuccess, ReadErrors, cancellationToken);
 
     // 422 responses carry an array of ErrorModel {source, details}; other codes may have no body.
     private static async Task<AccessPointError[]> ReadErrors(HttpResponseMessage response, CancellationToken ct)
     {
-        var fallback = new AccessPointError("http", $"{(int)response.StatusCode} {response.ReasonPhrase}".Trim());
-        string text;
-        try { text = await response.Content.ReadAsStringAsync(ct); }
-        catch (HttpRequestException) { return new[] { fallback }; }
-        if (string.IsNullOrWhiteSpace(text)) return new[] { fallback };
+        var fallback = AccessPointHttp.StatusError(response);
+        var text = await AccessPointHttp.ReadBodyAsync(response, ct);
+        if (text is null) return new[] { fallback };
         try
         {
             var errors = JsonSerializer.Deserialize<ErrorModel[]>(text, Json);

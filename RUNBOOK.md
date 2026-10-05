@@ -28,6 +28,10 @@ not read at session start). OWNER.md wins on conflicts.
   page still counts in the idea's favour even if the exact wording differs from the search
   summary's paraphrase.
 
+- API docs site is a JS app with no visible spec link (day 033, Recommand): check whether the API
+  source is public on GitHub, `git clone` it and grep the server for its `/openapi` route, then curl
+  that route on the API host. Got the raw spec in about 5 minutes.
+
 ## Build environment
 - `dotnet` is not preinstalled in the session container (day 026). Install the .NET 8 SDK first:
   `curl -sSL https://dot.net/v1/dotnet-install.sh -o /tmp/dotnet-install.sh && bash

@@ -1,16 +1,9 @@
 using BePeppolCommerce.Api;
-using BePeppolCommerce.Core.AccessPoint;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// The Access Point client is registered only when an API key is configured, so the host still
-// starts locally without one; the webhook then answers 503 (see InboundWebhook).
-var storecove = builder.Configuration.GetSection("Storecove");
-if (!string.IsNullOrWhiteSpace(storecove["ApiKey"]))
-{
-    builder.Services.AddSingleton(StorecoveConfig.Read(storecove));
-    builder.Services.AddHttpClient<IPeppolAccessPointClient, StorecoveClient>();
-}
+// See AccessPointConfig: AccessPoint:Provider picks Storecove (default) or Recommand.
+AccessPointConfig.Register(builder.Services, builder.Configuration);
 
 builder.Services.Configure<InboundWebhookOptions>(builder.Configuration.GetSection("Webhook"));
 
