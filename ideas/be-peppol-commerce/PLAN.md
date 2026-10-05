@@ -80,7 +80,7 @@ framework is needed for v1 — there is no UI.
 
 ## Slices
 
-Status: Slices 1 (day 026), 2a (day 027), 2b (day 028), 3 (day 029), 4 (day 030), 5 (day 031) and 6 (day 032) complete. Next: Slice 7.
+Status: Slices 1 (day 026), 2a (day 027), 2b (day 028), 3 (day 029), 4 (day 030), 5 (day 031), 6 (day 032) and 7 (day 033) complete. Next: Slice 8.
 
 Each slice leaves `dotnet test` (and, from Slice 5 on, `dotnet run` for the API host) green.
 
@@ -223,6 +223,23 @@ Each slice leaves `dotnet test` (and, from Slice 5 on, `dotnet run` for the API 
    in Slice 3) behind the same `IPeppolAccessPointClient` interface, proving the abstraction holds
    without changes to Slices 1-2 and 4-6. Config-driven provider selection (e.g. an enum/string in
    `appsettings.json`).
+   *(Done, day 033. Checkpoint: Recommand serves its OpenAPI 3.1 spec at
+   https://peppol.recommand.eu/openapi (also app.recommand.eu/openapi), fetched raw with curl. Its
+   API source is public at https://github.com/brbxai/recommand-peppol. Built
+   `AccessPoint/RecommandClient.cs`: `POST /api/v1/{companyId}/send` with `documentType: "xml"` and
+   `recipient` as `scheme:id`, HTTP Basic auth (key and secret), 200 `{success, id}`, errors
+   `{success: false, errors: {field: [messages]}}`; `GET /api/v1/documents/{documentId}` returning
+   `{success, document: {id, direction, xml}}`. Ids are checked against `^[A-Za-z0-9_-]{1,128}\z`
+   before they reach a URL path. The send endpoint has no idempotency key, so a retried send can
+   deliver twice with Recommand; recorded in the contract doc. Transport handling shared with
+   `StorecoveClient` moved to `AccessPoint/AccessPointHttp.cs`. `IPeppolAccessPointClient` did not
+   change. Two small changes outside this slice were needed: `AccessPointSettings` gained an optional
+   `ApiSecret` (Recommand needs a key and a secret), and the webhook accepts a `documentId` property
+   holding a GUID or a Recommand-style id, because the existing `guid` properties only took GUIDs.
+   The API host picks the provider from `AccessPoint:Provider` (default `storecove`, so a config
+   with only a `Storecove` section keeps working). Not done: Recommand's real webhook delivery
+   (event envelope, HMAC-SHA256 `X-Signature`) is not parsed or verified; it goes with Slice 8's
+   config work or Slice 9. 50 new tests, 191 total.)*
 8. **Config and credential handling.** Strongly-typed settings model bound from
    `appsettings.json`/env vars, `.env.example` with placeholder values only, and validation that
    surfaces a clear error for missing/invalid provider config at startup rather than failing deep in

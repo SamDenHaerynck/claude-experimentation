@@ -25,6 +25,7 @@ public static class AccessPointClientFactory
                     ? id
                     : throw new ArgumentException("Storecove AccountId must be a positive integer (the legal entity id).", nameof(settings)),
                 settings.BaseUri)),
+            "recommand" => new RecommandClient(http, new RecommandOptions(settings.ApiKey, settings.ApiSecret ?? "", settings.AccountId, settings.BaseUri)),
             _ => throw new ArgumentException($"Unknown Access Point provider '{settings.Provider}'.", nameof(settings)),
         };
     }

@@ -69,7 +69,7 @@ public interface IOrderInvoiceSource
 | Idempotency | `IdempotencyKey` is chosen once, when the order is queued, and stored with it. Every retry passes the same key. Do not derive it again at send time: a library upgrade between attempts would change a derived key and could deliver the invoice twice (see `OutboundInvoiceSender.SendAsync`). |
 | Lifetime and threading | The dispatcher calls the source sequentially, never in parallel, within one run. Register the implementation transient, or per request if the job runs inside a request scope (Configured Commerce's default lifetime is per request, per https://docs.optimizely.com/configured-commerce/docs/dependency-injection, fetched 2026-10-04: classes implementing `IDependency` and `IExtension` are registered automatically, and `ISingletonLifetime` or `ITransientLifetime` change the lifetime; whether a Configured Commerce background job has a request scope is unverified). It does not need to be thread-safe, but **only one dispatcher run may be active at a time**, across all web nodes: two concurrent runs can both read the same pending invoice. Use a job scheduler that guarantees a single runner, or a database lock. |
 | Error contract | Throws `ArgumentException`/`ArgumentOutOfRangeException` for bad arguments, `InvalidOperationException` for an unknown `sourceId`, `OperationCanceledException` on cancellation, and lets storage failures escape; the dispatcher does not catch any of these, so the run stops. An invoice that cannot be sent is never an exception: it arrives through `MarkFailedAsync`. |
-| State after each call | `MarkSentAsync`: removed from the queue, submission id stored, any earlier failure cleared. If it throws after the Access Point accepted the invoice, the invoice stays queued and is sent again on the next run; only the idempotency key prevents a duplicate delivery, and Storecove's handling of a reused key is unverified. `MarkFailedAsync` with `Retryable = true`: stays queued behind never-attempted invoices, failure stored for display. With `Retryable = false`: removed from the queue until someone fixes the order and queues it again. |
+| State after each call | `MarkSentAsync`: removed from the queue, submission id stored, any earlier failure cleared. If it throws after the Access Point accepted the invoice, the invoice stays queued and is sent again on the next run; only the idempotency key prevents a duplicate delivery, and Storecove's handling of a reused key is unverified. Recommand's send endpoint takes no idempotency key, so with Recommand a duplicate delivery is possible in this case. `MarkFailedAsync` with `Retryable = true`: stays queued behind never-attempted invoices, failure stored for display. With `Retryable = false`: removed from the queue until someone fixes the order and queues it again. |
 | Credentials | None. The source never sees Access Point credentials. |
 
 Fake: `InMemoryOrderInvoiceSource` (thread-safe, not durable, exposes `Sent` and `Failed` for tests).
@@ -77,7 +77,7 @@ Fake: `InMemoryOrderInvoiceSource` (thread-safe, not durable, exposes `Sent` and
 ## `IAccessPointSettingsProvider`
 
 ```csharp
-public sealed record AccessPointSettings(string Provider, string ApiKey, string AccountId, Uri? BaseUri = null);
+public sealed record AccessPointSettings(string Provider, string ApiKey, string AccountId, Uri? BaseUri = null, string? ApiSecret = null);
 
 public interface IAccessPointSettingsProvider
 {
@@ -87,10 +87,10 @@ public interface IAccessPointSettingsProvider
 
 | Element | Contract |
 |---|---|
-| Signatures | As above. `Provider` is `"storecove"` today (case-insensitive); Slice 7 adds a second. `AccountId` is the provider's id for the sending company (Storecove: the legal entity id, a positive integer). `BaseUri` null means the provider's production API; anything else must be https, or http to loopback for tests. |
+| Signatures | As above. `Provider` is `"storecove"` or `"recommand"` (case-insensitive). `AccountId` is the provider's id for the sending company (Storecove: the legal entity id, a positive integer; Recommand: the company id, letters, digits, `_` and `-` only). `ApiSecret` is required by Recommand (Basic auth key and secret) and ignored by Storecove. `BaseUri` null means the provider's production API; anything else must be https, or http to loopback for tests. |
 | Lifetime and threading | Called once at the start of each dispatcher run, so changed settings apply on the next run without a restart. Any lifetime works; a singleton must be thread-safe. |
 | Error contract | Returns null when Peppol sending is off or not configured; the run then sends nothing and reports `Configured = false`. Throws `OperationCanceledException` on cancellation, and otherwise only if the settings store itself fails. Settings that are present but unusable (unknown provider, bad `AccountId`, blank key, non-https `BaseUri`) make `AccessPointClientFactory.Create` throw `ArgumentException` before anything is read from the queue. |
-| Credentials | The API key comes from the host at runtime, never from this repo or a committed file. In Configured Commerce the expected home is the platform's settings storage or a secret store such as Azure Key Vault; **which Configured Commerce settings API to use is unverified.** `AccessPointSettings.ToString()` leaves the key out so the record can be logged. |
+| Credentials | The API key comes from the host at runtime, never from this repo or a committed file. In Configured Commerce the expected home is the platform's settings storage or a secret store such as Azure Key Vault; **which Configured Commerce settings API to use is unverified.** `AccessPointSettings.ToString()` leaves the key and secret out so the record can be logged. |
 
 Fake: `InMemoryAccessPointSettingsProvider` (returns whatever `Settings` holds).
 

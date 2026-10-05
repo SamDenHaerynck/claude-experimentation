@@ -25,6 +25,14 @@ The idea and its evidence are in `../VALIDATION.md`, and the full plan is in `..
   define the webhook body. Storecove also names identifier schemes its own way (the spec's examples are
   "DE:VAT" and "FR:CTC"). The Belgian name is not confirmed, so `StorecoveOptions.SchemeMap` must
   map `0208` to it. Unmapped schemes are sent unchanged.
+  The second implementation is `RecommandClient`, written against Recommand's OpenAPI 3.1 spec
+  (https://peppol.recommand.eu/openapi). It sends the UBL as raw XML (`POST /api/v1/{companyId}/send`,
+  `documentType: "xml"`) with HTTP Basic auth (API key and secret), and fetches received documents
+  with `GET /api/v1/documents/{documentId}`, accepting only `direction: "incoming"`. It is also
+  **tested only against a stubbed `HttpMessageHandler`**. Recommand's send endpoint has **no
+  idempotency key**, so with Recommand a retried send can deliver the same invoice twice.
+  `AccessPointClientFactory` picks the client from `AccessPointSettings.Provider` (`storecove` or
+  `recommand`).
 - runs the outbound flow in one call (`BePeppolCommerce.Core.Outbound.OutboundInvoiceSender`):
   order, then UBL XML, then validation, then send to the buyer's endpoint (`EndpointSchemeId` and
   `EndpointId`) through any `IPeppolAccessPointClient`. It returns `ValidationFailed` (nothing was
@@ -42,8 +50,10 @@ The idea and its evidence are in `../VALIDATION.md`, and the full plan is in `..
   currency, seller and buyer name and Peppol endpoint, line count, payable amount), parsed by
   `BePeppolCommerce.Core.Inbound.InboundInvoiceParser`. **The webhook body is this project's own
   minimal shape**, `{ "guid": "<document id>" }` (or `document_guid`, the property name Storecove's
-  spec mentions), because Storecove's public spec does not define its webhook body. Match it to a
-  real delivery before production. The parser does not run the Peppol rules on received
+  spec mentions), because Storecove's public spec does not define its webhook body. For Recommand ids
+  (`doc_...`), which are not GUIDs, use `{ "documentId": "<id>" }`. Recommand's real webhook
+  deliveries (an event envelope signed with an HMAC-SHA256 `X-Signature` header) are not parsed or
+  verified yet. Match the body to a real delivery before production. The parser does not run the Peppol rules on received
   documents; call `PeppolValidator` for that.
 - defines the contract a Configured Commerce extension would implement
   (`BePeppolCommerce.Core.Integration`, documented in `docs/CONFIGURED_COMMERCE_CONTRACT.md`):
@@ -99,8 +109,8 @@ From this directory (`ideas/be-peppol-commerce/app`):
 dotnet test
 ```
 
-The first run takes about a minute (restore, jar download, IKVM compiling the jars). All 141 tests
-should pass (114 in `BePeppolCommerce.Core.Tests`, 27 in `BePeppolCommerce.Api.Tests`). If a download fails (Maven Central sometimes rate-limits with HTTP 429), or a file fails its
+The first run takes about a minute (restore, jar download, IKVM compiling the jars). All 191 tests
+should pass (150 in `BePeppolCommerce.Core.Tests`, 41 in `BePeppolCommerce.Api.Tests`). If a download fails (Maven Central sometimes rate-limits with HTTP 429), or a file fails its
 SHA-256 check (the file is then deleted), wait a minute and run `dotnet test` again.
 
 ## Run the API host
@@ -111,19 +121,25 @@ dotnet run --project src/BePeppolCommerce.Api
 
 It listens on http://localhost:5080 in the Development environment (set by
 `Properties/launchSettings.json`). `GET /health` answers `{"status":"ok"}`. Without an Access Point
-API key, `POST /webhooks/inbound` answers 503. To point it at Storecove, set configuration
+API key, `POST /webhooks/inbound` answers 503. To point it at a provider, set configuration
 (environment variables shown; see `src/BePeppolCommerce.Api/.env.example`, placeholders only):
 
+- `AccessPoint__Provider`: `storecove` (the default when unset) or `recommand`. Any other value
+  stops the host at startup.
 - `Storecove__ApiKey`, `Storecove__LegalEntityId`, `Storecove__BaseUri` (defaults to
   `https://api.storecove.com/api/v2/`). A `BaseUri` that is not an absolute https URI (plain http is allowed
   only to loopback) stops the host at startup instead of falling back to the live API.
+- With `recommand`: `Recommand__ApiKey`, `Recommand__ApiSecret`, `Recommand__CompanyId`,
+  `Recommand__BaseUri` (defaults to `https://app.recommand.eu/`). A missing secret, a company id
+  with characters other than letters, digits, `_` and `-`, or a bad `BaseUri` stops the host at
+  startup.
 - `Webhook__Secret`: requests must send the same value in the `X-Webhook-Secret` header. **Outside
   Development the webhook answers 503 until this is set**, because its response exposes the received
   invoice's parties and amounts. In Development an unset secret disables the check (a warning is
   logged at startup). This header is this project's convention; how Storecove authenticates its
   webhooks is not in its public spec, so check before relying on it.
 
-This host has never been connected to a real Storecove account. Example call:
+This host has never been connected to a real Storecove or Recommand account. Example call:
 
 ```
 curl -X POST http://localhost:5080/webhooks/inbound -H "Content-Type: application/json" \
@@ -131,7 +147,7 @@ curl -X POST http://localhost:5080/webhooks/inbound -H "Content-Type: applicatio
 ```
 
 Responses: 200 with `{ providerDocumentId, invoice }`; 400 if the body is not a JSON object whose
-`guid`/`document_guid` is a GUID string; 401 on a wrong or missing secret (when configured); 413
+`guid`/`document_guid` is a GUID string or whose `documentId` is a GUID or a Recommand-style id; 401 on a wrong or missing secret (when configured); 413
 above 16 KB; 502 if the Access Point fetch failed (details are logged, not returned); 422 if the
 fetched document is not a parseable UBL Invoice (credit notes are not handled yet); 503 if no
 provider is configured, or outside Development if no secret is configured.
@@ -155,7 +171,7 @@ published build. For Windows, copy the profile and set `win-x64`.
 
 ```
 BePeppolCommerce.sln
-src/BePeppolCommerce.Core/          library: AccessPoint/ (provider interface, Storecove client), Integration/ (Configured Commerce contract, dispatcher, fakes), Outbound/ (build, validate, send), Model/ (order records, JSON parsing), Ubl/ (invoice builder),
+src/BePeppolCommerce.Core/          library: AccessPoint/ (provider interface, Storecove and Recommand clients), Integration/ (Configured Commerce contract, dispatcher, fakes), Outbound/ (build, validate, send), Model/ (order records, JSON parsing), Ubl/ (invoice builder),
                                     Validation/ (validator, Skeleton/ ISO Schematron, Schemas/ UBL 2.1 XSD,
                                     Rules/SOURCE.md provenance of the downloaded rules)
 src/BePeppolCommerce.Core/Inbound/  received-invoice parser and normalized model

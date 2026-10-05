@@ -294,9 +294,21 @@ public class OutboundDispatcherTests
     }
 
     [Fact]
+    public void Factory_builds_a_recommand_client_and_rejects_bad_settings()
+    {
+        using var http = new HttpClient();
+        var recommand = new AccessPointSettings("Recommand", "test-key-not-real", "c_01JQZ8X0M4T7RB6K9V2NDHW3PA", ApiSecret: "test-secret-not-real");
+        Assert.IsType<RecommandClient>(AccessPointClientFactory.Create(recommand, http));
+        Assert.Throws<ArgumentException>(() => AccessPointClientFactory.Create(recommand with { ApiSecret = null }, http));
+        Assert.Throws<ArgumentException>(() => AccessPointClientFactory.Create(recommand with { AccountId = "" }, http));
+        Assert.Throws<ArgumentException>(() => AccessPointClientFactory.Create(recommand with { BaseUri = new Uri("http://api.example.invalid/") }, http));
+    }
+
+    [Fact]
     public void Settings_ToString_hides_the_api_key()
     {
         Assert.DoesNotContain("test-key-not-real", Settings.ToString());
+        Assert.DoesNotContain("test-secret-not-real", (Settings with { ApiSecret = "test-secret-not-real" }).ToString());
         Assert.Contains("storecove", Settings.ToString());
     }
 
