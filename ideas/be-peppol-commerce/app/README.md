@@ -28,7 +28,7 @@ The idea and its evidence are in `../VALIDATION.md`, and the full plan is in `..
   The second implementation is `RecommandClient`, written against Recommand's OpenAPI 3.1 spec
   (https://peppol.recommand.eu/openapi). It sends the UBL as raw XML (`POST /api/v1/{companyId}/send`,
   `documentType: "xml"`) with HTTP Basic auth (API key and secret), and fetches received documents
-  with `GET /api/v1/documents/{documentId}`, accepting only `direction: "incoming"`. It is also
+  with `GET /api/v1/documents/{documentId}`, accepting only `direction: "incoming"` documents of the configured company. A send that Recommand delivered by email instead of Peppol (`sentOverPeppol: false`) is reported as failed. It is also
   **tested only against a stubbed `HttpMessageHandler`**. Recommand's send endpoint has **no
   idempotency key**, so with Recommand a retried send can deliver the same invoice twice.
   `AccessPointClientFactory` picks the client from `AccessPointSettings.Provider` (`storecove` or
@@ -109,8 +109,8 @@ From this directory (`ideas/be-peppol-commerce/app`):
 dotnet test
 ```
 
-The first run takes about a minute (restore, jar download, IKVM compiling the jars). All 191 tests
-should pass (150 in `BePeppolCommerce.Core.Tests`, 41 in `BePeppolCommerce.Api.Tests`). If a download fails (Maven Central sometimes rate-limits with HTTP 429), or a file fails its
+The first run takes about a minute (restore, jar download, IKVM compiling the jars). All 193 tests
+should pass (152 in `BePeppolCommerce.Core.Tests`, 41 in `BePeppolCommerce.Api.Tests`). If a download fails (Maven Central sometimes rate-limits with HTTP 429), or a file fails its
 SHA-256 check (the file is then deleted), wait a minute and run `dotnet test` again.
 
 ## Run the API host
@@ -147,7 +147,7 @@ curl -X POST http://localhost:5080/webhooks/inbound -H "Content-Type: applicatio
 ```
 
 Responses: 200 with `{ providerDocumentId, invoice }`; 400 if the body is not a JSON object whose
-`guid`/`document_guid` is a GUID string or whose `documentId` is a GUID or a Recommand-style id; 401 on a wrong or missing secret (when configured); 413
+`guid`/`document_guid` is a GUID string or whose `documentId` is a GUID or a Recommand-style id (with Storecove configured, a non-GUID `documentId` passes this check but the client refuses it, so the answer is 502); 401 on a wrong or missing secret (when configured); 413
 above 16 KB; 502 if the Access Point fetch failed (details are logged, not returned); 422 if the
 fetched document is not a parseable UBL Invoice (credit notes are not handled yet); 503 if no
 provider is configured, or outside Development if no secret is configured.

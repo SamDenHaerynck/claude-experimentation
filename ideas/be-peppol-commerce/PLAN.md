@@ -239,7 +239,7 @@ Each slice leaves `dotnet test` (and, from Slice 5 on, `dotnet run` for the API 
    The API host picks the provider from `AccessPoint:Provider` (default `storecove`, so a config
    with only a `Storecove` section keeps working). Not done: Recommand's real webhook delivery
    (event envelope, HMAC-SHA256 `X-Signature`) is not parsed or verified; it goes with Slice 8's
-   config work or Slice 9. 50 new tests, 191 total.)*
+   config work or Slice 9. After the pre-merge review, an email-instead-of-Peppol send counts as failed and a fetched document of another company is refused. 52 new tests, 193 total.)*
 8. **Config and credential handling.** Strongly-typed settings model bound from
    `appsettings.json`/env vars, `.env.example` with placeholder values only, and validation that
    surfaces a clear error for missing/invalid provider config at startup rather than failing deep in

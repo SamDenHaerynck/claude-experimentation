@@ -5,14 +5,16 @@ Phase: 3 Build
 Slice: 7 of 11, complete (next: 8)
 Next action: Slice 8 (config and credential handling) in `ideas/be-peppol-commerce/PLAN.md`.
 Install the .NET 8 SDK (`RUNBOOK.md` "Build environment") and run `dotnet test` in
-`ideas/be-peppol-commerce/app` (191 should pass). Then replace the ad hoc reads in
+`ideas/be-peppol-commerce/app` (193 should pass). Then replace the ad hoc reads in
 `src/BePeppolCommerce.Api/AccessPointConfig.cs` with strongly typed options classes
 (`AccessPointOptions`, `StorecoveSection`, `RecommandSection`) bound with
 `services.AddOptions<T>().Bind(...).Validate(...).ValidateOnStart()`, so every missing or invalid
 value (no key, LegalEntityId <= 0, missing Recommand secret or company id, bad BaseUri) fails at
 startup with a message naming the setting but never its value. Add `StorecoveOptions.SchemeMap`
 binding from config (`Storecove:SchemeMap:0208=<name>`). Keep `.env.example` placeholders in step,
-and add tests in `tests/BePeppolCommerce.Api.Tests` for each failure. If time is left: decide in
+and add tests in `tests/BePeppolCommerce.Api.Tests` for each failure. Also log a startup warning naming
+the selected provider when its key is blank (day-033 review finding 6), and move Recommand's option
+checks into a static `RecommandOptions.Validate()` (finding 7). If time is left: decide in
 `DECISIONS.md` whether Recommand webhook support (HMAC-SHA256 `X-Signature` over the raw body,
 event envelope shape from https://github.com/brbxai/recommand-peppol) belongs in Slice 8 or 9.
 Read first: OWNER.md, RUNBOOK.md, ideas/be-peppol-commerce/PLAN.md (Slices 7 to 9),

@@ -39,8 +39,8 @@ public class RecommandClientTests
         return (new RecommandClient(new HttpClient(handler), Options()), handler);
     }
 
-    private static string GetBody(string direction = "incoming", string? xml = Xml, string id = DocId) =>
-        JsonSerializer.Serialize(new { success = true, document = new { id, direction, xml } });
+    private static string GetBody(string direction = "incoming", string? xml = Xml, string id = DocId, string companyId = CompanyId) =>
+        JsonSerializer.Serialize(new { success = true, document = new { id, companyId, direction, xml } });
 
     [Fact]
     public async Task Send_Success_PostsRawXmlWithBasicAuthAndReturnsId()
@@ -117,6 +117,21 @@ public class RecommandClientTests
     }
 
     [Fact]
+    public async Task Send_DeliveredByEmailInsteadOfPeppol_IsAFailure()
+    {
+        var (client, _) = Create(_ => Json(HttpStatusCode.OK,
+            $$"""{"success":true,"sentOverPeppol":false,"sentOverEmail":true,"id":"{{DocId}}"}"""));
+
+        var result = await client.SendAsync(new OutboundDocument(Xml, Buyer));
+
+        Assert.False(result.Success);
+        Assert.Equal(200, result.HttpStatus);
+        var error = Assert.Single(result.Errors);
+        Assert.Equal("provider", error.Source);
+        Assert.Contains(DocId, error.Details);
+    }
+
+    [Fact]
     public async Task Send_TransportError_IsAFailureNotAnException()
     {
         var (client, _) = Create(_ => throw new HttpRequestException("connection refused"));
@@ -174,9 +189,10 @@ public class RecommandClientTests
     [InlineData("incoming", "", DocId)]
     [InlineData("incoming", "not xml", DocId)]
     [InlineData("incoming", Xml, "doc_other")]
-    public async Task GetInbound_UnusableDocument_IsAFailure(string direction, string? xml, string id)
+    [InlineData("incoming", Xml, DocId, "c_another_company")]
+    public async Task GetInbound_UnusableDocument_IsAFailure(string direction, string? xml, string id, string companyId = CompanyId)
     {
-        var (client, _) = Create(_ => Json(HttpStatusCode.OK, GetBody(direction, xml, id)));
+        var (client, _) = Create(_ => Json(HttpStatusCode.OK, GetBody(direction, xml, id, companyId)));
 
         var result = await client.GetInboundAsync(DocId);
 

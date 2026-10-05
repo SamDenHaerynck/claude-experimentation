@@ -69,7 +69,9 @@ public sealed partial class RecommandClient : IPeppolAccessPointClient
     public async Task<AccessPointResult<string>> SendAsync(OutboundDocument document, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(document);
-        // doctypeId and processId are left out: the spec says both are detected for raw XML.
+        // doctypeId and processId are left out. The spec says Recommand detects them for raw XML
+        // "where supported" and resolves them against the recipient; whether that covers every
+        // recipient is unverified, so a "cannot detect" error would mean sending doctypeId here.
         var body = new
         {
             recipient = document.Recipient.ToString(),
@@ -84,6 +86,12 @@ public sealed partial class RecommandClient : IPeppolAccessPointClient
             var result = await response.Content.ReadFromJsonAsync<SendResult>(Json, cancellationToken);
             if (result?.Success != true)
                 return AccessPointResult<string>.Fail(status, new AccessPointError("client", "Success response did not report success."));
+            // The spec: false means Peppol routing failed or the access point refused it, and the
+            // document went by email instead. That is not a Peppol delivery, so it is not reported as
+            // sent; with a 2xx status the dispatcher treats it as permanent and does not resend.
+            if (result.SentOverPeppol == false)
+                return AccessPointResult<string>.Fail(status, new AccessPointError("provider",
+                    $"Not sent over Peppol; Recommand delivered it by email instead (document {result.Id})."));
             return string.IsNullOrEmpty(result.Id)
                 ? AccessPointResult<string>.Fail(status, new AccessPointError("client", "Success response had no id."))
                 : AccessPointResult<string>.Ok(result.Id, status);
@@ -105,6 +113,8 @@ public sealed partial class RecommandClient : IPeppolAccessPointClient
                 return AccessPointResult<InboundDocument>.Fail(status, new AccessPointError("client", "Response had no document."));
             if (doc.Id is { } id && id != providerDocumentId)
                 return AccessPointResult<InboundDocument>.Fail(status, new AccessPointError("client", "Response id does not match the requested document."));
+            if (doc.CompanyId is { } company && company != _options.CompanyId)
+                return AccessPointResult<InboundDocument>.Fail(status, new AccessPointError("client", "Document belongs to another company."));
             if (doc.Direction != "incoming")
                 return AccessPointResult<InboundDocument>.Fail(status, new AccessPointError("client", "Document is not an incoming document."));
             var xml = doc.Xml?.TrimStart('﻿').TrimStart();
@@ -140,11 +150,11 @@ public sealed partial class RecommandClient : IPeppolAccessPointClient
         return new[] { fallback };
     }
 
-    private sealed record SendResult(bool? Success, string? Id);
+    private sealed record SendResult(bool? Success, string? Id, bool? SentOverPeppol);
 
     private sealed record GetResult(bool? Success, RecommandDocument? Document);
 
-    private sealed record RecommandDocument(string? Id, string? Direction, string? Xml);
+    private sealed record RecommandDocument(string? Id, string? CompanyId, string? Direction, string? Xml);
 
     private sealed record ErrorBody(bool? Success, Dictionary<string, string?[]?>? Errors);
 }
