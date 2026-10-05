@@ -1,26 +1,27 @@
 # State
-Day: 032
+Day: 033
 Idea: be-peppol-commerce
 Phase: 3 Build
-Slice: 6 of 11, complete (next: 7)
-Next action: Slice 7 (second provider, Recommand) in `ideas/be-peppol-commerce/PLAN.md`.
+Slice: 7 of 11, complete (next: 8)
+Next action: Slice 8 (config and credential handling) in `ideas/be-peppol-commerce/PLAN.md`.
 Install the .NET 8 SDK (`RUNBOOK.md` "Build environment") and run `dotnet test` in
-`ideas/be-peppol-commerce/app` (141 should pass). Then fetch Recommand's API docs raw with curl
-(https://docs.recommand.eu/ links an OpenAPI-generated reference; find and download the spec JSON
-itself, not a WebFetch summary) and record the send endpoint, auth scheme, request/response shape
-and the received-document fetch endpoint, with URLs, in `DECISIONS.md`. If the raw spec cannot be
-obtained in about 10 minutes, record that and fall back to Billit per Slice 3's note. Then add
-`AccessPoint/RecommandClient.cs` implementing `IPeppolAccessPointClient` against a stub
-`HttpMessageHandler` (success, provider error, transport error), and add a `"recommand"` case to
-`AccessPointClientFactory.Create` in `Integration/OutboundDispatcher.cs` plus a factory test. Also
-let the API host choose its provider from config (`AccessPoint:Provider`), keeping the existing
-`Storecove` section working.
-Read first: OWNER.md, RUNBOOK.md, ideas/be-peppol-commerce/PLAN.md (Slices 3 and 7),
+`ideas/be-peppol-commerce/app` (191 should pass). Then replace the ad hoc reads in
+`src/BePeppolCommerce.Api/AccessPointConfig.cs` with strongly typed options classes
+(`AccessPointOptions`, `StorecoveSection`, `RecommandSection`) bound with
+`services.AddOptions<T>().Bind(...).Validate(...).ValidateOnStart()`, so every missing or invalid
+value (no key, LegalEntityId <= 0, missing Recommand secret or company id, bad BaseUri) fails at
+startup with a message naming the setting but never its value. Add `StorecoveOptions.SchemeMap`
+binding from config (`Storecove:SchemeMap:0208=<name>`). Keep `.env.example` placeholders in step,
+and add tests in `tests/BePeppolCommerce.Api.Tests` for each failure. If time is left: decide in
+`DECISIONS.md` whether Recommand webhook support (HMAC-SHA256 `X-Signature` over the raw body,
+event envelope shape from https://github.com/brbxai/recommand-peppol) belongs in Slice 8 or 9.
+Read first: OWNER.md, RUNBOOK.md, ideas/be-peppol-commerce/PLAN.md (Slices 7 to 9),
 ideas/be-peppol-commerce/app/README.md,
-ideas/be-peppol-commerce/app/src/BePeppolCommerce.Core/AccessPoint/IPeppolAccessPointClient.cs,
+ideas/be-peppol-commerce/app/src/BePeppolCommerce.Api/AccessPointConfig.cs,
+ideas/be-peppol-commerce/app/src/BePeppolCommerce.Api/Program.cs,
 ideas/be-peppol-commerce/app/src/BePeppolCommerce.Core/AccessPoint/StorecoveClient.cs,
-ideas/be-peppol-commerce/app/src/BePeppolCommerce.Core/Integration/OutboundDispatcher.cs,
-ideas/be-peppol-commerce/app/src/BePeppolCommerce.Api/Program.cs
+ideas/be-peppol-commerce/app/src/BePeppolCommerce.Core/AccessPoint/RecommandClient.cs,
+ideas/be-peppol-commerce/app/tests/BePeppolCommerce.Api.Tests/InboundWebhookTests.cs
 Notes for owner:
 - (Owner) Licensing of the Peppol rules (day 028). OpenPEPPOL's BIS guide
   (`guide/bis/introduction.adoc` in peppol-bis-invoice-3) says OpenPeppol AISBL holds the copyright,
@@ -70,6 +71,11 @@ Notes for owner:
   `X-Webhook-Secret` header that are this project's own conventions, because Storecove's public spec
   defines neither its webhook body nor its webhook authentication. With a Storecove sandbox, one real
   webhook delivery would settle both.
+- (Owner) Day 033: Recommand's send endpoint takes no idempotency key (its OpenAPI spec at
+  https://peppol.recommand.eu/openapi has idempotency keys only on e-reporting submissions and webhook deliveries), so with
+  Recommand as provider a retried send can deliver an invoice twice. Storecove remains the safer
+  default for the dispatcher. If you talk to Recommand, asking whether a send idempotency key is
+  planned would settle it.
 Tournament round: 1 (won)
 Kills before 2026-09-23 rewrite: 14
-Last session: 2026-10-04, ended clean
+Last session: 2026-10-05, ended clean
