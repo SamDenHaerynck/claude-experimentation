@@ -105,6 +105,8 @@ public class AccessPointConfigTests
     [InlineData("Storecove:ApiKey", "", false)] // blank key: no client, no validation (see SelectedProviderWithoutKey test)
     [InlineData("Storecove:LegalEntityId", "0", true)]
     [InlineData("Storecove:LegalEntityId", "-5", true)]
+    [InlineData("Storecove:LegalEntityId", "pasted-key-placeholder", true)]
+    [InlineData("Storecove:LegalEntityId", "1.5", true)]
     [InlineData("Storecove:BaseUri", "not a uri", true)]
     [InlineData("Storecove:BaseUri", "http://api.example.invalid/", true)]
     [InlineData("Storecove:BaseUri", "/api/v2/", true)]
@@ -144,6 +146,29 @@ public class AccessPointConfigTests
         Assert.Contains(setting, ex.Message);
         Assert.DoesNotContain(Secret, ex.Message);
         if (value.Length > 0) Assert.DoesNotContain(value, ex.Message);
+    }
+
+    [Fact]
+    public void BadBaseUri_DoesNotHideOtherProblems()
+    {
+        var ex = StartupFailure(Storecove(("Storecove:BaseUri", "not a uri"), ("Storecove:LegalEntityId", "0")));
+
+        Assert.Contains("Storecove:BaseUri", ex.Message);
+        Assert.Contains("Storecove:LegalEntityId", ex.Message);
+    }
+
+    [Fact]
+    public async Task NonNumericLegalEntityId_StopsARealHostWithoutEchoingTheValue()
+    {
+        var builder = Microsoft.Extensions.Hosting.Host.CreateApplicationBuilder();
+        builder.Configuration.AddInMemoryCollection(Storecove(("Storecove:LegalEntityId", "SUPERSECRETKEY"))!);
+        AccessPointConfig.Register(builder.Services, builder.Configuration);
+        using var host = builder.Build();
+
+        var ex = await Assert.ThrowsAsync<OptionsValidationException>(() => host.StartAsync());
+
+        Assert.Contains("Storecove:LegalEntityId", ex.Message);
+        for (Exception? e = ex; e is not null; e = e.InnerException) Assert.DoesNotContain("SUPERSECRETKEY", e.ToString());
     }
 
     [Fact]

@@ -250,9 +250,9 @@ Each slice leaves `dotnet test` (and, from Slice 5 on, `dotnet run` for the API 
    per section. The rules live once, in static `StorecoveOptions.Validate` and
    `RecommandOptions.Validate` in Core, which the client constructors also call (so the throwaway
    startup `HttpClient` is gone). Each message starts with the setting name and never contains the
-   value; all problems in a section are reported together. New rule: `LegalEntityId` must be above 0.
+   value; all problems in a section are reported together. New rule: `LegalEntityId` must be a whole number above 0; it binds as a string so a non-numeric value is not echoed by the binder (pre-merge review).
    A selected provider with a blank key still starts without a client, now with a warning naming the
-   provider. Only the selected provider's section is validated. 30 new tests, 223 total. Failure
+   provider. Only the selected provider's section is validated. 34 new tests, 227 total. Failure
    tests run `IStartupValidator` directly plus one real `Host.StartAsync`, because
    `WebApplicationFactory` intermittently surfaced `ObjectDisposedException` instead of the
    validation error when host start failed.)*

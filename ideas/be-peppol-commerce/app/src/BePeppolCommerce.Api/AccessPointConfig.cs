@@ -1,3 +1,4 @@
+using System.Globalization;
 using BePeppolCommerce.Core.AccessPoint;
 using Microsoft.Extensions.Options;
 
@@ -27,19 +28,23 @@ public sealed class StorecoveSection
     public const string SectionName = "Storecove";
 
     public string? ApiKey { get; set; }
-    public int LegalEntityId { get; set; }
+    /// <summary>
+    /// Bound as a string so a non-numeric value fails validation with a value-free message instead
+    /// of a binder error that echoes it (for example a key pasted into the wrong variable).
+    /// </summary>
+    public string? LegalEntityId { get; set; }
     public string? BaseUri { get; set; }
 
     /// <summary>Peppol ICD scheme to Storecove scheme name, e.g. <c>Storecove:SchemeMap:0208</c>.</summary>
     public Dictionary<string, string> SchemeMap { get; set; } = new(StringComparer.Ordinal);
 
     public StorecoveOptions ToOptions() =>
-        new(ApiKey ?? "", LegalEntityId, AccessPointConfig.ParseBaseUri(BaseUri), SchemeMap.Count == 0 ? null : SchemeMap);
+        new(ApiKey ?? "", int.TryParse(LegalEntityId, NumberStyles.None, CultureInfo.InvariantCulture, out var id) ? id : 0,
+            AccessPointConfig.ParseBaseUri(BaseUri), SchemeMap.Count == 0 ? null : SchemeMap);
 
     public IEnumerable<string> Problems() =>
-        AccessPointConfig.BaseUriProblem(BaseUri) is { } problem
-            ? [problem]
-            : StorecoveOptions.Validate(ToOptions());
+        // An unparseable BaseUri becomes null in ToOptions, so Validate does not report it twice.
+        AccessPointConfig.BaseUriProblems(BaseUri).Concat(StorecoveOptions.Validate(ToOptions()));
 }
 
 /// <summary><c>Recommand</c> section, bound from appsettings.json or <c>Recommand__*</c> environment variables.</summary>
@@ -56,9 +61,7 @@ public sealed class RecommandSection
         new(ApiKey ?? "", ApiSecret ?? "", CompanyId ?? "", AccessPointConfig.ParseBaseUri(BaseUri));
 
     public IEnumerable<string> Problems() =>
-        AccessPointConfig.BaseUriProblem(BaseUri) is { } problem
-            ? [problem]
-            : RecommandOptions.Validate(ToOptions());
+        AccessPointConfig.BaseUriProblems(BaseUri).Concat(RecommandOptions.Validate(ToOptions()));
 }
 
 /// <summary>What <see cref="AccessPointConfig.Register"/> chose: the provider, and whether its client was registered.</summary>
@@ -101,8 +104,8 @@ public static class AccessPointConfig
         string.IsNullOrWhiteSpace(raw) ? null : Uri.TryCreate(raw, UriKind.Absolute, out var uri) ? uri : null;
 
     /// <summary>A typo must not silently fall back to the production API with the configured key.</summary>
-    internal static string? BaseUriProblem(string? raw) =>
-        string.IsNullOrWhiteSpace(raw) || Uri.TryCreate(raw, UriKind.Absolute, out _) ? null : "BaseUri is not an absolute URI.";
+    internal static IEnumerable<string> BaseUriProblems(string? raw) =>
+        string.IsNullOrWhiteSpace(raw) || Uri.TryCreate(raw, UriKind.Absolute, out _) ? [] : ["BaseUri is not an absolute URI."];
 
     private static bool HasApiKey(IConfiguration configuration, string section) =>
         !string.IsNullOrWhiteSpace(configuration[$"{section}:ApiKey"]);

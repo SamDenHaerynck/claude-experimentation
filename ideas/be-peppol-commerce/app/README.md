@@ -109,8 +109,8 @@ From this directory (`ideas/be-peppol-commerce/app`):
 dotnet test
 ```
 
-The first run takes about a minute (restore, jar download, IKVM compiling the jars). All 223 tests
-should pass (167 in `BePeppolCommerce.Core.Tests`, 56 in `BePeppolCommerce.Api.Tests`). If a download fails (Maven Central sometimes rate-limits with HTTP 429), or a file fails its
+The first run takes about a minute (restore, jar download, IKVM compiling the jars). All 227 tests
+should pass (167 in `BePeppolCommerce.Core.Tests`, 60 in `BePeppolCommerce.Api.Tests`). If a download fails (Maven Central sometimes rate-limits with HTTP 429), or a file fails its
 SHA-256 check (the file is then deleted), wait a minute and run `dotnet test` again.
 
 ## Run the API host
@@ -132,7 +132,7 @@ The other provider's section is not checked.
 
 - `AccessPoint__Provider`: `storecove` (the default when unset) or `recommand`. Any other value
   stops the host at startup.
-- `Storecove__ApiKey`, `Storecove__LegalEntityId` (must be above 0), `Storecove__BaseUri` (defaults to
+- `Storecove__ApiKey`, `Storecove__LegalEntityId` (a whole number above 0), `Storecove__BaseUri` (defaults to
   `https://api.storecove.com/api/v2/`). A `BaseUri` that is not an absolute https URI (plain http is allowed
   only to loopback) stops the host at startup instead of falling back to the live API.
   `Storecove__SchemeMap__0208=<Storecove scheme name>` maps a Peppol ICD scheme to Storecove's own

@@ -1,29 +1,30 @@
 # State
-Day: 033
+Day: 034
 Idea: be-peppol-commerce
 Phase: 3 Build
-Slice: 7 of 11, complete (next: 8)
-Next action: Slice 8 (config and credential handling) in `ideas/be-peppol-commerce/PLAN.md`.
-Install the .NET 8 SDK (`RUNBOOK.md` "Build environment") and run `dotnet test` in
-`ideas/be-peppol-commerce/app` (193 should pass). Then replace the ad hoc reads in
-`src/BePeppolCommerce.Api/AccessPointConfig.cs` with strongly typed options classes
-(`AccessPointOptions`, `StorecoveSection`, `RecommandSection`) bound with
-`services.AddOptions<T>().Bind(...).Validate(...).ValidateOnStart()`, so every missing or invalid
-value (no key, LegalEntityId <= 0, missing Recommand secret or company id, bad BaseUri) fails at
-startup with a message naming the setting but never its value. Add `StorecoveOptions.SchemeMap`
-binding from config (`Storecove:SchemeMap:0208=<name>`). Keep `.env.example` placeholders in step,
-and add tests in `tests/BePeppolCommerce.Api.Tests` for each failure. Also log a startup warning naming
-the selected provider when its key is blank (day-033 review finding 6), and move Recommand's option
-checks into a static `RecommandOptions.Validate()` (finding 7). If time is left: decide in
-`DECISIONS.md` whether Recommand webhook support (HMAC-SHA256 `X-Signature` over the raw body,
-event envelope shape from https://github.com/brbxai/recommand-peppol) belongs in Slice 8 or 9.
-Read first: OWNER.md, RUNBOOK.md, ideas/be-peppol-commerce/PLAN.md (Slices 7 to 9),
+Slice: 8 of 11, complete (next: 9)
+Next action: Slice 9 (error handling and observability) in `ideas/be-peppol-commerce/PLAN.md`.
+Install the .NET 8 SDK (`RUNBOOK.md` "Build environment"). If `dotnet test` fails with a Maven 429,
+fetch the two jars with curl into `src/BePeppolCommerce.Core/obj/jars/` (RUNBOOK.md). Then run
+`dotnet test` in `ideas/be-peppol-commerce/app` (227 should pass). Build: (1) an
+`IFailedDocumentLog` in `Core/Integration` with an in-memory implementation that records every
+outbound failure (`OutboundDispatcher`: validation failed, send failed retryable/permanent,
+unexpected exception) and every inbound failure (`Api/InboundWebhook.cs`: fetch failed, parse
+failed) with time, direction, document/invoice id, reason and details, never the XML body or any
+credential; (2) structured `ILogger` events with stable EventIds for each of those paths
+(`OutboundDispatcher` takes an optional `ILogger`; today it logs nothing); (3) tests that assert each
+failure path both logs and records. Also address day-033 review finding 2: Recommand returns 422 when
+the recipient is unreachable, which the dispatcher labels a permanent "Rejected by Access Point";
+decide (and record in `DECISIONS.md`) whether to make that classification provider-aware. Optional,
+only if time remains: Recommand signed webhook verification (HMAC-SHA256 `X-Signature`, see PLAN.md
+Slice 9 note); otherwise it is a stated v1 gap for `HANDOFF.md`.
+Read first: OWNER.md, RUNBOOK.md, ideas/be-peppol-commerce/PLAN.md (Slices 8 to 10),
 ideas/be-peppol-commerce/app/README.md,
-ideas/be-peppol-commerce/app/src/BePeppolCommerce.Api/AccessPointConfig.cs,
-ideas/be-peppol-commerce/app/src/BePeppolCommerce.Api/Program.cs,
-ideas/be-peppol-commerce/app/src/BePeppolCommerce.Core/AccessPoint/StorecoveClient.cs,
-ideas/be-peppol-commerce/app/src/BePeppolCommerce.Core/AccessPoint/RecommandClient.cs,
-ideas/be-peppol-commerce/app/tests/BePeppolCommerce.Api.Tests/InboundWebhookTests.cs
+ideas/be-peppol-commerce/app/src/BePeppolCommerce.Core/Integration/OutboundDispatcher.cs,
+ideas/be-peppol-commerce/app/src/BePeppolCommerce.Core/Integration/IOrderInvoiceSource.cs,
+ideas/be-peppol-commerce/app/src/BePeppolCommerce.Core/Outbound/OutboundInvoiceSender.cs,
+ideas/be-peppol-commerce/app/src/BePeppolCommerce.Api/InboundWebhook.cs,
+ideas/be-peppol-commerce/app/docs/CONFIGURED_COMMERCE_CONTRACT.md (error contract rows)
 Notes for owner:
 - (Owner) Licensing of the Peppol rules (day 028). OpenPEPPOL's BIS guide
   (`guide/bis/introduction.adoc` in peppol-bis-invoice-3) says OpenPeppol AISBL holds the copyright,
@@ -80,4 +81,4 @@ Notes for owner:
   planned would settle it.
 Tournament round: 1 (won)
 Kills before 2026-09-23 rewrite: 14
-Last session: 2026-10-05, ended clean
+Last session: 2026-10-06, ended clean
