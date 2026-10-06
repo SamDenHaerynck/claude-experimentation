@@ -8,7 +8,8 @@ using System.Text.RegularExpressions;
 namespace BePeppolCommerce.Core.AccessPoint;
 
 /// <summary>
-/// Settings for <see cref="RecommandClient"/>. Never commit a real key; see Slice 8.
+/// Settings for <see cref="RecommandClient"/>. Never commit a real key; the API host binds these from
+/// configuration (<c>AccessPointConfig</c>) and <see cref="Validate"/> holds the rules.
 /// <paramref name="ApiKey"/> and <paramref name="ApiSecret"/> are the pair Recommand's dashboard
 /// issues for HTTP Basic auth. <paramref name="CompanyId"/> is Recommand's id for the sending company
 /// (for example "c_01JQ...").
@@ -16,6 +17,25 @@ namespace BePeppolCommerce.Core.AccessPoint;
 public sealed record RecommandOptions(string ApiKey, string ApiSecret, string CompanyId, Uri? BaseUri = null)
 {
     public static readonly Uri DefaultBaseUri = new("https://app.recommand.eu/");
+
+    /// <summary>
+    /// Returns one message per invalid setting, each starting with the setting's name and never
+    /// containing its value. Empty when the options are usable. Shared by the client constructor and
+    /// the API host's startup validation.
+    /// </summary>
+    public static IReadOnlyList<string> Validate(RecommandOptions options)
+    {
+        ArgumentNullException.ThrowIfNull(options);
+        var problems = new List<string>();
+        if (string.IsNullOrWhiteSpace(options.ApiKey)) problems.Add("ApiKey is required.");
+        else if (options.ApiKey.Contains(':')) problems.Add("ApiKey must not contain ':' (it is the Basic auth user name).");
+        if (string.IsNullOrWhiteSpace(options.ApiSecret)) problems.Add("ApiSecret is required.");
+        if (string.IsNullOrWhiteSpace(options.CompanyId) || !RecommandClient.IsValidId(options.CompanyId))
+            problems.Add("CompanyId is required and may contain only letters, digits, '_' and '-'.");
+        if (options.BaseUri is { } b && !AccessPointHttp.IsAllowedBaseUri(b))
+            problems.Add("BaseUri must be https (plain http only for loopback test servers).");
+        return problems;
+    }
 
     /// <summary>Hides the key and secret, so options can be logged.</summary>
     public override string ToString() => $"RecommandOptions {{ CompanyId = {CompanyId}, BaseUri = {BaseUri} }}";
@@ -43,6 +63,8 @@ public sealed partial class RecommandClient : IPeppolAccessPointClient
     [GeneratedRegex(@"^[A-Za-z0-9_-]{1,128}\z")]
     private static partial Regex IdPattern();
 
+    internal static bool IsValidId(string id) => IdPattern().IsMatch(id);
+
     private readonly HttpClient _http;
     private readonly RecommandOptions _options;
     private readonly Uri _baseUri;
@@ -52,15 +74,9 @@ public sealed partial class RecommandClient : IPeppolAccessPointClient
     {
         _http = http ?? throw new ArgumentNullException(nameof(http));
         _options = options ?? throw new ArgumentNullException(nameof(options));
-        if (string.IsNullOrWhiteSpace(options.ApiKey) || string.IsNullOrWhiteSpace(options.ApiSecret))
-            throw new ArgumentException("Recommand API key and secret are required.", nameof(options));
-        if (options.ApiKey.Contains(':'))
-            throw new ArgumentException("Recommand API key must not contain ':' (it is the Basic auth user name).", nameof(options));
-        if (string.IsNullOrWhiteSpace(options.CompanyId) || !IdPattern().IsMatch(options.CompanyId))
-            throw new ArgumentException("Recommand company id is required and may contain only letters, digits, '_' and '-'.", nameof(options));
+        if (RecommandOptions.Validate(options) is { Count: > 0 } problems)
+            throw new ArgumentException("Recommand options are invalid: " + string.Join(" ", problems), nameof(options));
         var b = options.BaseUri ?? RecommandOptions.DefaultBaseUri;
-        if (b.Scheme != Uri.UriSchemeHttps && !(b.Scheme == Uri.UriSchemeHttp && b.IsLoopback))
-            throw new ArgumentException("Base URI must be https (plain http is allowed only for loopback test servers).", nameof(options));
         _baseUri = b.AbsoluteUri.EndsWith('/') ? b : new Uri(b.AbsoluteUri + "/");
         _auth = new AuthenticationHeaderValue("Basic",
             Convert.ToBase64String(Encoding.UTF8.GetBytes($"{options.ApiKey}:{options.ApiSecret}")));

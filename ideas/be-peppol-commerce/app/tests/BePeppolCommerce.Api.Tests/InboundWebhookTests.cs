@@ -189,73 +189,6 @@ public class InboundWebhookTests
         Assert.Equal([DocumentGuid], fake.Fetched); // canonical lower-case form
     }
 
-    [Fact]
-    public void ApiKeyConfigured_RegistersStorecoveClient()
-    {
-        using var factory = new WebApplicationFactory<Program>().WithWebHostBuilder(b =>
-        {
-            b.UseEnvironment("Development");
-            b.UseSetting("Storecove:ApiKey", "placeholder-not-a-real-key");
-            b.UseSetting("Storecove:LegalEntityId", "1");
-        });
-
-        using var scope = factory.Services.CreateScope();
-
-        Assert.IsType<StorecoveClient>(scope.ServiceProvider.GetRequiredService<IPeppolAccessPointClient>());
-    }
-
-    [Fact]
-    public void RecommandProvider_RegistersRecommandClient()
-    {
-        using var factory = new WebApplicationFactory<Program>().WithWebHostBuilder(b =>
-        {
-            b.UseEnvironment("Development");
-            b.UseSetting("AccessPoint:Provider", "Recommand");
-            b.UseSetting("Storecove:ApiKey", "placeholder-not-a-real-key");
-            b.UseSetting("Recommand:ApiKey", "placeholder-not-a-real-key");
-            b.UseSetting("Recommand:ApiSecret", "placeholder-not-a-real-secret");
-            b.UseSetting("Recommand:CompanyId", "c_01JQZ8X0M4T7RB6K9V2NDHW3PA");
-        });
-
-        using var scope = factory.Services.CreateScope();
-
-        Assert.IsType<RecommandClient>(scope.ServiceProvider.GetRequiredService<IPeppolAccessPointClient>());
-    }
-
-    [Fact]
-    public void RecommandProviderWithoutKey_RegistersNoClient()
-    {
-        using var factory = new WebApplicationFactory<Program>().WithWebHostBuilder(b =>
-        {
-            b.UseEnvironment("Development");
-            b.UseSetting("AccessPoint:Provider", "recommand");
-            b.UseSetting("Storecove:ApiKey", "placeholder-not-a-real-key");
-        });
-
-        using var scope = factory.Services.CreateScope();
-
-        Assert.Null(scope.ServiceProvider.GetService<IPeppolAccessPointClient>());
-    }
-
-    [Theory]
-    [InlineData("billit", "", "c_1")]
-    [InlineData("recommand", "", "c_1")]
-    [InlineData("recommand", "placeholder-not-a-real-secret", "")]
-    [InlineData("recommand", "placeholder-not-a-real-secret", "c_1/../x")]
-    public void BadProviderConfiguration_FailsAtStartup(string provider, string secret, string companyId)
-    {
-        using var factory = new WebApplicationFactory<Program>().WithWebHostBuilder(b =>
-        {
-            b.UseEnvironment("Development");
-            b.UseSetting("AccessPoint:Provider", provider);
-            b.UseSetting("Recommand:ApiKey", "placeholder-not-a-real-key");
-            b.UseSetting("Recommand:ApiSecret", secret);
-            b.UseSetting("Recommand:CompanyId", companyId);
-        });
-
-        Assert.Throws<InvalidOperationException>(() => factory.Services);
-    }
-
     [Theory]
     [InlineData("doc_01JQZ8X0M4T7RB6K9V2NDHW3PA", "doc_01JQZ8X0M4T7RB6K9V2NDHW3PA")]
     [InlineData("0B6F2A3C-1D4E-4F5A-8B9C-0D1E2F3A4B5C", "0b6f2a3c-1d4e-4f5a-8b9c-0d1e2f3a4b5c")]
@@ -267,23 +200,6 @@ public class InboundWebhookTests
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         Assert.Equal([expected], fake.Fetched);
-    }
-
-    [Theory]
-    [InlineData("not a uri")]
-    [InlineData("http://api.example.invalid/")]
-    [InlineData("/api/v2/")]
-    [InlineData("ftp://localhost/")]
-    public void InvalidBaseUri_FailsAtStartup(string baseUri)
-    {
-        using var factory = new WebApplicationFactory<Program>().WithWebHostBuilder(b =>
-        {
-            b.UseEnvironment("Development");
-            b.UseSetting("Storecove:ApiKey", "placeholder-not-a-real-key");
-            b.UseSetting("Storecove:BaseUri", baseUri);
-        });
-
-        Assert.Throws<InvalidOperationException>(() => factory.Services);
     }
 
     [Fact]

@@ -238,6 +238,29 @@ public class RecommandClientTests
         Assert.Throws<ArgumentException>(() => new RecommandClient(new HttpClient(), options));
     }
 
+    [Theory]
+    [InlineData("", "secret-placeholder", CompanyId, null, "ApiKey")]
+    [InlineData("k:x", "secret-placeholder", CompanyId, null, "ApiKey")]
+    [InlineData("k", " ", CompanyId, null, "ApiSecret")]
+    [InlineData("k", "secret-placeholder", "c_1/../x", null, "CompanyId")]
+    [InlineData("k", "secret-placeholder", CompanyId, "http://api.example.invalid/", "BaseUri")]
+    public void Validate_NamesTheBadSettingWithoutItsValue(string key, string secret, string companyId, string? baseUri, string setting)
+    {
+        var problems = RecommandOptions.Validate(new RecommandOptions(key, secret, companyId, baseUri is null ? null : new Uri(baseUri)));
+
+        var problem = Assert.Single(problems);
+        Assert.StartsWith(setting, problem);
+        Assert.DoesNotContain("secret-placeholder", problem);
+        Assert.DoesNotContain("../x", problem);
+    }
+
+    [Fact]
+    public void Validate_ReportsEveryProblem()
+    {
+        Assert.Equal(3, RecommandOptions.Validate(new RecommandOptions("", "", "")).Count);
+        Assert.Empty(RecommandOptions.Validate(Options()));
+    }
+
     [Fact]
     public async Task LoopbackBaseUriWithoutTrailingSlash_IsAllowedForTests()
     {

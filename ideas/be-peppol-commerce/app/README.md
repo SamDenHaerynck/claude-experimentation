@@ -109,8 +109,8 @@ From this directory (`ideas/be-peppol-commerce/app`):
 dotnet test
 ```
 
-The first run takes about a minute (restore, jar download, IKVM compiling the jars). All 193 tests
-should pass (152 in `BePeppolCommerce.Core.Tests`, 41 in `BePeppolCommerce.Api.Tests`). If a download fails (Maven Central sometimes rate-limits with HTTP 429), or a file fails its
+The first run takes about a minute (restore, jar download, IKVM compiling the jars). All 223 tests
+should pass (167 in `BePeppolCommerce.Core.Tests`, 56 in `BePeppolCommerce.Api.Tests`). If a download fails (Maven Central sometimes rate-limits with HTTP 429), or a file fails its
 SHA-256 check (the file is then deleted), wait a minute and run `dotnet test` again.
 
 ## Run the API host
@@ -121,14 +121,23 @@ dotnet run --project src/BePeppolCommerce.Api
 
 It listens on http://localhost:5080 in the Development environment (set by
 `Properties/launchSettings.json`). `GET /health` answers `{"status":"ok"}`. Without an Access Point
-API key, `POST /webhooks/inbound` answers 503. To point it at a provider, set configuration
-(environment variables shown; see `src/BePeppolCommerce.Api/.env.example`, placeholders only):
+API key, `POST /webhooks/inbound` answers 503 and a startup warning names the selected provider.
+To point it at a provider, set configuration (environment variables shown; see
+`src/BePeppolCommerce.Api/.env.example`, placeholders only). The settings bind to typed options
+(`AccessPointOptions`, `StorecoveSection`, `RecommandSection` in `AccessPointConfig.cs`). Once the
+selected provider has an API key, every invalid value in its section stops the host at startup with
+an `OptionsValidationException` that names each bad setting (for example
+`Storecove:LegalEntityId must be a positive Storecove legal entity id.`) and never prints its value.
+The other provider's section is not checked.
 
 - `AccessPoint__Provider`: `storecove` (the default when unset) or `recommand`. Any other value
   stops the host at startup.
-- `Storecove__ApiKey`, `Storecove__LegalEntityId`, `Storecove__BaseUri` (defaults to
+- `Storecove__ApiKey`, `Storecove__LegalEntityId` (must be above 0), `Storecove__BaseUri` (defaults to
   `https://api.storecove.com/api/v2/`). A `BaseUri` that is not an absolute https URI (plain http is allowed
   only to loopback) stops the host at startup instead of falling back to the live API.
+  `Storecove__SchemeMap__0208=<Storecove scheme name>` maps a Peppol ICD scheme to Storecove's own
+  name (keys must be 4-digit ICD codes, values non-blank). The Belgian name is not confirmed, so none
+  is set by default and unmapped schemes are sent unchanged.
 - With `recommand`: `Recommand__ApiKey`, `Recommand__ApiSecret`, `Recommand__CompanyId`,
   `Recommand__BaseUri` (defaults to `https://app.recommand.eu/`). A missing secret, a company id
   with characters other than letters, digits, `_` and `-`, or a bad `BaseUri` stops the host at
@@ -177,7 +186,8 @@ src/BePeppolCommerce.Core/          library: AccessPoint/ (provider interface, S
 src/BePeppolCommerce.Core/Inbound/  received-invoice parser and normalized model
 src/BePeppolCommerce.Api/           ASP.NET Core host: /health and POST /webhooks/inbound
 tests/BePeppolCommerce.Core.Tests/  xUnit tests; Fixtures/sample-order.json is the sample order
-tests/BePeppolCommerce.Api.Tests/   host tests through WebApplicationFactory with a fake Access Point
+tests/BePeppolCommerce.Api.Tests/   host tests through WebApplicationFactory with a fake Access Point,
+                                    and startup configuration tests (AccessPointConfigTests)
 docs/CONFIGURED_COMMERCE_CONTRACT.md  what a Configured Commerce extension implements
 ```
 
