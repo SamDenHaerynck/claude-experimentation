@@ -8,7 +8,8 @@ using System.Text.Json.Serialization;
 namespace BePeppolCommerce.Core.AccessPoint;
 
 /// <summary>
-/// Settings for <see cref="StorecoveClient"/>. Never commit a real key; see Slice 8.
+/// Settings for <see cref="StorecoveClient"/>. Never commit a real key; the API host binds these from
+/// configuration (<c>AccessPointConfig</c>) and <see cref="Validate"/> holds the rules.
 /// <paramref name="SchemeMap"/> maps a Peppol ICD scheme (for example "0208") to Storecove's own
 /// scheme name. The spec's examples use names like "DE:VAT" and "FR:CTC" and refer to an external
 /// list for the rest, so the Belgian mapping is not yet confirmed. Unmapped schemes are sent as is.
@@ -16,6 +17,29 @@ namespace BePeppolCommerce.Core.AccessPoint;
 public sealed record StorecoveOptions(string ApiKey, int LegalEntityId, Uri? BaseUri = null, IReadOnlyDictionary<string, string>? SchemeMap = null)
 {
     public static readonly Uri DefaultBaseUri = new("https://api.storecove.com/api/v2/");
+
+    /// <summary>
+    /// Returns one message per invalid setting, each starting with the setting's name and never
+    /// containing its value. Empty when the options are usable. The client constructor and the API
+    /// host's startup validation both use this, so the rules live in one place.
+    /// </summary>
+    public static IReadOnlyList<string> Validate(StorecoveOptions options)
+    {
+        ArgumentNullException.ThrowIfNull(options);
+        var problems = new List<string>();
+        if (string.IsNullOrWhiteSpace(options.ApiKey)) problems.Add("ApiKey is required.");
+        if (options.LegalEntityId <= 0) problems.Add("LegalEntityId must be a positive Storecove legal entity id.");
+        if (options.BaseUri is { } b && !AccessPointHttp.IsAllowedBaseUri(b))
+            problems.Add("BaseUri must be https (plain http only for loopback test servers).");
+        foreach (var (scheme, name) in options.SchemeMap ?? new Dictionary<string, string>())
+        {
+            if (scheme.Length != 4 || !scheme.All(char.IsAsciiDigit))
+                problems.Add("SchemeMap keys must be 4-digit Peppol ICD codes such as 0208.");
+            else if (string.IsNullOrWhiteSpace(name))
+                problems.Add($"SchemeMap:{scheme} must name a Storecove scheme.");
+        }
+        return problems;
+    }
 }
 
 /// <summary>
@@ -41,11 +65,9 @@ public sealed class StorecoveClient : IPeppolAccessPointClient
     {
         _http = http ?? throw new ArgumentNullException(nameof(http));
         _options = options ?? throw new ArgumentNullException(nameof(options));
-        if (string.IsNullOrWhiteSpace(options.ApiKey))
-            throw new ArgumentException("Storecove API key is required.", nameof(options));
+        if (StorecoveOptions.Validate(options) is { Count: > 0 } problems)
+            throw new ArgumentException("Storecove options are invalid: " + string.Join(" ", problems), nameof(options));
         var b = options.BaseUri ?? StorecoveOptions.DefaultBaseUri;
-        if (b.Scheme != Uri.UriSchemeHttps && !b.IsLoopback)
-            throw new ArgumentException("Base URI must be https (plain http is allowed only for loopback test servers).", nameof(options));
         _baseUri = b.AbsoluteUri.EndsWith('/') ? b : new Uri(b.AbsoluteUri + "/");
     }
 

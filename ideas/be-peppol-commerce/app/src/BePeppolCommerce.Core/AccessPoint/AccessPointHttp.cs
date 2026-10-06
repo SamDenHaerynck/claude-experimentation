@@ -8,6 +8,13 @@ namespace BePeppolCommerce.Core.AccessPoint;
 /// </summary>
 internal static class AccessPointHttp
 {
+    /// <summary>
+    /// https, or plain http to a loopback host for test servers. The scheme is checked explicitly
+    /// because .NET reports file: URIs (a bare "/path" on Linux) as loopback.
+    /// </summary>
+    public static bool IsAllowedBaseUri(Uri uri) =>
+        uri.IsAbsoluteUri && (uri.Scheme == Uri.UriSchemeHttps || (uri.Scheme == Uri.UriSchemeHttp && uri.IsLoopback));
+
     public static async Task<AccessPointResult<T>> SendAsync<T>(
         HttpClient http,
         HttpRequestMessage request,

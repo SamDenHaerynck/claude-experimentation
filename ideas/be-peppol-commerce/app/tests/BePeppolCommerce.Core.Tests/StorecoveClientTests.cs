@@ -199,6 +199,40 @@ public class StorecoveClientTests
     }
 
     [Fact]
+    public void Validate_ValidOptions_ReturnsNoProblems()
+    {
+        var map = new Dictionary<string, string> { ["0208"] = "XX:TEST" };
+        Assert.Empty(StorecoveOptions.Validate(new StorecoveOptions("k", 1, new Uri("https://api.example.com/"), map)));
+    }
+
+    [Theory]
+    [InlineData(" ", 1, null, "ApiKey")]
+    [InlineData("secret-key-placeholder", 0, null, "LegalEntityId")]
+    [InlineData("secret-key-placeholder", -1, null, "LegalEntityId")]
+    [InlineData("secret-key-placeholder", 1, "http://api.example.com/", "BaseUri")]
+    [InlineData("secret-key-placeholder", 1, "file:///api/v2/", "BaseUri")]
+    public void Validate_NamesTheBadSettingWithoutItsValue(string key, int legalEntityId, string? baseUri, string setting)
+    {
+        var problems = StorecoveOptions.Validate(new StorecoveOptions(key, legalEntityId, baseUri is null ? null : new Uri(baseUri)));
+
+        var problem = Assert.Single(problems);
+        Assert.StartsWith(setting, problem);
+        Assert.DoesNotContain("secret-key-placeholder", problem);
+        Assert.Throws<ArgumentException>(() => new StorecoveClient(new HttpClient(), new StorecoveOptions(key, legalEntityId, baseUri is null ? null : new Uri(baseUri))));
+    }
+
+    [Theory]
+    [InlineData("BE", "XX:TEST")]
+    [InlineData("02080", "XX:TEST")]
+    [InlineData("0208", " ")]
+    public void Validate_RejectsBadSchemeMapEntries(string scheme, string name)
+    {
+        var options = new StorecoveOptions("k", 1, SchemeMap: new Dictionary<string, string> { [scheme] = name });
+
+        Assert.StartsWith("SchemeMap", Assert.Single(StorecoveOptions.Validate(options)));
+    }
+
+    [Fact]
     public async Task CustomBaseUri_WithoutTrailingSlash_KeepsPath()
     {
         var handler = new StubHandler(_ => Json(HttpStatusCode.OK, $"{{\"guid\":\"{Guid1}\"}}"));

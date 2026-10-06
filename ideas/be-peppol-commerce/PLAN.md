@@ -244,9 +244,25 @@ Each slice leaves `dotnet test` (and, from Slice 5 on, `dotnet run` for the API 
    `appsettings.json`/env vars, `.env.example` with placeholder values only, and validation that
    surfaces a clear error for missing/invalid provider config at startup rather than failing deep in
    a send call.
+   *(Done, day 034. `src/BePeppolCommerce.Api/AccessPointConfig.cs` binds `AccessPointOptions`,
+   `StorecoveSection` (now including `SchemeMap`, e.g. `Storecove:SchemeMap:0208`) and
+   `RecommandSection` with `AddOptions<T>().Bind(...).ValidateOnStart()` and an `IValidateOptions<T>`
+   per section. The rules live once, in static `StorecoveOptions.Validate` and
+   `RecommandOptions.Validate` in Core, which the client constructors also call (so the throwaway
+   startup `HttpClient` is gone). Each message starts with the setting name and never contains the
+   value; all problems in a section are reported together. New rule: `LegalEntityId` must be a whole number above 0; it binds as a string so a non-numeric value is not echoed by the binder (pre-merge review).
+   A selected provider with a blank key still starts without a client, now with a warning naming the
+   provider. Only the selected provider's section is validated. 34 new tests, 227 total. Failure
+   tests run `IStartupValidator` directly plus one real `Host.StartAsync`, because
+   `WebApplicationFactory` intermittently surfaced `ObjectDisposedException` instead of the
+   validation error when host start failed.)*
 9. **Error handling and observability.** Structured logging for validation failures, send failures,
    and malformed inbound payloads; a simple failed-document record (in-memory/log-based, not a
    database) so a failure is never silently dropped. Tests assert the failure path is recorded.
+   Optional, only if the slice finishes early: verify Recommand's signed webhook delivery (HMAC-SHA256
+   `X-Signature` over the raw body, event envelope from https://github.com/brbxai/recommand-peppol).
+   It does not get a slice of its own (day 034 decision); if not done it is a stated v1 gap in
+   `HANDOFF.md`.
 10. **Polish and walkthrough.** A documented end-to-end sample (script or `dotnet run` command) that
     generates, validates, and mock-sends one sample invoice, then mock-receives one inbound
     document, entirely against fakes — runnable by a stranger in under five minutes per
