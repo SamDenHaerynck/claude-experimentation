@@ -7,8 +7,9 @@ public enum DocumentDirection { Outbound, Inbound }
 /// <summary>
 /// One document that could not be sent or received. <see cref="DocumentId"/> is the host's source id for
 /// an outbound invoice, or the Access Point's document id for an inbound one. <see cref="Details"/> holds
-/// rule ids, provider error messages or an exception type and message: never the UBL XML and never a
-/// credential.
+/// rule ids, provider error messages or an exception type and message: never the UBL XML, and this
+/// library puts no credential in it. An unexpected exception's message is recorded as is, so it can quote
+/// XML fragments or whatever the throwing code put there (for example a URL).
 /// </summary>
 public sealed record FailedDocument(
     DateTimeOffset At, DocumentDirection Direction, string DocumentId, string Reason, bool Retryable, IReadOnlyList<string> Details);

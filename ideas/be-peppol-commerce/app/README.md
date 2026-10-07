@@ -109,8 +109,8 @@ From this directory (`ideas/be-peppol-commerce/app`):
 dotnet test
 ```
 
-The first run takes about a minute (restore, jar download, IKVM compiling the jars). All 263 tests
-should pass (183 in `BePeppolCommerce.Core.Tests`, 80 in `BePeppolCommerce.Api.Tests`). If a download fails (Maven Central sometimes rate-limits with HTTP 429), or a file fails its
+The first run takes about a minute (restore, jar download, IKVM compiling the jars). All 264 tests
+should pass (184 in `BePeppolCommerce.Core.Tests`, 80 in `BePeppolCommerce.Api.Tests`). If a download fails (Maven Central sometimes rate-limits with HTTP 429), or a file fails its
 SHA-256 check (the file is then deleted), wait a minute and run `dotnet test` again.
 
 ## Run the API host
@@ -175,7 +175,8 @@ Received documents are parsed with DTDs prohibited and a cap of 10 million chara
 
 ## Failures and logging
 
-Every failed send or receive is recorded in two places. Neither contains the invoice XML or a
+Every failed send or receive is recorded in two places (outbound, after the source's `MarkFailedAsync`;
+if that call throws, the exception escapes and neither record is written). Neither contains the invoice XML or a
 credential, though details can quote short fragments: an XML parser message names elements, and an
 unexpected exception's message is recorded as is.
 

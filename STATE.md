@@ -1,30 +1,27 @@
 # State
-Day: 034
+Day: 035
 Idea: be-peppol-commerce
 Phase: 3 Build
-Slice: 8 of 11, complete (next: 9)
-Next action: Slice 9 (error handling and observability) in `ideas/be-peppol-commerce/PLAN.md`.
+Slice: 9 of 11, complete (next: 10, the last slice)
+Next action: Slice 10 (polish and walkthrough) in `ideas/be-peppol-commerce/PLAN.md`.
 Install the .NET 8 SDK (`RUNBOOK.md` "Build environment"). If `dotnet test` fails with a Maven 429,
 fetch the two jars with curl into `src/BePeppolCommerce.Core/obj/jars/` (RUNBOOK.md). Then run
-`dotnet test` in `ideas/be-peppol-commerce/app` (227 should pass). Build: (1) an
-`IFailedDocumentLog` in `Core/Integration` with an in-memory implementation that records every
-outbound failure (`OutboundDispatcher`: validation failed, send failed retryable/permanent,
-unexpected exception) and every inbound failure (`Api/InboundWebhook.cs`: fetch failed, parse
-failed) with time, direction, document/invoice id, reason and details, never the XML body or any
-credential; (2) structured `ILogger` events with stable EventIds for each of those paths
-(`OutboundDispatcher` takes an optional `ILogger`; today it logs nothing); (3) tests that assert each
-failure path both logs and records. Also address day-033 review finding 2: Recommand returns 422 when
-the recipient is unreachable, which the dispatcher labels a permanent "Rejected by Access Point";
-decide (and record in `DECISIONS.md`) whether to make that classification provider-aware. Optional,
-only if time remains: Recommand signed webhook verification (HMAC-SHA256 `X-Signature`, see PLAN.md
-Slice 9 note); otherwise it is a stated v1 gap for `HANDOFF.md`.
-Read first: OWNER.md, RUNBOOK.md, ideas/be-peppol-commerce/PLAN.md (Slices 8 to 10),
+`dotnet test` in `ideas/be-peppol-commerce/app` (264 should pass). Build a documented end-to-end
+sample that runs entirely against fakes: e.g. a `samples/Walkthrough` console project (or a
+`--walkthrough` switch) that loads `tests/BePeppolCommerce.Core.Tests/Fixtures/sample-order.json`,
+queues it in `InMemoryOrderInvoiceSource`, runs `OutboundDispatcher` with a fake
+`IPeppolAccessPointClient` and an `InMemoryFailedDocumentLog`, prints the generated XML's validation
+result and submission id, then feeds the same XML through the inbound path (fake `GetInboundAsync` +
+`InboundInvoiceParser`) and prints the parsed invoice; also show one failure (an order with
+`BuyerReference` null) landing in the failed-document log. Add one test that runs the walkthrough.
+Document it in `app/README.md` as a one-command step, and walk the README literally from a clean
+clone, fixing any drift. After Slice 10, Phase 4 Review.
+Read first: OWNER.md, RUNBOOK.md, ideas/be-peppol-commerce/PLAN.md (Slices 9 and 10, done criteria),
 ideas/be-peppol-commerce/app/README.md,
 ideas/be-peppol-commerce/app/src/BePeppolCommerce.Core/Integration/OutboundDispatcher.cs,
-ideas/be-peppol-commerce/app/src/BePeppolCommerce.Core/Integration/IOrderInvoiceSource.cs,
-ideas/be-peppol-commerce/app/src/BePeppolCommerce.Core/Outbound/OutboundInvoiceSender.cs,
-ideas/be-peppol-commerce/app/src/BePeppolCommerce.Api/InboundWebhook.cs,
-ideas/be-peppol-commerce/app/docs/CONFIGURED_COMMERCE_CONTRACT.md (error contract rows)
+ideas/be-peppol-commerce/app/src/BePeppolCommerce.Core/Integration/InMemoryFakes.cs,
+ideas/be-peppol-commerce/app/src/BePeppolCommerce.Core/Integration/FailedDocumentLog.cs,
+ideas/be-peppol-commerce/app/tests/BePeppolCommerce.Core.Tests/FailureRecordingTests.cs (fakes to reuse)
 Notes for owner:
 - (Owner) Licensing of the Peppol rules (day 028). OpenPEPPOL's BIS guide
   (`guide/bis/introduction.adoc` in peppol-bis-invoice-3) says OpenPeppol AISBL holds the copyright,
@@ -79,6 +76,11 @@ Notes for owner:
   Recommand as provider a retried send can deliver an invoice twice. Storecove remains the safer
   default for the dispatcher. If you talk to Recommand, asking whether a send idempotency key is
   planned would settle it.
+- (Owner) Day 035, v1 gaps for HANDOFF.md: (1) Recommand's real webhook delivery is not parsed (the
+  signature is verified, the event envelope and `eventType` are not), so do not register the endpoint
+  as a Recommand webhook yet; (2) no retry cap: a Recommand 422 with category `transport` is retried
+  on every run, and Recommand's send has no idempotency key, so a delivery that in fact succeeded
+  could be repeated. A cap needs an attempt count in the host's `IOrderInvoiceSource`.
 Tournament round: 1 (won)
 Kills before 2026-09-23 rewrite: 14
-Last session: 2026-10-06, ended clean
+Last session: 2026-10-07, ended clean

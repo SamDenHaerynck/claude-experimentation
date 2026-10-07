@@ -172,13 +172,17 @@ public sealed class OutboundDispatcher
     /// carrying <c>deliveryFailure.category</c> decides: "transport" (Recommand's default when the
     /// receiving side gives no reason) is retryable; "recipient_not_found" and "document_not_supported"
     /// are permanent with reason "Recipient not reachable on Peppol", so nobody edits a correct order to
-    /// fix them; any other or missing category is the generic permanent rejection.
+    /// fix them; "duplicate" is permanent with its own reason, because the invoice may already have been
+    /// delivered; any other or missing category is the generic permanent rejection.
     /// </summary>
     private static DispatchFailure RecommandDeliveryFailure(IReadOnlyList<AccessPointError> errors, string[] details) =>
         errors.FirstOrDefault(e => e.Source == RecommandClient.DeliveryFailureSource)?.Details switch
         {
             "transport" => new DispatchFailure("Peppol delivery failed, retry later", true, details),
             "recipient_not_found" or "document_not_supported" => new DispatchFailure("Recipient not reachable on Peppol", false, details),
+            // Recommand saw this document before: it may already have been delivered, so a person checks there
+            // before anything is queued again.
+            "duplicate" => new DispatchFailure("Possible duplicate, check at Access Point before resending", false, details),
             _ => new DispatchFailure("Rejected by Access Point", false, details),
         };
 

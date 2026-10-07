@@ -132,6 +132,7 @@ public class FailureRecordingTests
     [InlineData("document_not_supported", "Recipient not reachable on Peppol", false)]
     [InlineData("validation", "Rejected by Access Point", false)]
     [InlineData("recipient_rejected", "Rejected by Access Point", false)]
+    [InlineData("duplicate", "Possible duplicate, check at Access Point before resending", false)]
     [InlineData(null, "Rejected by Access Point", false)]
     public async Task Recommand_422_is_classified_by_its_delivery_failure_category(string? category, string reason, bool retryable)
     {

@@ -276,7 +276,7 @@ Each slice leaves `dotnet test` (and, from Slice 5 on, `dotnet run` for the API 
    envelope is still not parsed: the event projections (`lib/event-types.ts`) carry `eventType` and
    `documentId`, but the envelope around them is built in a `@core` package that is not in that repo,
    and the handler does not filter on `eventType`; so the endpoint must not be registered as a real
-   Recommand webhook yet (README says so). Stated v1 gap. 36 new tests, 263 total.)*
+   Recommand webhook yet (README says so). Stated v1 gaps: that, and no retry cap, so a Recommand `transport` 422 is resent on every run with no idempotency key (round-2 review finding 1, for HANDOFF.md). 37 new tests, 264 total.)*
 10. **Polish and walkthrough.** A documented end-to-end sample (script or `dotnet run` command) that
     generates, validates, and mock-sends one sample invoice, then mock-receives one inbound
     document, entirely against fakes — runnable by a stranger in under five minutes per

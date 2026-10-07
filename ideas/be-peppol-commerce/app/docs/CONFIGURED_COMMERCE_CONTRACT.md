@@ -120,7 +120,7 @@ public static DispatchFailure ToFailure(OutboundResult result, string? provider 
   also answers 404 for an unknown receiver (which would be an order problem) is unverified. A failed
   send with a 2xx status → permanent (`"Accepted by Access Point, response unreadable"`): the
   provider took the invoice, so a person must check it there; re-queuing it with a new key could
-  deliver it twice. With Recommand as provider, a 422 is classified by `deliveryFailure.category`: `transport` → retryable (`"Peppol delivery failed, retry later"`; with no idempotency key at Recommand, a retry after a transport failure that in fact delivered could deliver twice); `recipient_not_found` or `document_not_supported` → permanent (`"Recipient not reachable on Peppol"`); anything else → permanent (`"Rejected by Access Point"`). Any other 4xx →
+  deliver it twice. With Recommand as provider, a 422 is classified by `deliveryFailure.category`: `transport` → retryable (`"Peppol delivery failed, retry later"`; with no idempotency key at Recommand, a retry after a transport failure that in fact delivered could deliver twice); `recipient_not_found` or `document_not_supported` → permanent (`"Recipient not reachable on Peppol"`); `duplicate` → permanent (`"Possible duplicate, check at Access Point before resending"`), because it may already have been delivered; anything else → permanent (`"Rejected by Access Point"`). Any other 4xx →
   permanent (`"Rejected by Access Point"`), including 409; whether a provider answers a reused idempotency key with 409 (which would mean the
   invoice was in fact delivered) is unverified.
 - A permanent failure caused by the invoice is recorded and the run continues with the next invoice.
