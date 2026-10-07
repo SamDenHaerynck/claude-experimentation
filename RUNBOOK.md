@@ -10,6 +10,8 @@ not read at session start). OWNER.md wins on conflicts.
 - wip: commit or dirty tree: finish if it clearly fits, else revert and re-plan smaller.
 - Review has high findings or can't run: don't merge, leave PR open, note for owner.
 - Past minute 50: stop, commit wip:, record next step.
+- Review brief: paste the "Self-correction limits" text itself into the Agent prompt. Prompts are not
+  shells, so `$(cat file)` arrives literally (day 035). Re-read the prompt before sending.
 
 ## Research
 - Blocked (one attempt max): Reddit, G2, Upwork, eng-tips, Mike Holt, ElectricianTalk,
