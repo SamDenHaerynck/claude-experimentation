@@ -1,5 +1,7 @@
 using BePeppolCommerce.Core.AccessPoint;
 using BePeppolCommerce.Core.Outbound;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace BePeppolCommerce.Core.Integration;
 
@@ -46,13 +48,25 @@ public sealed class OutboundDispatcher
     private readonly IOrderInvoiceSource _source;
     private readonly IAccessPointSettingsProvider _settings;
     private readonly Func<AccessPointSettings, IPeppolAccessPointClient> _clientFactory;
+    private readonly IFailedDocumentLog? _failures;
+    private readonly ILogger _logger;
+    private readonly TimeProvider _time;
 
+    /// <summary>
+    /// Every failure is marked on the source, written to <paramref name="failures"/> when given, and logged
+    /// to <paramref name="logger"/> with a <see cref="PeppolLogEvents"/> id. Neither carries the UBL XML or
+    /// a credential.
+    /// </summary>
     public OutboundDispatcher(IOrderInvoiceSource source, IAccessPointSettingsProvider settings,
-        Func<AccessPointSettings, IPeppolAccessPointClient> clientFactory)
+        Func<AccessPointSettings, IPeppolAccessPointClient> clientFactory,
+        IFailedDocumentLog? failures = null, ILogger<OutboundDispatcher>? logger = null, TimeProvider? time = null)
     {
         _source = source ?? throw new ArgumentNullException(nameof(source));
         _settings = settings ?? throw new ArgumentNullException(nameof(settings));
         _clientFactory = clientFactory ?? throw new ArgumentNullException(nameof(clientFactory));
+        _failures = failures;
+        _logger = (ILogger?)logger ?? NullLogger.Instance;
+        _time = time ?? TimeProvider.System;
     }
 
     /// <summary>
@@ -85,8 +99,8 @@ public sealed class OutboundDispatcher
             catch (OperationCanceledException) when (!cancellationToken.IsCancellationRequested)
             {
                 // Not the caller's cancellation: a client-side timeout. Same as an unreachable provider.
-                await _source.MarkFailedAsync(item.SourceId,
-                    new DispatchFailure("Access Point unavailable", true, ["Timed out."]), CancellationToken.None);
+                await FailAsync(item, new DispatchFailure("Access Point unavailable", true, ["Timed out."]),
+                    PeppolLogEvents.OutboundSendFailedRetryable);
                 retryable++;
                 break;
             }
@@ -95,8 +109,8 @@ public sealed class OutboundDispatcher
                 // A bug, bad data the builder did not anticipate, or a broken environment (for example a
                 // disposed HttpClient). Kept queued as retryable, behind newer invoices, and the run stops, so
                 // a lasting environment fault does not park the queue one invoice per run.
-                await _source.MarkFailedAsync(item.SourceId,
-                    new DispatchFailure("Unexpected error", true, [$"{ex.GetType().Name}: {ex.Message}"]), CancellationToken.None);
+                await FailAsync(item, new DispatchFailure("Unexpected error", true, [$"{ex.GetType().Name}: {ex.Message}"]),
+                    PeppolLogEvents.OutboundUnexpectedError, ex);
                 retryable++;
                 break;
             }
@@ -107,12 +121,17 @@ public sealed class OutboundDispatcher
                 // the call fails anyway, the invoice stays queued and is sent again next run; only the
                 // idempotency key prevents a duplicate (unverified for Storecove).
                 await _source.MarkSentAsync(item.SourceId, result.SubmissionId!, CancellationToken.None);
+                _logger.LogInformation(PeppolLogEvents.OutboundSent, "Outbound invoice {SourceId} sent as {SubmissionId}.",
+                    item.SourceId, result.SubmissionId);
                 sent++;
                 continue;
             }
 
-            var failure = ToFailure(result);
-            await _source.MarkFailedAsync(item.SourceId, failure, CancellationToken.None);
+            var failure = ToFailure(result, settings.Provider);
+            await FailAsync(item, failure,
+                result.Status == OutboundStatus.ValidationFailed ? PeppolLogEvents.OutboundValidationFailed
+                : failure.Retryable ? PeppolLogEvents.OutboundSendFailedRetryable
+                : PeppolLogEvents.OutboundSendFailedPermanent);
             if (!failure.Retryable)
             {
                 permanent++;
@@ -126,6 +145,19 @@ public sealed class OutboundDispatcher
         return new DispatchSummary(true, sent, retryable, permanent);
     }
 
+    // Marks the source first (the queue state matters most), then the failure log, then the log event.
+    // Runs with CancellationToken.None: the attempt has happened and must be recorded.
+    private async Task FailAsync(PendingInvoice item, DispatchFailure failure, EventId eventId, Exception? exception = null)
+    {
+        await _source.MarkFailedAsync(item.SourceId, failure, CancellationToken.None);
+        await PeppolLogEvents.TryRecordAsync(_failures,
+            new FailedDocument(_time.GetUtcNow(), DocumentDirection.Outbound, item.SourceId, failure.Reason, failure.Retryable, failure.Details),
+            _logger, CancellationToken.None);
+        _logger.Log(failure.Retryable && eventId != PeppolLogEvents.OutboundUnexpectedError ? LogLevel.Warning : LogLevel.Error,
+            eventId, exception, "Outbound invoice {SourceId} failed: {Reason} (retryable: {Retryable}). {Details}",
+            item.SourceId, failure.Reason, failure.Retryable, string.Join("; ", failure.Details));
+    }
+
     /// <summary>
     /// Validation failures and provider rejections of the document (4xx other than 401, 403, 404, 408
     /// and 429) need a change to the order, so they are permanent. No HTTP status (transport error),
@@ -136,8 +168,25 @@ public sealed class OutboundDispatcher
     /// be read: permanent, with its own reason, because re-queuing it with a new key could deliver it twice.
     /// A 409 is treated as a rejection; whether a provider answers a reused idempotency key with 409
     /// (meaning the invoice was in fact delivered) is unverified.
+    /// With <paramref name="provider"/> "recommand", a 422 means the Peppol send failed, and the error
+    /// carrying <c>deliveryFailure.category</c> decides: "transport" (Recommand's default when the
+    /// receiving side gives no reason) is retryable; "recipient_not_found" and "document_not_supported"
+    /// are permanent with reason "Recipient not reachable on Peppol", so nobody edits a correct order to
+    /// fix them; "duplicate" is permanent with its own reason, because the invoice may already have been
+    /// delivered; any other or missing category is the generic permanent rejection.
     /// </summary>
-    public static DispatchFailure ToFailure(OutboundResult result)
+    private static DispatchFailure RecommandDeliveryFailure(IReadOnlyList<AccessPointError> errors, string[] details) =>
+        errors.FirstOrDefault(e => e.Source == RecommandClient.DeliveryFailureSource)?.Details switch
+        {
+            "transport" => new DispatchFailure("Peppol delivery failed, retry later", true, details),
+            "recipient_not_found" or "document_not_supported" => new DispatchFailure("Recipient not reachable on Peppol", false, details),
+            // Recommand saw this document before: it may already have been delivered, so a person checks there
+            // before anything is queued again.
+            "duplicate" => new DispatchFailure("Possible duplicate, check at Access Point before resending", false, details),
+            _ => new DispatchFailure("Rejected by Access Point", false, details),
+        };
+
+    public static DispatchFailure ToFailure(OutboundResult result, string? provider = null)
     {
         ArgumentNullException.ThrowIfNull(result);
         if (result.Status == OutboundStatus.ValidationFailed)
@@ -149,6 +198,8 @@ public sealed class OutboundDispatcher
         return send.HttpStatus switch
         {
             >= 200 and < 300 => new DispatchFailure("Accepted by Access Point, response unreadable", false, details),
+            422 when string.Equals(provider, "recommand", StringComparison.OrdinalIgnoreCase)
+                => RecommandDeliveryFailure(send.Errors, details),
             401 or 403 or 404 => new DispatchFailure("Access Point configuration error", true, details),
             null or 408 or 429 or >= 500 => new DispatchFailure("Access Point unavailable", true, details),
             _ => new DispatchFailure("Rejected by Access Point", false, details),
