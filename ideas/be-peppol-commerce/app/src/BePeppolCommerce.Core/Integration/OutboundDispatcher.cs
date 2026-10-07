@@ -168,10 +168,20 @@ public sealed class OutboundDispatcher
     /// be read: permanent, with its own reason, because re-queuing it with a new key could deliver it twice.
     /// A 409 is treated as a rejection; whether a provider answers a reused idempotency key with 409
     /// (meaning the invoice was in fact delivered) is unverified.
-    /// With <paramref name="provider"/> "recommand", a 422 means the recipient could not be reached over
-    /// Peppol (Recommand's OpenAPI spec): still permanent, because retrying the same invoice does not change
-    /// the receiver's registration, but with its own reason so nobody edits a correct order to fix it.
+    /// With <paramref name="provider"/> "recommand", a 422 means the Peppol send failed, and the error
+    /// carrying <c>deliveryFailure.category</c> decides: "transport" (Recommand's default when the
+    /// receiving side gives no reason) is retryable; "recipient_not_found" and "document_not_supported"
+    /// are permanent with reason "Recipient not reachable on Peppol", so nobody edits a correct order to
+    /// fix them; any other or missing category is the generic permanent rejection.
     /// </summary>
+    private static DispatchFailure RecommandDeliveryFailure(IReadOnlyList<AccessPointError> errors, string[] details) =>
+        errors.FirstOrDefault(e => e.Source == RecommandClient.DeliveryFailureSource)?.Details switch
+        {
+            "transport" => new DispatchFailure("Peppol delivery failed, retry later", true, details),
+            "recipient_not_found" or "document_not_supported" => new DispatchFailure("Recipient not reachable on Peppol", false, details),
+            _ => new DispatchFailure("Rejected by Access Point", false, details),
+        };
+
     public static DispatchFailure ToFailure(OutboundResult result, string? provider = null)
     {
         ArgumentNullException.ThrowIfNull(result);
@@ -185,7 +195,7 @@ public sealed class OutboundDispatcher
         {
             >= 200 and < 300 => new DispatchFailure("Accepted by Access Point, response unreadable", false, details),
             422 when string.Equals(provider, "recommand", StringComparison.OrdinalIgnoreCase)
-                => new DispatchFailure("Recipient not reachable on Peppol", false, details),
+                => RecommandDeliveryFailure(send.Errors, details),
             401 or 403 or 404 => new DispatchFailure("Access Point configuration error", true, details),
             null or 408 or 429 or >= 500 => new DispatchFailure("Access Point unavailable", true, details),
             _ => new DispatchFailure("Rejected by Access Point", false, details),

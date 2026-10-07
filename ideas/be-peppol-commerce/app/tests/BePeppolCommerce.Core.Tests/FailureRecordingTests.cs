@@ -126,16 +126,49 @@ public class FailureRecordingTests
         Assert.Same(boom, logger.Entries.Single().Exception);
     }
 
-    [Fact]
-    public async Task Recommand_422_is_a_permanent_recipient_failure_not_a_rejection_of_the_order()
+    [Theory]
+    [InlineData("transport", "Peppol delivery failed, retry later", true)]
+    [InlineData("recipient_not_found", "Recipient not reachable on Peppol", false)]
+    [InlineData("document_not_supported", "Recipient not reachable on Peppol", false)]
+    [InlineData("validation", "Rejected by Access Point", false)]
+    [InlineData("recipient_rejected", "Rejected by Access Point", false)]
+    [InlineData(null, "Rejected by Access Point", false)]
+    public async Task Recommand_422_is_classified_by_its_delivery_failure_category(string? category, string reason, bool retryable)
     {
-        var reply = AccessPointResult<string>.Fail(422, new AccessPointError("provider", "recipient: not found"));
+        AccessPointError[] errors = category is null
+            ? [new("root", "Failed to send document over Peppol network.")]
+            : [new("root", "Failed to send document over Peppol network."), new(RecommandClient.DeliveryFailureSource, category)];
+        var reply = AccessPointResult<string>.Fail(422, errors);
         var (source, failures, logger) = await Run(new Client(reply), provider: "recommand");
-        AssertRecordedAndLogged(source, failures, logger, PeppolLogEvents.OutboundSendFailedPermanent, "Recipient not reachable on Peppol", false, LogLevel.Error);
+        AssertRecordedAndLogged(source, failures, logger,
+            retryable ? PeppolLogEvents.OutboundSendFailedRetryable : PeppolLogEvents.OutboundSendFailedPermanent,
+            reason, retryable, retryable ? LogLevel.Warning : LogLevel.Error);
 
         // Other providers keep the generic classification: Storecove's 422 meaning is not documented.
         var (storecove, _, _) = await Run(new Client(reply), provider: "storecove");
         Assert.Equal("Rejected by Access Point", storecove.Failed["ORD-1"].Reason);
+    }
+
+    private sealed class TimingOutLog : IFailedDocumentLog
+    {
+        public Task RecordAsync(FailedDocument failure, CancellationToken cancellationToken = default) =>
+            throw new TaskCanceledException("database timeout");
+    }
+
+    [Fact]
+    public async Task A_failure_log_that_times_out_does_not_stop_the_run()
+    {
+        var source = new InMemoryOrderInvoiceSource();
+        source.Enqueue("ORD-1", LoadSample() with { BuyerReference = null });
+        source.Enqueue("ORD-2", LoadSample() with { InvoiceNumber = "INV-2" });
+        var logger = new CapturingLogger<OutboundDispatcher>();
+        var dispatcher = new OutboundDispatcher(source, new InMemoryAccessPointSettingsProvider(new AccessPointSettings("storecove", ApiKey, "42")),
+            _ => new Client(), new TimingOutLog(), logger, new FixedTime());
+
+        var summary = await dispatcher.RunOnceAsync();
+
+        Assert.Equal(new DispatchSummary(true, 1, 0, 1), summary);
+        Assert.Contains(logger.Entries, e => e.EventId == PeppolLogEvents.FailureRecordFailed);
     }
 
     [Fact]

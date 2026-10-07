@@ -280,4 +280,15 @@ public class InboundWebhookTests
 
         Assert.Equal(expected, response.StatusCode);
     }
+
+    [Fact]
+    public async Task Webhook_InDevelopmentWithSigningSecret_StillRequiresASignature()
+    {
+        var fake = Returning(SampleInvoiceXml());
+
+        var response = await Client(fake, signingSecret: SigningSecret).PostAsync(InboundWebhook.Route, Json($$"""{ "guid": "{{DocumentGuid}}" }"""));
+
+        Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+        Assert.Empty(fake.Fetched);
+    }
 }

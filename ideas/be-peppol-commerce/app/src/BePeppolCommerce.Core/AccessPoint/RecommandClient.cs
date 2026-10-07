@@ -157,9 +157,13 @@ public sealed partial class RecommandClient : IPeppolAccessPointClient
         try
         {
             var body = JsonSerializer.Deserialize<ErrorBody>(text, Json);
-            var errors = body?.Errors?
+            var errors = (body?.Errors?
                 .SelectMany(kv => (kv.Value ?? []).Select(m => new AccessPointError(kv.Key, m ?? "")))
-                .ToArray();
+                .ToArray()) ?? [];
+            // A failed Peppol send (422) also carries deliveryFailure.category next to the errors
+            // (utils/pipelines/sending in the Recommand repo); the dispatcher classifies on it.
+            if (body?.DeliveryFailure?.Category is { Length: > 0 } category)
+                errors = [.. errors, new AccessPointError(DeliveryFailureSource, category)];
             if (errors is { Length: > 0 }) return errors;
         }
         catch (JsonException) { }
@@ -172,5 +176,10 @@ public sealed partial class RecommandClient : IPeppolAccessPointClient
 
     private sealed record RecommandDocument(string? Id, string? CompanyId, string? Direction, string? Xml);
 
-    private sealed record ErrorBody(bool? Success, Dictionary<string, string?[]?>? Errors);
+    private sealed record ErrorBody(bool? Success, Dictionary<string, string?[]?>? Errors, DeliveryFailureBody? DeliveryFailure);
+
+    private sealed record DeliveryFailureBody(string? Channel, string? Category);
+
+    /// <summary><see cref="AccessPointError.Source"/> of the error that carries Recommand's <c>deliveryFailure.category</c>.</summary>
+    public const string DeliveryFailureSource = "deliveryFailure";
 }

@@ -109,8 +109,9 @@ public static partial class InboundWebhook
         if (!fetched.Success)
         {
             var details = fetched.Errors.Select(e => $"{e.Source}: {e.Details}").ToArray();
-            // Same rule as the outbound dispatcher: no status, 408, 429 and 5xx may pass on a later delivery.
-            var retryable = fetched.HttpStatus is null or 408 or 429 or >= 500;
+            // Same rule as the outbound dispatcher: no status, 408, 429 and 5xx (provider unavailable) and
+            // 401, 403, 404 (our key or account id) may succeed later without a change to the document.
+            var retryable = fetched.HttpStatus is null or 401 or 403 or 404 or 408 or 429 or >= 500;
             log.LogWarning(PeppolLogEvents.InboundFetchFailed, "Fetching inbound document {DocumentId} failed (HTTP {Status}, retryable: {Retryable}): {Errors}",
                 documentId, fetched.HttpStatus, retryable, string.Join("; ", details));
             await PeppolLogEvents.TryRecordAsync(failures,

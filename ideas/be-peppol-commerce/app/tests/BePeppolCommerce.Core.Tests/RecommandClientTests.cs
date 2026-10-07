@@ -83,6 +83,21 @@ public class RecommandClientTests
             result.Errors);
     }
 
+    [Fact]
+    public async Task Send_PeppolDeliveryFailure_KeepsTheCategory()
+    {
+        // Shape from utils/pipelines/sending/index.ts in the Recommand repo: errors plus deliveryFailure.
+        var (client, _) = Create(_ => Json(HttpStatusCode.UnprocessableEntity,
+            """{"success":false,"errors":{"root":["Failed to send document over Peppol network."]},"deliveryFailure":{"channel":"peppol","category":"transport"}}"""));
+
+        var result = await client.SendAsync(new OutboundDocument(Xml, Buyer));
+
+        Assert.Equal(422, result.HttpStatus);
+        Assert.Equal(
+            [new("root", "Failed to send document over Peppol network."), new(RecommandClient.DeliveryFailureSource, "transport")],
+            result.Errors);
+    }
+
     [Theory]
     [InlineData(HttpStatusCode.UnprocessableEntity, "")]
     [InlineData(HttpStatusCode.Unauthorized, "not json")]

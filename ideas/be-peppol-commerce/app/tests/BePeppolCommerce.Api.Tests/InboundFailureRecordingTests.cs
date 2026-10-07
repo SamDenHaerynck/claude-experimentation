@@ -72,8 +72,10 @@ public class InboundFailureRecordingTests
     [Theory]
     [InlineData(503, true)]
     [InlineData(null, true)]
-    [InlineData(401, false)]
-    [InlineData(404, false)]
+    [InlineData(401, true)]
+    [InlineData(404, true)]
+    [InlineData(400, false)]
+    [InlineData(200, false)]
     public async Task Fetch_failure_is_recorded_and_logged(int? status, bool retryable)
     {
         var (code, failures, events) = await Post(
@@ -103,7 +105,7 @@ public class InboundFailureRecordingTests
         var entry = Assert.Single(events);
         Assert.Equal(PeppolLogEvents.InboundParseFailed, entry.EventId);
         foreach (var text in record.Details.Append(entry.Message))
-            Assert.DoesNotContain(xml, text);
+            Assert.DoesNotContain("<", text);
     }
 
     [Theory]

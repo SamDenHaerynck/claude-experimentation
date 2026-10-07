@@ -109,8 +109,8 @@ From this directory (`ideas/be-peppol-commerce/app`):
 dotnet test
 ```
 
-The first run takes about a minute (restore, jar download, IKVM compiling the jars). All 253 tests
-should pass (167 in `BePeppolCommerce.Core.Tests`, 60 in `BePeppolCommerce.Api.Tests`). If a download fails (Maven Central sometimes rate-limits with HTTP 429), or a file fails its
+The first run takes about a minute (restore, jar download, IKVM compiling the jars). All 263 tests
+should pass (183 in `BePeppolCommerce.Core.Tests`, 80 in `BePeppolCommerce.Api.Tests`). If a download fails (Maven Central sometimes rate-limits with HTTP 429), or a file fails its
 SHA-256 check (the file is then deleted), wait a minute and run `dotnet test` again.
 
 ## Run the API host
@@ -151,7 +151,11 @@ The other provider's section is not checked.
   header (HMAC-SHA256 of the raw body under this secret, the format Recommand documents for signed
   deliveries) is accepted without `X-Webhook-Secret`. Either secret satisfies the 503 rule outside
   Development. Recommand's real delivery body (its event envelope) is still not parsed: the body must
-  carry a document id as below.
+  carry a document id as below. **Do not register this endpoint as a real Recommand webhook yet.**
+  Recommand sends every team event (sent, delivery status, labels, received) to one URL and the
+  handler does not filter on `eventType`, so non-received events would be rejected or fetched and
+  fail. There is no replay protection: a captured signed request can be resent (Recommand documents
+  no timestamp header).
 
 This host has never been connected to a real Storecove or Recommand account. Example call:
 
@@ -171,8 +175,9 @@ Received documents are parsed with DTDs prohibited and a cap of 10 million chara
 
 ## Failures and logging
 
-Every failed send or receive is recorded in two places, neither of which contains the invoice XML or
-a credential:
+Every failed send or receive is recorded in two places. Neither contains the invoice XML or a
+credential, though details can quote short fragments: an XML parser message names elements, and an
+unexpected exception's message is recorded as is.
 
 - An `IFailedDocumentLog` (`Core/Integration/FailedDocumentLog.cs`): time, direction, document id
   (the host's source id outbound, the Access Point's id inbound), reason, retryable, details. The
@@ -186,8 +191,8 @@ a credential:
 | --- | --- | --- | --- |
 | 1000 | OutboundSent | Information | the Access Point accepted an invoice |
 | 1001 | OutboundValidationFailed | Error | the invoice failed Peppol validation and was not sent |
-| 1002 | OutboundSendFailedRetryable | Warning | provider down, timeout, 401/403/404, 408, 429, 5xx |
-| 1003 | OutboundSendFailedPermanent | Error | provider rejected the invoice (or Recommand 422: recipient not reachable on Peppol) |
+| 1002 | OutboundSendFailedRetryable | Warning | provider down, timeout, 401/403/404, 408, 429, 5xx, Recommand 422 with category `transport` |
+| 1003 | OutboundSendFailedPermanent | Error | provider rejected the invoice; a Recommand 422 with category `recipient_not_found` or `document_not_supported` has reason "Recipient not reachable on Peppol" |
 | 1004 | OutboundUnexpectedError | Error | an exception from the send path; logged with the exception |
 | 2001 | InboundFetchFailed | Warning | fetching a received document from the Access Point failed |
 | 2002 | InboundParseFailed | Warning | the fetched document is not a parseable UBL Invoice |

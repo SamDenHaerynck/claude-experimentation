@@ -71,7 +71,8 @@ public static class PeppolLogEvents
 
     /// <summary>
     /// Writes <paramref name="failure"/> to <paramref name="log"/> (if any). An exception from the log is
-    /// logged as <see cref="FailureRecordFailed"/> and swallowed; cancellation still escapes.
+    /// logged as <see cref="FailureRecordFailed"/> and swallowed; only cancellation of
+    /// <paramref name="cancellationToken"/> escapes.
     /// </summary>
     public static async Task TryRecordAsync(IFailedDocumentLog? log, FailedDocument failure, ILogger logger, CancellationToken cancellationToken)
     {
@@ -80,7 +81,9 @@ public static class PeppolLogEvents
         {
             await log.RecordAsync(failure, cancellationToken);
         }
-        catch (Exception ex) when (ex is not OperationCanceledException)
+        // A cancellation exception is only the caller's when its own token was cancelled; anything else
+        // (for example a database timeout inside the log) is a broken log like any other.
+        catch (Exception ex) when (ex is not OperationCanceledException || !cancellationToken.IsCancellationRequested)
         {
             logger.LogError(FailureRecordFailed, ex, "Could not record the failure of {Direction} document {DocumentId} ({Reason}).",
                 failure.Direction, failure.DocumentId, failure.Reason);

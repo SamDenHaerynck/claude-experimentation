@@ -269,11 +269,14 @@ Each slice leaves `dotnet test` (and, from Slice 5 on, `dotnet run` for the API 
    `IFailedDocumentLog`, `ILogger<OutboundDispatcher>` and `TimeProvider`; each failure path marks the
    source, records and logs, never with XML or credentials. The webhook records fetch and parse
    failures and logs (but does not record) rejected bodies and failed authentication. Recommand 422 is
-   now a permanent `"Recipient not reachable on Peppol"` (DECISIONS.md). Optional part done:
+   classified by its `deliveryFailure.category` (transport retryable; recipient_not_found and
+   document_not_supported permanent "Recipient not reachable on Peppol"; DECISIONS.md). Optional part done:
    `Webhook:SigningSecret` verifies Recommand's `X-Signature: sha256=<hex>` (HMAC-SHA256 of the raw
    body; format from api/webhooks/shared.ts in the Recommand repo, commit ccfff38). Recommand's event
-   envelope is still not parsed: it is built in a `@core` package that is not in that repo, so the
-   document id's location in a real delivery is unknown; stated v1 gap. 26 new tests, 253 total.)*
+   envelope is still not parsed: the event projections (`lib/event-types.ts`) carry `eventType` and
+   `documentId`, but the envelope around them is built in a `@core` package that is not in that repo,
+   and the handler does not filter on `eventType`; so the endpoint must not be registered as a real
+   Recommand webhook yet (README says so). Stated v1 gap. 36 new tests, 263 total.)*
 10. **Polish and walkthrough.** A documented end-to-end sample (script or `dotnet run` command) that
     generates, validates, and mock-sends one sample invoice, then mock-receives one inbound
     document, entirely against fakes — runnable by a stranger in under five minutes per
