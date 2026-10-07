@@ -109,7 +109,7 @@ From this directory (`ideas/be-peppol-commerce/app`):
 dotnet test
 ```
 
-The first run takes about a minute (restore, jar download, IKVM compiling the jars). All 227 tests
+The first run takes about a minute (restore, jar download, IKVM compiling the jars). All 253 tests
 should pass (167 in `BePeppolCommerce.Core.Tests`, 60 in `BePeppolCommerce.Api.Tests`). If a download fails (Maven Central sometimes rate-limits with HTTP 429), or a file fails its
 SHA-256 check (the file is then deleted), wait a minute and run `dotnet test` again.
 
@@ -147,6 +147,11 @@ The other provider's section is not checked.
   invoice's parties and amounts. In Development an unset secret disables the check (a warning is
   logged at startup). This header is this project's convention; how Storecove authenticates its
   webhooks is not in its public spec, so check before relying on it.
+- `Webhook__SigningSecret` (Recommand): when set, a request with a valid `X-Signature: sha256=<hex>`
+  header (HMAC-SHA256 of the raw body under this secret, the format Recommand documents for signed
+  deliveries) is accepted without `X-Webhook-Secret`. Either secret satisfies the 503 rule outside
+  Development. Recommand's real delivery body (its event envelope) is still not parsed: the body must
+  carry a document id as below.
 
 This host has never been connected to a real Storecove or Recommand account. Example call:
 
@@ -156,13 +161,39 @@ curl -X POST http://localhost:5080/webhooks/inbound -H "Content-Type: applicatio
 ```
 
 Responses: 200 with `{ providerDocumentId, invoice }`; 400 if the body is not a JSON object whose
-`guid`/`document_guid` is a GUID string or whose `documentId` is a GUID or a Recommand-style id (with Storecove configured, a non-GUID `documentId` passes this check but the client refuses it, so the answer is 502); 401 on a wrong or missing secret (when configured); 413
+`guid`/`document_guid` is a GUID string or whose `documentId` is a GUID or a Recommand-style id (with Storecove configured, a non-GUID `documentId` passes this check but the client refuses it, so the answer is 502); 401 on a wrong or missing secret or signature (when configured); 413
 above 16 KB; 502 if the Access Point fetch failed (details are logged, not returned); 422 if the
 fetched document is not a parseable UBL Invoice (credit notes are not handled yet); 503 if no
-provider is configured, or outside Development if no secret is configured.
+provider is configured, or outside Development if neither secret is configured.
 
 Received documents are parsed with DTDs prohibited and a cap of 10 million characters
 (`PeppolValidator.MaxDocumentCharacters`, a defensive limit chosen here, not a Peppol rule).
+
+## Failures and logging
+
+Every failed send or receive is recorded in two places, neither of which contains the invoice XML or
+a credential:
+
+- An `IFailedDocumentLog` (`Core/Integration/FailedDocumentLog.cs`): time, direction, document id
+  (the host's source id outbound, the Access Point's id inbound), reason, retryable, details. The
+  API host registers `InMemoryFailedDocumentLog` (newest 1000 entries, lost on restart, not exposed
+  over HTTP); a production host should register its own durable implementation. The dispatcher takes
+  one as an optional constructor argument. If writing to it throws, that is logged as event 9001
+  and the run continues.
+- A log event with a stable `EventId` (`PeppolLogEvents`):
+
+| Id | Name | Level | When |
+| --- | --- | --- | --- |
+| 1000 | OutboundSent | Information | the Access Point accepted an invoice |
+| 1001 | OutboundValidationFailed | Error | the invoice failed Peppol validation and was not sent |
+| 1002 | OutboundSendFailedRetryable | Warning | provider down, timeout, 401/403/404, 408, 429, 5xx |
+| 1003 | OutboundSendFailedPermanent | Error | provider rejected the invoice (or Recommand 422: recipient not reachable on Peppol) |
+| 1004 | OutboundUnexpectedError | Error | an exception from the send path; logged with the exception |
+| 2001 | InboundFetchFailed | Warning | fetching a received document from the Access Point failed |
+| 2002 | InboundParseFailed | Warning | the fetched document is not a parseable UBL Invoice |
+| 2003 | InboundPayloadRejected | Warning | webhook body too large or without a usable document id (logged, not recorded) |
+| 2004 | InboundUnauthorized | Warning | wrong or missing webhook secret or signature (logged, not recorded) |
+| 9001 | FailureRecordFailed | Error | the failed-document log threw |
 
 ## Publish
 

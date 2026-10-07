@@ -43,12 +43,14 @@ public class InboundWebhookTests
     private static FakeAccessPoint Returning(string xml) =>
         new(id => AccessPointResult<InboundDocument>.Ok(new InboundDocument(id, xml), 200));
 
-    private static HttpClient Client(IPeppolAccessPointClient? accessPoint, string? secret = null, string environment = "Development")
+    private static HttpClient Client(IPeppolAccessPointClient? accessPoint, string? secret = null, string environment = "Development",
+        string? signingSecret = null)
     {
         var factory = new WebApplicationFactory<Program>().WithWebHostBuilder(b =>
         {
             b.UseEnvironment(environment);
             if (secret is not null) b.UseSetting("Webhook:Secret", secret);
+            if (signingSecret is not null) b.UseSetting("Webhook:SigningSecret", signingSecret);
             b.ConfigureTestServices(services =>
             {
                 services.RemoveAll<IPeppolAccessPointClient>();
@@ -224,5 +226,58 @@ public class InboundWebhookTests
 
         Assert.Equal(expected, response.StatusCode);
         Assert.Equal(expected == HttpStatusCode.OK ? 1 : 0, fake.Fetched.Count);
+    }
+
+    private const string SigningSecret = "signing-secret-placeholder";
+
+    private static string Sign(string body, string secret = SigningSecret) =>
+        "sha256=" + Convert.ToHexString(System.Security.Cryptography.HMACSHA256.HashData(Encoding.UTF8.GetBytes(secret), Encoding.UTF8.GetBytes(body))).ToLowerInvariant();
+
+    [Theory]
+    [InlineData("valid", HttpStatusCode.OK)]
+    [InlineData("upper", HttpStatusCode.OK)]
+    [InlineData("other-secret", HttpStatusCode.Unauthorized)]
+    [InlineData("other-body", HttpStatusCode.Unauthorized)]
+    [InlineData("no-prefix", HttpStatusCode.Unauthorized)]
+    [InlineData("not-hex", HttpStatusCode.Unauthorized)]
+    [InlineData(null, HttpStatusCode.Unauthorized)]
+    public async Task Webhook_WithSigningSecret_RequiresValidSignature(string? kind, HttpStatusCode expected)
+    {
+        var fake = Returning(SampleInvoiceXml());
+        var body = $$"""{ "guid": "{{DocumentGuid}}" }""";
+        var signature = kind switch
+        {
+            "valid" => Sign(body),
+            "upper" => "sha256=" + Sign(body)["sha256=".Length..].ToUpperInvariant(),
+            "other-secret" => Sign(body, "another-secret"),
+            "other-body" => Sign(body + " "),
+            "no-prefix" => Sign(body)["sha256=".Length..],
+            "not-hex" => "sha256=zz",
+            _ => null,
+        };
+        var request = new HttpRequestMessage(HttpMethod.Post, InboundWebhook.Route) { Content = Json(body) };
+        if (signature is not null) request.Headers.Add(InboundWebhook.SignatureHeader, signature);
+
+        var response = await Client(fake, environment: "Production", signingSecret: SigningSecret).SendAsync(request);
+
+        Assert.Equal(expected, response.StatusCode);
+        Assert.Equal(expected == HttpStatusCode.OK ? 1 : 0, fake.Fetched.Count);
+    }
+
+    [Theory]
+    [InlineData(true, false, HttpStatusCode.OK)]
+    [InlineData(false, true, HttpStatusCode.OK)]
+    [InlineData(false, false, HttpStatusCode.Unauthorized)]
+    public async Task Webhook_WithBothSecrets_AcceptsEitherMechanism(bool sendSecret, bool sendSignature, HttpStatusCode expected)
+    {
+        var fake = Returning(SampleInvoiceXml());
+        var body = $$"""{ "guid": "{{DocumentGuid}}" }""";
+        var request = new HttpRequestMessage(HttpMethod.Post, InboundWebhook.Route) { Content = Json(body) };
+        if (sendSecret) request.Headers.Add(InboundWebhook.SecretHeader, "s3cret-placeholder");
+        if (sendSignature) request.Headers.Add(InboundWebhook.SignatureHeader, Sign(body));
+
+        var response = await Client(fake, secret: "s3cret-placeholder", environment: "Production", signingSecret: SigningSecret).SendAsync(request);
+
+        Assert.Equal(expected, response.StatusCode);
     }
 }

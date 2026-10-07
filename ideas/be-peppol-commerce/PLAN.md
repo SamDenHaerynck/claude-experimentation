@@ -80,7 +80,7 @@ framework is needed for v1 — there is no UI.
 
 ## Slices
 
-Status: Slices 1 (day 026), 2a (day 027), 2b (day 028), 3 (day 029), 4 (day 030), 5 (day 031), 6 (day 032) and 7 (day 033) complete. Next: Slice 8.
+Status: Slices 1 (day 026), 2a (day 027), 2b (day 028), 3 (day 029), 4 (day 030), 5 (day 031), 6 (day 032), 7 (day 033), 8 (day 034) and 9 (day 035) complete. Next: Slice 10.
 
 Each slice leaves `dotnet test` (and, from Slice 5 on, `dotnet run` for the API host) green.
 
@@ -263,6 +263,17 @@ Each slice leaves `dotnet test` (and, from Slice 5 on, `dotnet run` for the API 
    `X-Signature` over the raw body, event envelope from https://github.com/brbxai/recommand-peppol).
    It does not get a slice of its own (day 034 decision); if not done it is a stated v1 gap in
    `HANDOFF.md`.
+   *(Done, day 035. `Core/Integration/FailedDocumentLog.cs`: `IFailedDocumentLog`, bounded
+   `InMemoryFailedDocumentLog` (registered by the API host) and `PeppolLogEvents` with stable EventIds
+   (1000-1004 outbound, 2001-2004 inbound, 9001 log failure). `OutboundDispatcher` takes optional
+   `IFailedDocumentLog`, `ILogger<OutboundDispatcher>` and `TimeProvider`; each failure path marks the
+   source, records and logs, never with XML or credentials. The webhook records fetch and parse
+   failures and logs (but does not record) rejected bodies and failed authentication. Recommand 422 is
+   now a permanent `"Recipient not reachable on Peppol"` (DECISIONS.md). Optional part done:
+   `Webhook:SigningSecret` verifies Recommand's `X-Signature: sha256=<hex>` (HMAC-SHA256 of the raw
+   body; format from api/webhooks/shared.ts in the Recommand repo, commit ccfff38). Recommand's event
+   envelope is still not parsed: it is built in a `@core` package that is not in that repo, so the
+   document id's location in a real delivery is unknown; stated v1 gap. 26 new tests, 253 total.)*
 10. **Polish and walkthrough.** A documented end-to-end sample (script or `dotnet run` command) that
     generates, validates, and mock-sends one sample invoice, then mock-receives one inbound
     document, entirely against fakes — runnable by a stranger in under five minutes per
