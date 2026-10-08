@@ -29,7 +29,16 @@ public static class Walkthrough
         }
 
         var path = orderJsonPath ?? Path.Combine(AppContext.BaseDirectory, "sample-order.json");
-        var order = OrderJson.Parse(await File.ReadAllTextAsync(path));
+        Order order;
+        try
+        {
+            order = OrderJson.Parse(await File.ReadAllTextAsync(path));
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or System.Text.Json.JsonException)
+        {
+            output.WriteLine($"  UNEXPECTED: could not load the order from {path}: {ex.Message}");
+            return 1;
+        }
         output.WriteLine($"1. Loaded order {order.InvoiceNumber} from {Path.GetFileName(path)}: {order.Seller.Name} -> {order.Buyer.Name}, {order.Lines.Count} lines.");
 
         output.WriteLine("2. Building the UBL invoice and validating it (XSD + EN16931 + Peppol BIS 3.0 rules).");

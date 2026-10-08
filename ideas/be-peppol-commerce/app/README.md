@@ -53,8 +53,8 @@ ever talked to a real Access Point or a real Optimizely Configured Commerce inst
   minimal shape**, `{ "guid": "<document id>" }` (or `document_guid`, the property name Storecove's
   spec mentions), because Storecove's public spec does not define its webhook body. For Recommand ids
   (`doc_...`), which are not GUIDs, use `{ "documentId": "<id>" }`. Recommand's real webhook
-  deliveries (an event envelope signed with an HMAC-SHA256 `X-Signature` header) are not parsed or
-  verified yet. Match the body to a real delivery before production. The parser does not run the Peppol rules on received
+  deliveries carry an HMAC-SHA256 `X-Signature` header, which is verified when `Webhook__SigningSecret`
+  is set (see below), but their event envelope is not parsed yet. Match the body to a real delivery before production. The parser does not run the Peppol rules on received
   documents; call `PeppolValidator` for that.
 - defines the contract a Configured Commerce extension would implement
   (`BePeppolCommerce.Core.Integration`, documented in `docs/CONFIGURED_COMMERCE_CONTRACT.md`):
@@ -136,8 +136,8 @@ From this directory (`ideas/be-peppol-commerce/app`):
 dotnet test
 ```
 
-The first run takes about a minute (restore, jar download, IKVM compiling the jars). All 265 tests
-should pass (185 in `BePeppolCommerce.Core.Tests`, 80 in `BePeppolCommerce.Api.Tests`). If a download fails (Maven Central sometimes rate-limits with HTTP 429), or a file fails its
+The first run takes about a minute (restore, jar download, IKVM compiling the jars). All 266 tests
+should pass (186 in `BePeppolCommerce.Core.Tests`, 80 in `BePeppolCommerce.Api.Tests`). If a download fails (Maven Central sometimes rate-limits with HTTP 429), or a file fails its
 SHA-256 check (the file is then deleted), wait a minute and run `dotnet test` again.
 
 ## Run the API host

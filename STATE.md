@@ -12,7 +12,7 @@ in the format the main session merges into a new `ideas/be-peppol-commerce/REVIE
 the main session). Fix every high in the same session if time allows. Wave two (docs: follow
 `app/README.md` literally from a clean clone) the same session if time allows, else next.
 Setup: install the .NET 8 SDK (`RUNBOOK.md` "Build environment"), then `dotnet test` in
-`ideas/be-peppol-commerce/app` (265 should pass) and
+`ideas/be-peppol-commerce/app` (266 should pass) and
 `dotnet run --project samples/BePeppolCommerce.Walkthrough` (exit 0).
 Read first: OWNER.md, RUNBOOK.md, ideas/be-peppol-commerce/PLAN.md (done criteria, Slices 9-10),
 ideas/be-peppol-commerce/app/README.md, the v1 gap notes for owner below (for HANDOFF.md later).

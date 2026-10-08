@@ -288,7 +288,7 @@ Each slice leaves `dotnet test` (and, from Slice 5 on, `dotnet run` for the API 
     the copy fails PEPPOL-EN16931-R003 and lands in `InMemoryFailedDocumentLog`), then fetches the sent
     XML back and parses it with `InboundInvoiceParser`. Exit code 0 only if every step matched.
     `WalkthroughTests` runs it under `dotnet test`. README: status line corrected (it still said
-    Slices 1-6), walkthrough section, counts, layout. 1 new test, 265 total. README walked from a
+    Slices 1-6), walkthrough section, counts, layout. 2 new tests, 266 total. README walked from a
     fresh local clone; see the day 036 log.)*
 
 Slice 2 is already split into 2a/2b for exactly this reason (11 slices total, 1 under the 12-session

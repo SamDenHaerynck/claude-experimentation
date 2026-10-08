@@ -23,4 +23,16 @@ public class WalkthroughTests
         Assert.DoesNotContain("UNEXPECTED", text);
         Assert.DoesNotContain("not-a-real-key", text);
     }
+
+    [Fact]
+    public async Task Walkthrough_reports_a_missing_order_file_instead_of_throwing()
+    {
+        var output = new StringWriter();
+
+        var exitCode = await Walkthrough.Walkthrough.RunAsync(output,
+            Path.Combine(AppContext.BaseDirectory, "Fixtures", "no-such-order.json"));
+
+        Assert.Equal(1, exitCode);
+        Assert.Contains("UNEXPECTED: could not load the order", output.ToString());
+    }
 }
