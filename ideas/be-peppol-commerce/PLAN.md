@@ -281,6 +281,15 @@ Each slice leaves `dotnet test` (and, from Slice 5 on, `dotnet run` for the API 
     generates, validates, and mock-sends one sample invoice, then mock-receives one inbound
     document, entirely against fakes — runnable by a stranger in under five minutes per
     `app/README.md`. Fix any drift between docs and code found while writing it.
+    *(Done, day 036. `app/samples/BePeppolCommerce.Walkthrough` (console project, in the solution):
+    `dotnet run --project samples/BePeppolCommerce.Walkthrough` loads the fixture order, builds and
+    validates it, queues it plus a copy with `BuyerReference` removed in `InMemoryOrderInvoiceSource`,
+    runs `OutboundDispatcher` once against an in-process `FakeAccessPoint` (sample sent as `fake-0001`;
+    the copy fails PEPPOL-EN16931-R003 and lands in `InMemoryFailedDocumentLog`), then fetches the sent
+    XML back and parses it with `InboundInvoiceParser`. Exit code 0 only if every step matched.
+    `WalkthroughTests` runs it under `dotnet test`. README: status line corrected (it still said
+    Slices 1-6), walkthrough section, counts, layout. 2 new tests, 266 total. README walked from a
+    fresh local clone; see the day 036 log.)*
 
 Slice 2 is already split into 2a/2b for exactly this reason (11 slices total, 1 under the 12-session
 cut-scope trigger). If Slice 2a's spike runs long or another slice proves to be two sessions of

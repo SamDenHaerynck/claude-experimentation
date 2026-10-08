@@ -1,27 +1,21 @@
 # State
-Day: 035
+Day: 036
 Idea: be-peppol-commerce
-Phase: 3 Build
-Slice: 9 of 11, complete (next: 10, the last slice)
-Next action: Slice 10 (polish and walkthrough) in `ideas/be-peppol-commerce/PLAN.md`.
-Install the .NET 8 SDK (`RUNBOOK.md` "Build environment"). If `dotnet test` fails with a Maven 429,
-fetch the two jars with curl into `src/BePeppolCommerce.Core/obj/jars/` (RUNBOOK.md). Then run
-`dotnet test` in `ideas/be-peppol-commerce/app` (264 should pass). Build a documented end-to-end
-sample that runs entirely against fakes: e.g. a `samples/Walkthrough` console project (or a
-`--walkthrough` switch) that loads `tests/BePeppolCommerce.Core.Tests/Fixtures/sample-order.json`,
-queues it in `InMemoryOrderInvoiceSource`, runs `OutboundDispatcher` with a fake
-`IPeppolAccessPointClient` and an `InMemoryFailedDocumentLog`, prints the generated XML's validation
-result and submission id, then feeds the same XML through the inbound path (fake `GetInboundAsync` +
-`InboundInvoiceParser`) and prints the parsed invoice; also show one failure (an order with
-`BuyerReference` null) landing in the failed-document log. Add one test that runs the walkthrough.
-Document it in `app/README.md` as a one-command step, and walk the README literally from a clean
-clone, fixing any drift. After Slice 10, Phase 4 Review.
-Read first: OWNER.md, RUNBOOK.md, ideas/be-peppol-commerce/PLAN.md (Slices 9 and 10, done criteria),
-ideas/be-peppol-commerce/app/README.md,
-ideas/be-peppol-commerce/app/src/BePeppolCommerce.Core/Integration/OutboundDispatcher.cs,
-ideas/be-peppol-commerce/app/src/BePeppolCommerce.Core/Integration/InMemoryFakes.cs,
-ideas/be-peppol-commerce/app/src/BePeppolCommerce.Core/Integration/FailedDocumentLog.cs,
-ideas/be-peppol-commerce/app/tests/BePeppolCommerce.Core.Tests/FailureRecordingTests.cs (fakes to reuse)
+Phase: 4 Review
+Slice: 11 of 11 build slices complete (Slice 10 walkthrough done day 036); Review round 1 next
+Next action: Phase 4 Review, round 1, wave one: three adversarial reviewer subagents in parallel on
+`ideas/be-peppol-commerce/app`: (a) correctness and tests (dispatcher, builder, validator, both
+provider clients, inbound parser), (b) security and input handling (webhook auth/signature, XML
+parsing limits, config validation, secrets in logs), (c) product quality against the core flow
+(order -> validated UBL -> send -> receive, via the walkthrough). Each writes findings with severity
+in the format the main session merges into a new `ideas/be-peppol-commerce/REVIEW.md` (one writer:
+the main session). Fix every high in the same session if time allows. Wave two (docs: follow
+`app/README.md` literally from a clean clone) the same session if time allows, else next.
+Setup: install the .NET 8 SDK (`RUNBOOK.md` "Build environment"), then `dotnet test` in
+`ideas/be-peppol-commerce/app` (266 should pass) and
+`dotnet run --project samples/BePeppolCommerce.Walkthrough` (exit 0).
+Read first: OWNER.md, RUNBOOK.md, ideas/be-peppol-commerce/PLAN.md (done criteria, Slices 9-10),
+ideas/be-peppol-commerce/app/README.md, the v1 gap notes for owner below (for HANDOFF.md later).
 Notes for owner:
 - (Owner) Licensing of the Peppol rules (day 028). OpenPEPPOL's BIS guide
   (`guide/bis/introduction.adoc` in peppol-bis-invoice-3) says OpenPeppol AISBL holds the copyright,
@@ -83,4 +77,4 @@ Notes for owner:
   could be repeated. A cap needs an attempt count in the host's `IOrderInvoiceSource`.
 Tournament round: 1 (won)
 Kills before 2026-09-23 rewrite: 14
-Last session: 2026-10-07, ended clean
+Last session: 2026-10-08, ended clean
