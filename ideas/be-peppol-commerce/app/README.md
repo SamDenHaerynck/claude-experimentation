@@ -4,7 +4,8 @@ A .NET 8 library that turns an order record into a Peppol BIS Billing 3.0 UBL in
 built as the engine for a future Optimizely Configured Commerce connector for Belgian e-invoicing.
 The idea and its evidence are in `../VALIDATION.md`, and the full plan is in `../PLAN.md`.
 
-**Status: Slices 1, 2a, 2b, 3, 4, 5 and 6 of 11 done.** Right now it:
+**Status: all 11 build slices done (1, 2a, 2b and 3 to 10); in review next.** Nothing here has
+ever talked to a real Access Point or a real Optimizely Configured Commerce install. Right now it:
 
 - parses an order from JSON (`BePeppolCommerce.Core.Model.OrderJson`), rejecting null or empty
   required values
@@ -101,6 +102,32 @@ the input was a string, and an empty `Location` for an `XDocument` built in memo
 - Network access on the first build (NuGet, Maven Central, raw.githubusercontent.com).
   No Java install is needed.
 
+## See it work in one command (the walkthrough)
+
+From this directory (`ideas/be-peppol-commerce/app`):
+
+```
+dotnet run --project samples/BePeppolCommerce.Walkthrough
+```
+
+It runs the whole v1 flow in one process against in-memory fakes, with no network calls after the
+first build and no credentials:
+
+1. loads the fictitious sample order (`tests/BePeppolCommerce.Core.Tests/Fixtures/sample-order.json`)
+2. builds the UBL invoice and validates it against the XSD and the official Peppol rules (expect
+   `Valid: True (0 errors, 0 warnings)`; this step takes a few seconds the first time in a process)
+3. queues it, plus a copy without a buyer reference, in `InMemoryOrderInvoiceSource` and runs
+   `OutboundDispatcher` once with a fake Access Point: the sample is sent (submission `fake-0001`),
+   the copy fails validation with `PEPPOL-EN16931-R003` and lands in the failed-document log
+4. fetches the sent document back from the fake Access Point and parses it with
+   `InboundInvoiceParser`, as `POST /webhooks/inbound` does (expect invoice `INV-2026-0001`, 3 lines,
+   payable 268.63 EUR)
+
+It ends with `Walkthrough finished: every step ended as expected.` and exit code 0, or prints
+`UNEXPECTED:` lines and exits with 1. The first run builds everything (about a minute, see below);
+after that it takes about 15 s. `WalkthroughTests` runs the same code as part of `dotnet test`.
+The fake Access Point is `samples/BePeppolCommerce.Walkthrough/FakeAccessPoint.cs`.
+
 ## Run the tests
 
 From this directory (`ideas/be-peppol-commerce/app`):
@@ -109,8 +136,8 @@ From this directory (`ideas/be-peppol-commerce/app`):
 dotnet test
 ```
 
-The first run takes about a minute (restore, jar download, IKVM compiling the jars). All 264 tests
-should pass (184 in `BePeppolCommerce.Core.Tests`, 80 in `BePeppolCommerce.Api.Tests`). If a download fails (Maven Central sometimes rate-limits with HTTP 429), or a file fails its
+The first run takes about a minute (restore, jar download, IKVM compiling the jars). All 265 tests
+should pass (185 in `BePeppolCommerce.Core.Tests`, 80 in `BePeppolCommerce.Api.Tests`). If a download fails (Maven Central sometimes rate-limits with HTTP 429), or a file fails its
 SHA-256 check (the file is then deleted), wait a minute and run `dotnet test` again.
 
 ## Run the API host
@@ -222,6 +249,7 @@ src/BePeppolCommerce.Core/          library: AccessPoint/ (provider interface, S
                                     Rules/SOURCE.md provenance of the downloaded rules)
 src/BePeppolCommerce.Core/Inbound/  received-invoice parser and normalized model
 src/BePeppolCommerce.Api/           ASP.NET Core host: /health and POST /webhooks/inbound
+samples/BePeppolCommerce.Walkthrough/  console walkthrough of the whole flow against fakes
 tests/BePeppolCommerce.Core.Tests/  xUnit tests; Fixtures/sample-order.json is the sample order
 tests/BePeppolCommerce.Api.Tests/   host tests through WebApplicationFactory with a fake Access Point,
                                     and startup configuration tests (AccessPointConfigTests)

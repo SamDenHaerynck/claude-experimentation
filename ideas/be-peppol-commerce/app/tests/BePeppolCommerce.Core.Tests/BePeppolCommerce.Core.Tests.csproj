@@ -26,6 +26,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\BePeppolCommerce.Core\BePeppolCommerce.Core.csproj" />
+    <ProjectReference Include="..\..\samples\BePeppolCommerce.Walkthrough\BePeppolCommerce.Walkthrough.csproj" />
   </ItemGroup>
 
 </Project>
