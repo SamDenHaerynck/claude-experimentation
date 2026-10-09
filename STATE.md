@@ -14,7 +14,7 @@ time allows, the cheap mediums M2 (XML-invalid chars -> permanent BEPC-BUILD fai
 (normalise `0403.170.701` style ids). Then wave two (docs: follow `app/README.md` literally from a
 clean clone), same session if time allows, else next. Mark each fixed item in REVIEW.md.
 Setup: install the .NET 8 SDK (`RUNBOOK.md` "Build environment"); `dotnet test` in
-`ideas/be-peppol-commerce/app` (277 should pass) and
+`ideas/be-peppol-commerce/app` (279 should pass) and
 `dotnet run --project samples/BePeppolCommerce.Walkthrough` (exit 0).
 Read first: OWNER.md, RUNBOOK.md, ideas/be-peppol-commerce/REVIEW.md,
 ideas/be-peppol-commerce/app/src/BePeppolCommerce.Core/Ubl/PeppolInvoiceBuilder.cs,
@@ -84,6 +84,10 @@ Notes for owner:
   gaps unless fixed: no IBAN/structured communication, no credit notes, inbound invoices have no
   sink, webhook replay. Full list in `ideas/be-peppol-commerce/REVIEW.md`. If you know Storecove's
   scheme names for 0208/9925, a line in `SIGNALS.md` settles H3's remaining unknown.
+- (Owner) Day 037 reading of the 12-session cap: the routine treats fixing Phase 4 review highs as
+  review work, not as build slices (build used 11). H2 (allowances/charges) is feature-sized, so
+  the pre-merge reviewer asked that this reading be yours to confirm. If you count it as build, the
+  cap is reached after H2 and the rest must go to HANDOFF.md as gaps; say so in `SIGNALS.md`.
 Tournament round: 1 (won)
 Kills before 2026-09-23 rewrite: 14
 Last session: 2026-10-09, ended clean

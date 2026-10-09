@@ -70,7 +70,9 @@ It does **not** yet do the following:
 - emit an order reference, payment terms or payment means (IBAN, structured communication), or
   document- or line-level allowances and charges (discounts, freight). Orders with no buyer
   reference or no due date are built, but the validator then reports PEPPOL-EN16931-R003 or
-  BR-CO-25, and a negative-price discount line fails BR-27, so they are caught before sending.
+  BR-CO-25, and a negative-price discount line fails BR-27, so they are caught before sending. An order whose
+  total is negative is refused before building (`BEPC-BUILD`), because it needs a credit note,
+  which v1 does not build.
   VAT categories S, Z, E, AE, K and O do validate when the order carries what EN16931 asks for:
   `vatExemptionReasonCode` (or `vatExemptionReason`) on the lines for E, AE, K and O,
   `deliveryDate` and `deliveryCountryCode` on the order for K, and a `legalRegistrationId` on the
@@ -148,8 +150,8 @@ From this directory (`ideas/be-peppol-commerce/app`):
 dotnet test
 ```
 
-The first run takes about a minute (restore, jar download, IKVM compiling the jars). All 277 tests
-should pass (195 in `BePeppolCommerce.Core.Tests`, 82 in `BePeppolCommerce.Api.Tests`). If a download fails (Maven Central sometimes rate-limits with HTTP 429), or a file fails its
+The first run takes about a minute (restore, jar download, IKVM compiling the jars). All 279 tests
+should pass (197 in `BePeppolCommerce.Core.Tests`, 82 in `BePeppolCommerce.Api.Tests`). If a download fails (Maven Central sometimes rate-limits with HTTP 429), or a file fails its
 SHA-256 check (the file is then deleted), wait a minute and run `dotnet test` again.
 
 ## Run the API host

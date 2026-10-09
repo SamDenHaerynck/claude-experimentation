@@ -81,6 +81,17 @@ public class PeppolValidatorTests
     }
 
     [Fact]
+    public void NotSubjectToVat_O_IgnoresLeftoverRate()
+    {
+        var order = WithCategory("O", "VATEX-EU-O", keepVatNumbers: false);
+        AssertValid(order with
+        {
+            Seller = order.Seller with { LegalRegistrationId = "0000000097" },
+            Lines = order.Lines.Select(l => l with { VatPercent = 21 }).ToList(),
+        });
+    }
+
+    [Fact]
     public void LowercaseCategory_IsNormalised() =>
         AssertValid(LoadSample() with { Lines = LoadSample().Lines.Select(l => l with { VatCategory = " s" }).ToList() });
 

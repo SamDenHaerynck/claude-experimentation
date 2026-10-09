@@ -29,7 +29,7 @@ public static class PeppolInvoiceBuilder
         var currency = order.CurrencyCode;
         var lineTotal = order.Lines.Sum(l => l.LineExtensionAmount);
         var vatGroups = order.Lines
-            .GroupBy(l => (VatCategory: Category(l), l.VatPercent))
+            .GroupBy(l => (VatCategory: Category(l), VatPercent: Rate(l)))
             .Select(g =>
             {
                 var taxable = g.Sum(l => l.LineExtensionAmount);
@@ -82,7 +82,7 @@ public static class PeppolInvoiceBuilder
                 Amount("LineExtensionAmount", l.LineExtensionAmount, currency),
                 new XElement(Cac + "Item",
                     new XElement(Cbc + "Name", l.Description),
-                    TaxCategory("ClassifiedTaxCategory", Category(l), l.VatPercent)),
+                    TaxCategory("ClassifiedTaxCategory", Category(l), Rate(l))),
                 new XElement(Cac + "Price",
                     // Unit price keeps its full precision (BT-146 is not limited to 2 decimals).
                     new XElement(Cbc + "PriceAmount", new XAttribute("currencyID", currency), Num(l.UnitPrice))))));
@@ -120,6 +120,9 @@ public static class PeppolInvoiceBuilder
             new XElement(Cac + "TaxScheme", new XElement(Cbc + "ID", "VAT")));
 
     private static string Category(OrderLine line) => line.VatCategory.Trim().ToUpperInvariant();
+
+    // Category O carries no VAT, whatever rate the source system left on the line.
+    private static decimal Rate(OrderLine line) => Category(line) == "O" ? 0m : line.VatPercent;
 
     private static XElement Amount(string name, decimal value, string currency) =>
         new(Cbc + name, new XAttribute("currencyID", currency), value.ToString("0.00", CultureInfo.InvariantCulture));
