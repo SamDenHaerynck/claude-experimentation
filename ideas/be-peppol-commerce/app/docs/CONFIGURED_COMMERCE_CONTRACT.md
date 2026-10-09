@@ -77,7 +77,8 @@ Fake: `InMemoryOrderInvoiceSource` (thread-safe, not durable, exposes `Sent` and
 ## `IAccessPointSettingsProvider`
 
 ```csharp
-public sealed record AccessPointSettings(string Provider, string ApiKey, string AccountId, Uri? BaseUri = null, string? ApiSecret = null);
+public sealed record AccessPointSettings(string Provider, string ApiKey, string AccountId, Uri? BaseUri = null, string? ApiSecret = null,
+    IReadOnlyDictionary<string, string>? SchemeMap = null); // SchemeMap: Peppol ICD -> Storecove scheme name; Storecove only
 
 public interface IAccessPointSettingsProvider
 {

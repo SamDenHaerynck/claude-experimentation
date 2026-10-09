@@ -29,12 +29,15 @@ public static class PeppolInvoiceBuilder
         var currency = order.CurrencyCode;
         var lineTotal = order.Lines.Sum(l => l.LineExtensionAmount);
         var vatGroups = order.Lines
-            .GroupBy(l => (l.VatCategory, l.VatPercent))
+            .GroupBy(l => (VatCategory: Category(l), VatPercent: Rate(l)))
             .Select(g =>
             {
                 var taxable = g.Sum(l => l.LineExtensionAmount);
                 var tax = Math.Round(taxable * g.Key.VatPercent / 100m, 2, MidpointRounding.AwayFromZero);
-                return (g.Key.VatCategory, g.Key.VatPercent, Taxable: taxable, Tax: tax);
+                // The exemption reason lives on the VAT breakdown (BG-23), one per category and rate.
+                var exempt = g.FirstOrDefault(l => l.VatExemptionReasonCode is not null || l.VatExemptionReason is not null);
+                return (g.Key.VatCategory, g.Key.VatPercent, Taxable: taxable, Tax: tax,
+                    ReasonCode: exempt?.VatExemptionReasonCode, Reason: exempt?.VatExemptionReason);
             })
             .ToList();
         var taxTotal = vatGroups.Sum(g => g.Tax);
@@ -53,12 +56,21 @@ public static class PeppolInvoiceBuilder
             order.BuyerReference is { } br ? new XElement(Cbc + "BuyerReference", br) : null,
             PartyElement("AccountingSupplierParty", order.Seller),
             PartyElement("AccountingCustomerParty", order.Buyer),
+            order.DeliveryDate is not null || order.DeliveryCountryCode is not null
+                ? new XElement(Cac + "Delivery",
+                    order.DeliveryDate is { } dd ? new XElement(Cbc + "ActualDeliveryDate", Date(dd)) : null,
+                    order.DeliveryCountryCode is { } dc
+                        ? new XElement(Cac + "DeliveryLocation",
+                            new XElement(Cac + "Address",
+                                new XElement(Cac + "Country", new XElement(Cbc + "IdentificationCode", dc))))
+                        : null)
+                : null,
             new XElement(Cac + "TaxTotal",
                 Amount("TaxAmount", taxTotal, currency),
                 vatGroups.Select(g => new XElement(Cac + "TaxSubtotal",
                     Amount("TaxableAmount", g.Taxable, currency),
                     Amount("TaxAmount", g.Tax, currency),
-                    TaxCategory("TaxCategory", g.VatCategory, g.VatPercent)))),
+                    TaxCategory("TaxCategory", g.VatCategory, g.VatPercent, g.ReasonCode, g.Reason)))),
             new XElement(Cac + "LegalMonetaryTotal",
                 Amount("LineExtensionAmount", lineTotal, currency),
                 Amount("TaxExclusiveAmount", lineTotal, currency),
@@ -70,7 +82,7 @@ public static class PeppolInvoiceBuilder
                 Amount("LineExtensionAmount", l.LineExtensionAmount, currency),
                 new XElement(Cac + "Item",
                     new XElement(Cbc + "Name", l.Description),
-                    TaxCategory("ClassifiedTaxCategory", l.VatCategory, l.VatPercent)),
+                    TaxCategory("ClassifiedTaxCategory", Category(l), Rate(l))),
                 new XElement(Cac + "Price",
                     // Unit price keeps its full precision (BT-146 is not limited to 2 decimals).
                     new XElement(Cbc + "PriceAmount", new XAttribute("currencyID", currency), Num(l.UnitPrice))))));
@@ -94,13 +106,23 @@ public static class PeppolInvoiceBuilder
                         new XElement(Cac + "TaxScheme", new XElement(Cbc + "ID", "VAT")))
                     : null,
                 new XElement(Cac + "PartyLegalEntity",
-                    new XElement(Cbc + "RegistrationName", party.Name))));
+                    new XElement(Cbc + "RegistrationName", party.Name),
+                    party.LegalRegistrationId is { } reg ? new XElement(Cbc + "CompanyID", reg) : null)));
 
-    private static XElement TaxCategory(string name, string category, decimal percent) =>
+    private static XElement TaxCategory(string name, string category, decimal percent,
+        string? reasonCode = null, string? reason = null) =>
         new(Cac + name,
             new XElement(Cbc + "ID", category),
-            new XElement(Cbc + "Percent", Num(percent)),
+            // Category O ("not subject to VAT") must carry no rate (BR-O-05, BR-O-10).
+            category == "O" ? null : new XElement(Cbc + "Percent", Num(percent)),
+            reasonCode is null ? null : new XElement(Cbc + "TaxExemptionReasonCode", reasonCode),
+            reason is null ? null : new XElement(Cbc + "TaxExemptionReason", reason),
             new XElement(Cac + "TaxScheme", new XElement(Cbc + "ID", "VAT")));
+
+    private static string Category(OrderLine line) => line.VatCategory.Trim().ToUpperInvariant();
+
+    // Category O carries no VAT, whatever rate the source system left on the line.
+    private static decimal Rate(OrderLine line) => Category(line) == "O" ? 0m : line.VatPercent;
 
     private static XElement Amount(string name, decimal value, string currency) =>
         new(Cbc + name, new XAttribute("currencyID", currency), value.ToString("0.00", CultureInfo.InvariantCulture));

@@ -68,6 +68,13 @@ public sealed class OutboundInvoiceSender
             return new OutboundResult(OutboundStatus.ValidationFailed, null,
                 new ValidationResult([new ValidationFinding("BePeppolCommerce", BuildRuleId, "fatal", "An invoice needs at least one line.", "/")]), null);
 
+        // A negative total passes EN16931 validation but would go out as a commercial invoice (380);
+        // it needs a credit note, which v1 does not build (review day 037, M5).
+        if (order.Lines.Sum(l => l.LineExtensionAmount) < 0)
+            return new OutboundResult(OutboundStatus.ValidationFailed, null,
+                new ValidationResult([new ValidationFinding("BePeppolCommerce", BuildRuleId, "fatal",
+                    "The order total is negative; send a credit note instead (not supported in v1).", "/")]), null);
+
         var xml = Serialize(PeppolInvoiceBuilder.Build(order));
 
         // Validate the exact string that would be sent, not the in-memory tree.

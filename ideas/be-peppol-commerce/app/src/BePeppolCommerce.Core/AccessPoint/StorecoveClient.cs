@@ -18,6 +18,9 @@ public sealed record StorecoveOptions(string ApiKey, int LegalEntityId, Uri? Bas
 {
     public static readonly Uri DefaultBaseUri = new("https://api.storecove.com/api/v2/");
 
+    /// <summary>Hides the API key, so options can be logged.</summary>
+    public override string ToString() => $"StorecoveOptions {{ LegalEntityId = {LegalEntityId}, BaseUri = {BaseUri} }}";
+
     /// <summary>
     /// Returns one message per invalid setting, each starting with the setting's name and never
     /// containing its value. Empty when the options are usable. The client constructor and the API

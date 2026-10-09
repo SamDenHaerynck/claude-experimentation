@@ -138,6 +138,19 @@ public class OutboundInvoiceSenderTests
     }
 
     [Fact]
+    public async Task NegativeTotal_FailsWithBuildFindingAndNeverReachesFake()
+    {
+        await using var ap = new FakeAccessPoint(200, $"{{\"guid\":\"{SubmissionGuid}\"}}");
+        var order = LoadSample() with { Lines = LoadSample().Lines.Select(l => l with { Quantity = -l.Quantity }).ToList() };
+
+        var result = await ap.CreateSender().SendAsync(order);
+
+        Assert.Equal(OutboundStatus.ValidationFailed, result.Status);
+        Assert.Equal(OutboundInvoiceSender.BuildRuleId, Assert.Single(result.Validation.Errors).RuleId);
+        Assert.Empty(ap.Requests);
+    }
+
+    [Fact]
     public async Task OrderWithoutLines_FailsWithBuildFindingAndNeverReachesFake()
     {
         await using var ap = new FakeAccessPoint(200, $"{{\"guid\":\"{SubmissionGuid}\"}}");
