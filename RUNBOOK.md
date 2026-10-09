@@ -43,3 +43,6 @@ not read at session start). OWNER.md wins on conflicts.
   small text file saved under the `.jar` name, so check the result with `file`. Java-based tools
   such as `IKVM.Maven.Sdk` fail with PKIX errors because their trust store lacks the proxy CA (day 027).
   GitHub REST API calls to other repos are blocked (403), but `git clone` of public repos works.
+- `dotnet test` hung for 10+ min once while reviewer subagents were running their own probe builds in
+  parallel (day 037); it did not reproduce afterwards. Run it as `timeout 400 dotnet test
+  --blame-hang-timeout 120s` so a hang ends with a dump instead of eating the session.

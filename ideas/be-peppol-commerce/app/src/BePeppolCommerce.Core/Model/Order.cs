@@ -12,6 +12,10 @@ public sealed record Order
     public DateOnly? DueDate { get; init; }
     public required string CurrencyCode { get; init; }
     public string? BuyerReference { get; init; }
+    /// <summary>Actual delivery date (BT-72). Required by EN16931 when any line is category K (intra-EU).</summary>
+    public DateOnly? DeliveryDate { get; init; }
+    /// <summary>Deliver-to country, ISO 3166-1 alpha-2 (BT-80). Required when any line is category K.</summary>
+    public string? DeliveryCountryCode { get; init; }
     public required Party Seller { get; init; }
     public required Party Buyer { get; init; }
     public required IReadOnlyList<OrderLine> Lines { get; init; }
@@ -25,6 +29,11 @@ public sealed record Party
     /// <summary>Peppol EAS code for <see cref="EndpointId"/>; 0208 = Belgian enterprise number.</summary>
     public required string EndpointSchemeId { get; init; }
     public string? VatNumber { get; init; }
+    /// <summary>
+    /// Legal registration identifier (BT-30/BT-47), e.g. the Belgian enterprise number. Needed when
+    /// there is no VAT number, as with category O (BR-CO-26).
+    /// </summary>
+    public string? LegalRegistrationId { get; init; }
     public required Address Address { get; init; }
 }
 
@@ -48,6 +57,13 @@ public sealed record OrderLine
     /// <summary>VAT category code (UNCL5305), e.g. "S" = standard rate.</summary>
     public string VatCategory { get; init; } = "S";
     public required decimal VatPercent { get; init; }
+    /// <summary>
+    /// VATEX exemption reason code (BT-121), e.g. "VATEX-EU-IC" for K or "VATEX-EU-AE" for AE. EN16931
+    /// requires a code or <see cref="VatExemptionReason"/> for categories E, AE, K, G and O.
+    /// </summary>
+    public string? VatExemptionReasonCode { get; init; }
+    /// <summary>Exemption reason text (BT-120).</summary>
+    public string? VatExemptionReason { get; init; }
 
     public decimal LineExtensionAmount => Math.Round(Quantity * UnitPrice, 2, MidpointRounding.AwayFromZero);
 }

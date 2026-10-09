@@ -1,21 +1,24 @@
 # State
-Day: 036
+Day: 037
 Idea: be-peppol-commerce
 Phase: 4 Review
-Slice: 11 of 11 build slices complete (Slice 10 walkthrough done day 036); Review round 1 next
-Next action: Phase 4 Review, round 1, wave one: three adversarial reviewer subagents in parallel on
-`ideas/be-peppol-commerce/app`: (a) correctness and tests (dispatcher, builder, validator, both
-provider clients, inbound parser), (b) security and input handling (webhook auth/signature, XML
-parsing limits, config validation, secrets in logs), (c) product quality against the core flow
-(order -> validated UBL -> send -> receive, via the walkthrough). Each writes findings with severity
-in the format the main session merges into a new `ideas/be-peppol-commerce/REVIEW.md` (one writer:
-the main session). Fix every high in the same session if time allows. Wave two (docs: follow
-`app/README.md` literally from a clean clone) the same session if time allows, else next.
-Setup: install the .NET 8 SDK (`RUNBOOK.md` "Build environment"), then `dotnet test` in
-`ideas/be-peppol-commerce/app` (266 should pass) and
+Slice: n/a (11 of 11 build slices complete); Review round 1 wave one done day 037, 2 of 3 highs fixed
+Next action: Fix review high H2 in `ideas/be-peppol-commerce/REVIEW.md` (allowances and charges):
+add document-level allowances/charges to `Order` (reason, amount, VAT category/percent, exemption
+reason) and optionally line-level ones to `OrderLine`; in `PeppolInvoiceBuilder` emit header
+`cac:AllowanceCharge` before `cac:TaxTotal`, subtract allowances/add charges per VAT group before
+computing tax, and write `AllowanceTotalAmount`/`ChargeTotalAmount` with
+TaxExclusive = LineExtension - allowances + charges; add validator-backed tests (a 10% discount
+and a freight charge on the sample order must give `IsValid`, with hand-checked totals). Then, if
+time allows, the cheap mediums M2 (XML-invalid chars -> permanent BEPC-BUILD failure) and M8
+(normalise `0403.170.701` style ids). Then wave two (docs: follow `app/README.md` literally from a
+clean clone), same session if time allows, else next. Mark each fixed item in REVIEW.md.
+Setup: install the .NET 8 SDK (`RUNBOOK.md` "Build environment"); `dotnet test` in
+`ideas/be-peppol-commerce/app` (277 should pass) and
 `dotnet run --project samples/BePeppolCommerce.Walkthrough` (exit 0).
-Read first: OWNER.md, RUNBOOK.md, ideas/be-peppol-commerce/PLAN.md (done criteria, Slices 9-10),
-ideas/be-peppol-commerce/app/README.md, the v1 gap notes for owner below (for HANDOFF.md later).
+Read first: OWNER.md, RUNBOOK.md, ideas/be-peppol-commerce/REVIEW.md,
+ideas/be-peppol-commerce/app/src/BePeppolCommerce.Core/Ubl/PeppolInvoiceBuilder.cs,
+ideas/be-peppol-commerce/app/src/BePeppolCommerce.Core/Model/Order.cs, the v1 gap notes below.
 Notes for owner:
 - (Owner) Licensing of the Peppol rules (day 028). OpenPEPPOL's BIS guide
   (`guide/bis/introduction.adoc` in peppol-bis-invoice-3) says OpenPeppol AISBL holds the copyright,
@@ -75,6 +78,12 @@ Notes for owner:
   as a Recommand webhook yet; (2) no retry cap: a Recommand 422 with category `transport` is retried
   on every run, and Recommand's send has no idempotency key, so a delivery that in fact succeeded
   could be repeated. A cap needs an attempt count in the host's `IOrderInvoiceSource`.
+- (Owner) Day 037, review round 1: 3 highs, 2 fixed (VAT categories K/AE/E/O now validate;
+  Storecove scheme map reachable from the Configured Commerce settings path). Allowances/charges
+  (discounts, freight) are not supported yet and are next. Open mediums that will become HANDOFF.md
+  gaps unless fixed: no IBAN/structured communication, no credit notes, inbound invoices have no
+  sink, webhook replay. Full list in `ideas/be-peppol-commerce/REVIEW.md`. If you know Storecove's
+  scheme names for 0208/9925, a line in `SIGNALS.md` settles H3's remaining unknown.
 Tournament round: 1 (won)
 Kills before 2026-09-23 rewrite: 14
-Last session: 2026-10-08, ended clean
+Last session: 2026-10-09, ended clean

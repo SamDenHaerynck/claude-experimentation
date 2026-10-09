@@ -187,8 +187,9 @@ public static partial class InboundWebhook
             }
             return null;
         }
-        catch (JsonException)
+        catch (Exception e) when (e is JsonException or InvalidOperationException)
         {
+            // GetString throws InvalidOperationException on a lone surrogate escape such as "\ud800".
             return null;
         }
     }

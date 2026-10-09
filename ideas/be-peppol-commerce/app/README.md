@@ -4,7 +4,7 @@ A .NET 8 library that turns an order record into a Peppol BIS Billing 3.0 UBL in
 built as the engine for a future Optimizely Configured Commerce connector for Belgian e-invoicing.
 The idea and its evidence are in `../VALIDATION.md`, and the full plan is in `../PLAN.md`.
 
-**Status: all 11 build slices done (1, 2a, 2b and 3 to 10); in review next.** Nothing here has
+**Status: all 11 build slices done (1, 2a, 2b and 3 to 10); Phase 4 review round 1 in progress (findings in `../REVIEW.md`).** Nothing here has
 ever talked to a real Access Point or a real Optimizely Configured Commerce install. Right now it:
 
 - parses an order from JSON (`BePeppolCommerce.Core.Model.OrderJson`), rejecting null or empty
@@ -25,7 +25,8 @@ ever talked to a real Access Point or a real Optimizely Configured Commerce inst
   document's `original` field is encoded (the client accepts raw XML or base64), and it does not
   define the webhook body. Storecove also names identifier schemes its own way (the spec's examples are
   "DE:VAT" and "FR:CTC"). The Belgian name is not confirmed, so `StorecoveOptions.SchemeMap` must
-  map `0208` to it. Unmapped schemes are sent unchanged.
+  map `0208` to it (the API host binds `Storecove:SchemeMap`; a Configured Commerce host passes
+  `AccessPointSettings.SchemeMap`). Unmapped schemes are sent unchanged.
   The second implementation is `RecommandClient`, written against Recommand's OpenAPI 3.1 spec
   (https://peppol.recommand.eu/openapi). It sends the UBL as raw XML (`POST /api/v1/{companyId}/send`,
   `documentType: "xml"`) with HTTP Basic auth (API key and secret), and fetches received documents
@@ -66,9 +67,14 @@ ever talked to a real Access Point or a real Optimizely Configured Commerce inst
 
 It does **not** yet do the following:
 
-- emit a VAT exemption reason, an order reference or payment terms. Orders that need them (VAT
-  category E/Z/O..., no buyer reference, no due date) are built, but the validator then reports
-  BR-E-10, PEPPOL-EN16931-R003 or BR-CO-25, so they are caught before sending.
+- emit an order reference, payment terms or payment means (IBAN, structured communication), or
+  document- or line-level allowances and charges (discounts, freight). Orders with no buyer
+  reference or no due date are built, but the validator then reports PEPPOL-EN16931-R003 or
+  BR-CO-25, and a negative-price discount line fails BR-27, so they are caught before sending.
+  VAT categories S, Z, E, AE, K and O do validate when the order carries what EN16931 asks for:
+  `vatExemptionReasonCode` (or `vatExemptionReason`) on the lines for E, AE, K and O,
+  `deliveryDate` and `deliveryCountryCode` on the order for K, and a `legalRegistrationId` on the
+  seller when it has no VAT number (O).
 - run inside Optimizely Configured Commerce. The contract above has never been built against a real
   install. The library targets `net8.0`, so it needs a Configured Commerce install whose Extensions
   project has been retargeted to `net8.0`/`net10.0` (documented from build 5.2.2604.725-lts on); installs still on `net48` cannot
@@ -110,6 +116,12 @@ From this directory (`ideas/be-peppol-commerce/app`):
 dotnet run --project samples/BePeppolCommerce.Walkthrough
 ```
 
+To try your own order, pass the path to an order JSON file (same shape as
+`tests/BePeppolCommerce.Core.Tests/Fixtures/sample-order.json`):
+`dotnet run --project samples/BePeppolCommerce.Walkthrough -- path/to/order.json`. The
+walkthrough's expected-output checks are written for the sample order, so another order may end
+with `UNEXPECTED:` even when it is valid; the validation step it prints is still the real result.
+
 It runs the whole v1 flow in one process against in-memory fakes, with no network calls after the
 first build and no credentials:
 
@@ -136,8 +148,8 @@ From this directory (`ideas/be-peppol-commerce/app`):
 dotnet test
 ```
 
-The first run takes about a minute (restore, jar download, IKVM compiling the jars). All 266 tests
-should pass (186 in `BePeppolCommerce.Core.Tests`, 80 in `BePeppolCommerce.Api.Tests`). If a download fails (Maven Central sometimes rate-limits with HTTP 429), or a file fails its
+The first run takes about a minute (restore, jar download, IKVM compiling the jars). All 277 tests
+should pass (195 in `BePeppolCommerce.Core.Tests`, 82 in `BePeppolCommerce.Api.Tests`). If a download fails (Maven Central sometimes rate-limits with HTTP 429), or a file fails its
 SHA-256 check (the file is then deleted), wait a minute and run `dotnet test` again.
 
 ## Run the API host

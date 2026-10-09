@@ -1,3 +1,4 @@
+using BePeppolCommerce.Core.Integration;
 using System.Net;
 using System.Text;
 using System.Text.Json;
@@ -261,6 +262,26 @@ public class StorecoveClientTests
         using var body = JsonDocument.Parse(handler.Body!);
         Assert.Equal("XX:TEST", body.RootElement.GetProperty("routing").GetProperty("eIdentifiers")[0].GetProperty("scheme").GetString());
     }
+
+    [Fact]
+    public async Task Factory_PassesSchemeMapFromSettings()
+    {
+        // Review day 037: the dispatcher path built StorecoveOptions without the map, so 0208 went out unmapped.
+        var handler = new StubHandler(_ => Json(HttpStatusCode.OK, $"{{\"guid\":\"{Guid1}\"}}"));
+        var settings = new AccessPointSettings("storecove", "k", "1", SchemeMap: new Dictionary<string, string> { ["0208"] = "XX:TEST" });
+        var client = AccessPointClientFactory.Create(settings, new HttpClient(handler));
+
+        await client.SendAsync(new OutboundDocument(Xml, Buyer));
+
+        using var body = JsonDocument.Parse(handler.Body!);
+        Assert.Equal("XX:TEST", body.RootElement.GetProperty("routing").GetProperty("eIdentifiers")[0].GetProperty("scheme").GetString());
+        Assert.Throws<ArgumentException>(() => AccessPointClientFactory.Create(
+            settings with { SchemeMap = new Dictionary<string, string> { ["BE"] = "XX:TEST" } }, new HttpClient(handler)));
+    }
+
+    [Fact]
+    public void Options_ToString_HidesApiKey() =>
+        Assert.DoesNotContain("secret-key-value", new StorecoveOptions("secret-key-value", 1).ToString());
 
     [Fact]
     public async Task GetInbound_RawXmlWithBom_ReturnsXml()

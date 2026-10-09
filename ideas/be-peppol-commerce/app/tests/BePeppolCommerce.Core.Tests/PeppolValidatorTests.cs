@@ -25,6 +25,65 @@ public class PeppolValidatorTests
         Assert.Empty(result.Findings);
     }
 
+    // Review day 037: only S and Z could produce a valid invoice. One validator-backed case per category.
+    private static Order WithCategory(string category, string? reasonCode, bool keepVatNumbers = true)
+    {
+        var sample = LoadSample();
+        return sample with
+        {
+            Seller = keepVatNumbers ? sample.Seller : sample.Seller with { VatNumber = null },
+            Buyer = keepVatNumbers ? sample.Buyer : sample.Buyer with { VatNumber = null },
+            Lines = sample.Lines.Select(l => l with { VatCategory = category, VatPercent = 0, VatExemptionReasonCode = reasonCode }).ToList(),
+        };
+    }
+
+    private static void AssertValid(Order order)
+    {
+        var result = PeppolValidator.Validate(PeppolInvoiceBuilder.Build(order));
+        Assert.True(result.IsValid, string.Join("\n", result.Errors.Select(f => $"{f.RuleSet} {f.RuleId}: {f.Message}")));
+    }
+
+    [Fact]
+    public void IntraEuSupply_K_WithReasonAndDelivery_IsValid()
+    {
+        var order = WithCategory("K", "VATEX-EU-IC") with
+        {
+            DeliveryDate = new DateOnly(2026, 9, 27),
+            DeliveryCountryCode = "NL",
+        };
+        order = order with { Buyer = order.Buyer with { VatNumber = "NL000099998B57", Address = order.Buyer.Address with { CountryCode = "NL" } } };
+        AssertValid(order);
+    }
+
+    [Fact]
+    public void IntraEuSupply_K_WithoutDelivery_FailsBrIc11And12()
+    {
+        var ids = ErrorIds(PeppolValidator.Validate(PeppolInvoiceBuilder.Build(WithCategory("K", "VATEX-EU-IC")))).ToList();
+        Assert.Contains("BR-IC-11", ids);
+        Assert.Contains("BR-IC-12", ids);
+    }
+
+    [Fact]
+    public void ReverseCharge_AE_WithReason_IsValid() => AssertValid(WithCategory("AE", "VATEX-EU-AE"));
+
+    [Fact]
+    public void ReverseCharge_AE_WithoutReason_FailsBrAe10() =>
+        Assert.Contains("BR-AE-10", ErrorIds(PeppolValidator.Validate(PeppolInvoiceBuilder.Build(WithCategory("AE", null)))));
+
+    [Fact]
+    public void Exempt_E_WithReason_IsValid() => AssertValid(WithCategory("E", "VATEX-EU-132"));
+
+    [Fact]
+    public void NotSubjectToVat_O_OmitsRateAndIsValid()
+    {
+        var order = WithCategory("O", "VATEX-EU-O", keepVatNumbers: false);
+        AssertValid(order with { Seller = order.Seller with { LegalRegistrationId = "0000000097" } });
+    }
+
+    [Fact]
+    public void LowercaseCategory_IsNormalised() =>
+        AssertValid(LoadSample() with { Lines = LoadSample().Lines.Select(l => l with { VatCategory = " s" }).ToList() });
+
     [Fact]
     public void BrokenInvoice_FailsWithExpectedRuleIds()
     {

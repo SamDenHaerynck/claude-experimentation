@@ -109,6 +109,8 @@ public class InboundWebhookTests
     [InlineData("""{ "documentId": ".." }""")]
     [InlineData("""{ "documentId": "doc_1\nforged log line" }""")]
     [InlineData("""{ "documentId": "doc_1\n" }""")]
+    [InlineData("""{ "documentId": "\ud800" }""")]
+    [InlineData("""{ "guid": "\ud800" }""")]
     public async Task Webhook_BadBody_Returns400WithoutFetching(string json)
     {
         var fake = Returning(SampleInvoiceXml());

@@ -5,9 +5,12 @@ namespace BePeppolCommerce.Core.Integration;
 /// or "recommand"). <see cref="AccountId"/> is the provider's id for the sending company (Storecove: the
 /// legal entity id; Recommand: the company id). <see cref="BaseUri"/> is null for the provider's
 /// production API. <see cref="ApiSecret"/> is required by Recommand (Basic auth key and secret) and
-/// ignored by Storecove.
+/// ignored by Storecove. <see cref="SchemeMap"/> maps a Peppol ICD scheme (for example "0208") to
+/// Storecove's own scheme name, as <see cref="AccessPoint.StorecoveOptions.SchemeMap"/>; ignored by
+/// Recommand.
 /// </summary>
-public sealed record AccessPointSettings(string Provider, string ApiKey, string AccountId, Uri? BaseUri = null, string? ApiSecret = null)
+public sealed record AccessPointSettings(string Provider, string ApiKey, string AccountId, Uri? BaseUri = null, string? ApiSecret = null,
+    IReadOnlyDictionary<string, string>? SchemeMap = null)
 {
     /// <summary>Hides the API key and secret, so settings can be logged.</summary>
     public override string ToString() => $"AccessPointSettings {{ Provider = {Provider}, AccountId = {AccountId}, BaseUri = {BaseUri} }}";
