@@ -28,20 +28,31 @@ public static class PeppolInvoiceBuilder
 
         var currency = order.CurrencyCode;
         var lineTotal = order.Lines.Sum(l => l.LineExtensionAmount);
-        var vatGroups = order.Lines
-            .GroupBy(l => (VatCategory: Category(l), VatPercent: Rate(l)))
+        var docAcs = order.AllowancesCharges ?? [];
+        var allowanceTotal = docAcs.Where(a => !a.IsCharge).Sum(a => Money(a.Amount));
+        var chargeTotal = docAcs.Where(a => a.IsCharge).Sum(a => Money(a.Amount));
+        var taxExclusive = lineTotal - allowanceTotal + chargeTotal;
+        // One VAT breakdown per category and rate; allowances reduce and charges increase the base.
+        var contributions = order.Lines
+            .Select(l => (Cat: Category(l), Rate: Rate(l), Amount: l.LineExtensionAmount,
+                Code: l.VatExemptionReasonCode, Text: l.VatExemptionReason))
+            .Concat(docAcs.Select(a => (Cat: Category(a.VatCategory), Rate: Rate(a.VatCategory, a.VatPercent),
+                Amount: a.IsCharge ? Money(a.Amount) : -Money(a.Amount),
+                Code: a.VatExemptionReasonCode, Text: a.VatExemptionReason)));
+        var vatGroups = contributions
+            .GroupBy(c => (VatCategory: c.Cat, VatPercent: c.Rate))
             .Select(g =>
             {
-                var taxable = g.Sum(l => l.LineExtensionAmount);
+                var taxable = g.Sum(c => c.Amount);
                 var tax = Math.Round(taxable * g.Key.VatPercent / 100m, 2, MidpointRounding.AwayFromZero);
                 // The exemption reason lives on the VAT breakdown (BG-23), one per category and rate.
-                var exempt = g.FirstOrDefault(l => l.VatExemptionReasonCode is not null || l.VatExemptionReason is not null);
+                var exempt = g.FirstOrDefault(c => c.Code is not null || c.Text is not null);
                 return (g.Key.VatCategory, g.Key.VatPercent, Taxable: taxable, Tax: tax,
-                    ReasonCode: exempt?.VatExemptionReasonCode, Reason: exempt?.VatExemptionReason);
+                    ReasonCode: exempt.Code, Reason: exempt.Text);
             })
             .ToList();
         var taxTotal = vatGroups.Sum(g => g.Tax);
-        var payable = lineTotal + taxTotal;
+        var payable = taxExclusive + taxTotal;
 
         var root = new XElement(Inv + "Invoice",
             new XAttribute(XNamespace.Xmlns + "cac", Cac),
@@ -65,6 +76,12 @@ public static class PeppolInvoiceBuilder
                                 new XElement(Cac + "Country", new XElement(Cbc + "IdentificationCode", dc))))
                         : null)
                 : null,
+            docAcs.Select(a => new XElement(Cac + "AllowanceCharge",
+                new XElement(Cbc + "ChargeIndicator", a.IsCharge ? "true" : "false"),
+                a.ReasonCode is null ? null : new XElement(Cbc + "AllowanceChargeReasonCode", a.ReasonCode),
+                a.Reason is null ? null : new XElement(Cbc + "AllowanceChargeReason", a.Reason),
+                Amount("Amount", Money(a.Amount), currency),
+                TaxCategory("TaxCategory", Category(a.VatCategory), Rate(a.VatCategory, a.VatPercent)))),
             new XElement(Cac + "TaxTotal",
                 Amount("TaxAmount", taxTotal, currency),
                 vatGroups.Select(g => new XElement(Cac + "TaxSubtotal",
@@ -73,8 +90,10 @@ public static class PeppolInvoiceBuilder
                     TaxCategory("TaxCategory", g.VatCategory, g.VatPercent, g.ReasonCode, g.Reason)))),
             new XElement(Cac + "LegalMonetaryTotal",
                 Amount("LineExtensionAmount", lineTotal, currency),
-                Amount("TaxExclusiveAmount", lineTotal, currency),
+                Amount("TaxExclusiveAmount", taxExclusive, currency),
                 Amount("TaxInclusiveAmount", payable, currency),
+                docAcs.Any(a => !a.IsCharge) ? Amount("AllowanceTotalAmount", allowanceTotal, currency) : null,
+                docAcs.Any(a => a.IsCharge) ? Amount("ChargeTotalAmount", chargeTotal, currency) : null,
                 Amount("PayableAmount", payable, currency)),
             order.Lines.Select(l => new XElement(Cac + "InvoiceLine",
                 new XElement(Cbc + "ID", l.Id),
@@ -119,10 +138,15 @@ public static class PeppolInvoiceBuilder
             reason is null ? null : new XElement(Cbc + "TaxExemptionReason", reason),
             new XElement(Cac + "TaxScheme", new XElement(Cbc + "ID", "VAT")));
 
-    private static string Category(OrderLine line) => line.VatCategory.Trim().ToUpperInvariant();
+    private static string Category(OrderLine line) => Category(line.VatCategory);
+    private static string Category(string category) => category.Trim().ToUpperInvariant();
 
     // Category O carries no VAT, whatever rate the source system left on the line.
-    private static decimal Rate(OrderLine line) => Category(line) == "O" ? 0m : line.VatPercent;
+    private static decimal Rate(OrderLine line) => Rate(line.VatCategory, line.VatPercent);
+    private static decimal Rate(string category, decimal percent) => Category(category) == "O" ? 0m : percent;
+
+    // Amounts are written with two decimals, so sum the rounded values (BR-CO-10/13 compare to the cent).
+    private static decimal Money(decimal v) => Math.Round(v, 2, MidpointRounding.AwayFromZero);
 
     private static XElement Amount(string name, decimal value, string currency) =>
         new(Cbc + name, new XAttribute("currencyID", currency), value.ToString("0.00", CultureInfo.InvariantCulture));

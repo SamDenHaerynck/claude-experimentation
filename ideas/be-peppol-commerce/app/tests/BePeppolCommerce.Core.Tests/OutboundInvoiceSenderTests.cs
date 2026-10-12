@@ -151,6 +151,44 @@ public class OutboundInvoiceSenderTests
     }
 
     [Fact]
+    public async Task XmlInvalidCharacter_FailsPermanentlyWithBuildFinding()
+    {
+        await using var ap = new FakeAccessPoint(200, $"{{\"guid\":\"{SubmissionGuid}\"}}");
+        var sample = LoadSample();
+        var order = sample with { Lines = sample.Lines.Select(l => l with { Description = "Widget\u000B blue" }).ToList() };
+
+        var result = await ap.CreateSender().SendAsync(order);
+
+        Assert.Equal(OutboundStatus.ValidationFailed, result.Status);
+        Assert.Equal(OutboundInvoiceSender.BuildRuleId, Assert.Single(result.Validation.Errors).RuleId);
+        Assert.Empty(ap.Requests);
+    }
+
+    [Fact]
+    public async Task DiscountLargerThanLines_FailsAsNegativeTotal()
+    {
+        await using var ap = new FakeAccessPoint(200, $"{{\"guid\":\"{SubmissionGuid}\"}}");
+        var order = LoadSample() with
+        {
+            AllowancesCharges = [new DocumentAllowanceCharge { Amount = 500m, Reason = "Too much", VatPercent = 21 }],
+        };
+
+        var result = await ap.CreateSender().SendAsync(order);
+
+        Assert.Equal(OutboundInvoiceSender.BuildRuleId, Assert.Single(result.Validation.Errors).RuleId);
+        Assert.Empty(ap.Requests);
+    }
+
+    [Fact]
+    public void FormattedBelgianEnterpriseNumber_IsNormalisedToDigits()
+    {
+        var json = File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "Fixtures", "sample-order.json"))
+            .Replace("\"0000000097\"", "\"0000.000.097\"");
+        var order = OrderJson.Parse(json);
+        Assert.Equal("0000000097", order.Seller.EndpointId);
+    }
+
+    [Fact]
     public async Task OrderWithoutLines_FailsWithBuildFindingAndNeverReachesFake()
     {
         await using var ap = new FakeAccessPoint(200, $"{{\"guid\":\"{SubmissionGuid}\"}}");

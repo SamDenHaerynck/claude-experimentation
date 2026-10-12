@@ -43,6 +43,51 @@ public class PeppolValidatorTests
         Assert.True(result.IsValid, string.Join("\n", result.Errors.Select(f => $"{f.RuleSet} {f.RuleId}: {f.Message}")));
     }
 
+    private static Order WithDiscountAndFreight() => LoadSample() with
+    {
+        AllowancesCharges =
+        [
+            new DocumentAllowanceCharge { Amount = 21.50m, ReasonCode = "95", Reason = "10% discount", VatPercent = 21 },
+            new DocumentAllowanceCharge { IsCharge = true, Amount = 15m, ReasonCode = "FC", Reason = "Freight", VatPercent = 21 },
+        ],
+    };
+
+    // Hand-checked: lines 125+90 at 21% and 8 at 6% = 223.00; -21.50 +15.00 = 216.50 excl. VAT;
+    // 21% base 208.50 -> 43.79 (43.785 rounds up), 6% base 8.00 -> 0.48; VAT 44.27; payable 260.77.
+    [Fact]
+    public void DocumentDiscountAndFreight_IsValid_WithHandCheckedTotals()
+    {
+        var doc = PeppolInvoiceBuilder.Build(WithDiscountAndFreight());
+        AssertValid(WithDiscountAndFreight());
+        var total = doc.Descendants(Cac + "LegalMonetaryTotal").Single();
+        string V(string n) => total.Element(Cbc + n)!.Value;
+        Assert.Equal("223.00", V("LineExtensionAmount"));
+        Assert.Equal("21.50", V("AllowanceTotalAmount"));
+        Assert.Equal("15.00", V("ChargeTotalAmount"));
+        Assert.Equal("216.50", V("TaxExclusiveAmount"));
+        Assert.Equal("260.77", V("PayableAmount"));
+        Assert.Equal("44.27", doc.Root!.Element(Cac + "TaxTotal")!.Element(Cbc + "TaxAmount")!.Value);
+    }
+
+    [Fact]
+    public void ChargeAtRateNoLineHas_CreatesItsOwnVatBreakdown()
+    {
+        var order = LoadSample() with
+        {
+            Lines = LoadSample().Lines.Select(l => l with { VatPercent = 6 }).ToList(),
+            AllowancesCharges = [new DocumentAllowanceCharge { IsCharge = true, Amount = 10m, Reason = "Fee", VatPercent = 21 }],
+        };
+        AssertValid(order);
+    }
+
+    [Fact]
+    public void AllowanceWithoutReason_FailsBr33()
+    {
+        var order = LoadSample() with { AllowancesCharges = [new DocumentAllowanceCharge { Amount = 5m, VatPercent = 21 }] };
+        var result = PeppolValidator.Validate(PeppolInvoiceBuilder.Build(order));
+        Assert.Contains("BR-33", ErrorIds(result));
+    }
+
     [Fact]
     public void IntraEuSupply_K_WithReasonAndDelivery_IsValid()
     {
