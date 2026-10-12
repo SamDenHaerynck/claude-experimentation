@@ -10,7 +10,7 @@ ever talked to a real Access Point or a real Optimizely Configured Commerce inst
 - parses an order from JSON (`BePeppolCommerce.Core.Model.OrderJson`), rejecting null or empty
   required values
 - builds a UBL 2.1 Invoice XML with the Peppol BIS 3.0 `CustomizationID`/`ProfileID`,
-  seller/buyer parties (Belgian `0208` endpoint scheme), per-rate VAT breakdown, totals and lines
+  seller/buyer parties (Belgian `0208` endpoint scheme), per-rate VAT breakdown, document-level allowances and charges (`Order.AllowancesCharges`: discounts, freight), totals and lines
   (`BePeppolCommerce.Core.Ubl.PeppolInvoiceBuilder`)
 - validates an invoice or credit note (`BePeppolCommerce.Core.Validation.PeppolValidator`) against
   the UBL 2.1 XSD and the official EN16931 (CEN 1.3.15) and Peppol BIS Billing 3.0.20 Schematron
@@ -150,8 +150,8 @@ From this directory (`ideas/be-peppol-commerce/app`):
 dotnet test
 ```
 
-The first run takes about a minute (restore, jar download, IKVM compiling the jars). All 279 tests
-should pass (197 in `BePeppolCommerce.Core.Tests`, 82 in `BePeppolCommerce.Api.Tests`). If a download fails (Maven Central sometimes rate-limits with HTTP 429), or a file fails its
+The first run takes about a minute (restore, jar download, IKVM compiling the jars). All 285 tests
+should pass (203 in `BePeppolCommerce.Core.Tests`, 82 in `BePeppolCommerce.Api.Tests`). If a download fails (Maven Central sometimes rate-limits with HTTP 429), or a file fails its
 SHA-256 check (the file is then deleted), wait a minute and run `dotnet test` again.
 
 ## Run the API host
