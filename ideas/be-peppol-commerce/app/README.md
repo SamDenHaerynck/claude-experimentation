@@ -153,8 +153,8 @@ dotnet test
 ```
 
 The first run takes about a minute (restore, jar download, IKVM compiling the jars). IKVM and
-obsolete-API build warnings (IKVM0100, IKVM0117, CS0612) are expected. All 285 tests
-should pass (203 in `BePeppolCommerce.Core.Tests`, 82 in `BePeppolCommerce.Api.Tests`). If a download fails (Maven Central sometimes rate-limits with HTTP 429), or a file fails its
+obsolete-API build warnings (IKVM0100, IKVM0117, CS0612) are expected. All 286 tests
+should pass (204 in `BePeppolCommerce.Core.Tests`, 82 in `BePeppolCommerce.Api.Tests`). If a download fails (Maven Central sometimes rate-limits with HTTP 429), or a file fails its
 SHA-256 check (the file is then deleted), wait a minute and run `dotnet test` again.
 
 ## Run the API host

@@ -85,7 +85,7 @@ public sealed class OutboundInvoiceSender
         {
             xml = Serialize(PeppolInvoiceBuilder.Build(order));
         }
-        catch (Exception ex) when (ex is ArgumentException or System.Xml.XmlException)
+        catch (Exception ex) when (ex is System.Xml.XmlException or ArgumentException and not ArgumentNullException)
         {
             return new OutboundResult(OutboundStatus.ValidationFailed, null,
                 new ValidationResult([new ValidationFinding("BePeppolCommerce", BuildRuleId, "fatal",

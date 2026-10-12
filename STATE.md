@@ -14,7 +14,7 @@ Everything else open stays a HANDOFF.md gap. Then write `DEPLOYMENT.md`, `MONETI
 `HANDOFF.md` (Phase 5; may be the following session). No second review round is needed unless a
 fix is large; if run, max one more (OWNER spec: two rounds).
 Setup: install the .NET 8 SDK (`RUNBOOK.md` "Build environment"); `timeout 400 dotnet test
---blame-hang-timeout 120s` in `ideas/be-peppol-commerce/app` (285 should pass; a first restore can hit
+--blame-hang-timeout 120s` in `ideas/be-peppol-commerce/app` (286 should pass; a first restore can hit
 Maven 429, wait 30s and retry) and `dotnet run --project samples/BePeppolCommerce.Walkthrough` (exit 0).
 Read first: OWNER.md, RUNBOOK.md, ideas/be-peppol-commerce/REVIEW.md,
 ideas/be-peppol-commerce/app/src/BePeppolCommerce.Core/Ubl/PeppolInvoiceBuilder.cs,

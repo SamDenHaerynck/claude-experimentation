@@ -81,6 +81,20 @@ public class PeppolValidatorTests
     }
 
     [Fact]
+    public void AllowanceAtRateNoLineHas_GivesNegativeVatBreakdownThatValidates()
+    {
+        // Documents current behaviour: a group made only of an allowance has a negative base and negative tax,
+        // and the EN16931/Peppol rules accept it. Whether the host meant that rate is its own business.
+        var order = LoadSample() with
+        {
+            AllowancesCharges = [new DocumentAllowanceCharge { Amount = 5m, Reason = "Discount", VatPercent = 12 }],
+        };
+        var doc = PeppolInvoiceBuilder.Build(order);
+        AssertValid(order);
+        Assert.Contains(doc.Descendants(Cac + "TaxSubtotal"), t => t.Element(Cbc + "TaxableAmount")!.Value == "-5.00");
+    }
+
+    [Fact]
     public void AllowanceWithoutReason_FailsBr33()
     {
         var order = LoadSample() with { AllowancesCharges = [new DocumentAllowanceCharge { Amount = 5m, VatPercent = 21 }] };
