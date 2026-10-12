@@ -1,21 +1,21 @@
 # State
-Day: 037
+Day: 038
 Idea: be-peppol-commerce
 Phase: 4 Review
-Slice: n/a (11 of 11 build slices complete); Review round 1 wave one done day 037, 2 of 3 highs fixed
-Next action: Fix review high H2 in `ideas/be-peppol-commerce/REVIEW.md` (allowances and charges):
-add document-level allowances/charges to `Order` (reason, amount, VAT category/percent, exemption
-reason) and optionally line-level ones to `OrderLine`; in `PeppolInvoiceBuilder` emit header
-`cac:AllowanceCharge` before `cac:TaxTotal`, subtract allowances/add charges per VAT group before
-computing tax, and write `AllowanceTotalAmount`/`ChargeTotalAmount` with
-TaxExclusive = LineExtension - allowances + charges; add validator-backed tests (a 10% discount
-and a freight charge on the sample order must give `IsValid`, with hand-checked totals). Then, if
-time allows, the cheap mediums M2 (XML-invalid chars -> permanent BEPC-BUILD failure) and M8
-(normalise `0403.170.701` style ids). Then wave two (docs: follow `app/README.md` literally from a
-clean clone), same session if time allows, else next. Mark each fixed item in REVIEW.md.
-Setup: install the .NET 8 SDK (`RUNBOOK.md` "Build environment"); `dotnet test` in
-`ideas/be-peppol-commerce/app` (279 should pass) and
-`dotnet run --project samples/BePeppolCommerce.Walkthrough` (exit 0).
+Slice: n/a (11 of 11 build slices complete); Review round 1 complete (waves one and two), all 3 highs fixed (H2 at document level)
+Next action: Finish round 1 mediums in `ideas/be-peppol-commerce/REVIEW.md`, then start Phase 5. In
+order: (1) M4+M3: add `PaymentMeans` (IBAN, optional Belgian structured communication/OGM as
+`PaymentID`) and `OrderReference`/`PaymentTerms` text to `Order` and `PeppolInvoiceBuilder`
+(UBL order: after `Delivery`, `PaymentMeans` then `PaymentTerms`, before header `AllowanceCharge`),
+with validator-backed tests (valid with IBAN, valid with OGM, invalid IBAN rejected at parse);
+(2) M7: make `POST /webhooks/inbound` return an acknowledgement only (no invoice data) and update
+the Api tests and README; (3) M11: truncate provider error text in logs/failure details.
+Everything else open stays a HANDOFF.md gap. Then write `DEPLOYMENT.md`, `MONETIZATION.md`,
+`HANDOFF.md` (Phase 5; may be the following session). No second review round is needed unless a
+fix is large; if run, max one more (OWNER spec: two rounds).
+Setup: install the .NET 8 SDK (`RUNBOOK.md` "Build environment"); `timeout 400 dotnet test
+--blame-hang-timeout 120s` in `ideas/be-peppol-commerce/app` (286 should pass; a first restore can hit
+Maven 429, wait 30s and retry) and `dotnet run --project samples/BePeppolCommerce.Walkthrough` (exit 0).
 Read first: OWNER.md, RUNBOOK.md, ideas/be-peppol-commerce/REVIEW.md,
 ideas/be-peppol-commerce/app/src/BePeppolCommerce.Core/Ubl/PeppolInvoiceBuilder.cs,
 ideas/be-peppol-commerce/app/src/BePeppolCommerce.Core/Model/Order.cs, the v1 gap notes below.
@@ -78,9 +78,9 @@ Notes for owner:
   as a Recommand webhook yet; (2) no retry cap: a Recommand 422 with category `transport` is retried
   on every run, and Recommand's send has no idempotency key, so a delivery that in fact succeeded
   could be repeated. A cap needs an attempt count in the host's `IOrderInvoiceSource`.
-- (Owner) Day 037, review round 1: 3 highs, 2 fixed (VAT categories K/AE/E/O now validate;
-  Storecove scheme map reachable from the Configured Commerce settings path). Allowances/charges
-  (discounts, freight) are not supported yet and are next. Open mediums that will become HANDOFF.md
+- (Owner) Day 038: review round 1 is complete. All 3 highs fixed (VAT categories K/AE/E/O; Storecove
+  scheme map; document-level allowances/charges, line-level ones remain a gap). Wave two (README run
+  from a clean clone) found every documented command working; stale counts and docs were fixed. Open mediums that will become HANDOFF.md
   gaps unless fixed: no IBAN/structured communication, no credit notes, inbound invoices have no
   sink, webhook replay. Full list in `ideas/be-peppol-commerce/REVIEW.md`. If you know Storecove's
   scheme names for 0208/9925, a line in `SIGNALS.md` settles H3's remaining unknown.
@@ -90,4 +90,4 @@ Notes for owner:
   cap is reached after H2 and the rest must go to HANDOFF.md as gaps; say so in `SIGNALS.md`.
 Tournament round: 1 (won)
 Kills before 2026-09-23 rewrite: 14
-Last session: 2026-10-09, ended clean
+Last session: 2026-10-12, ended clean

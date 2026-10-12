@@ -16,12 +16,24 @@ public static class OrderJson
             ?? throw new JsonException("Order JSON was null.");
         // `required` does not reject explicit JSON nulls, so check the members Build depends on.
         if (order.Seller?.Address is null || order.Buyer?.Address is null || order.Lines is null
-            || order.Lines.Any(l => l is null))
+            || order.Lines.Any(l => l is null) || (order.AllowancesCharges?.Any(a => a is null) ?? false))
             throw new JsonException("Order JSON is missing seller, buyer, an address, or lines.");
+        order = order with { Seller = Normalise(order.Seller), Buyer = Normalise(order.Buyer) };
         var missing = MissingRequiredStrings(order).FirstOrDefault();
         if (missing is not null)
             throw new JsonException($"Order JSON has a null or empty required value: {missing}.");
         return order;
+    }
+
+    // A Belgian enterprise number is often written 0403.170.701 or "0403 170 701"; Peppol wants digits only
+    // (PEPPOL-COMMON-R043). Only the 0208 endpoint id and the legal registration id are touched.
+    private static Party Normalise(Party p)
+    {
+        static string Digits(string v) => new(v.Where(char.IsAsciiDigit).ToArray());
+        static bool Formatted(string v) => v.Length > 0 && v.All(c => char.IsAsciiDigit(c) || c is '.' or ' ');
+        var endpoint = p.EndpointSchemeId == "0208" && p.EndpointId is { } e && Formatted(e) ? Digits(e) : p.EndpointId;
+        var reg = p.LegalRegistrationId is { } r && p.Address?.CountryCode == "BE" && Formatted(r) ? Digits(r) : p.LegalRegistrationId;
+        return p with { EndpointId = endpoint, LegalRegistrationId = reg };
     }
 
     private static IEnumerable<string> MissingRequiredStrings(Order o)
@@ -35,6 +47,12 @@ public static class OrderJson
             if (Blank(p.EndpointId)) yield return $"{name}.endpointId";
             if (Blank(p.EndpointSchemeId)) yield return $"{name}.endpointSchemeId";
             if (Blank(p.Address.CountryCode)) yield return $"{name}.address.countryCode";
+        }
+        for (var i = 0; i < (o.AllowancesCharges?.Count ?? 0); i++)
+        {
+            var a = o.AllowancesCharges![i];
+            if (Blank(a.VatCategory)) yield return $"allowancesCharges[{i}].vatCategory";
+            if (a.Amount < 0) yield return $"allowancesCharges[{i}].amount (must not be negative)";
         }
         for (var i = 0; i < o.Lines.Count; i++)
         {

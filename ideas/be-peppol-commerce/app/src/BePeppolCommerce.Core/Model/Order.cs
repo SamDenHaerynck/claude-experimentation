@@ -19,6 +19,26 @@ public sealed record Order
     public required Party Seller { get; init; }
     public required Party Buyer { get; init; }
     public required IReadOnlyList<OrderLine> Lines { get; init; }
+    /// <summary>Document-level discounts and charges (BG-20/BG-21), e.g. a promotion or freight.</summary>
+    public IReadOnlyList<DocumentAllowanceCharge>? AllowancesCharges { get; init; }
+}
+
+/// <summary>
+/// A document-level allowance (discount) or charge (freight, fee). <see cref="Amount"/> is positive
+/// and excludes VAT; <see cref="IsCharge"/> decides whether it is added or subtracted.
+/// </summary>
+public sealed record DocumentAllowanceCharge
+{
+    public bool IsCharge { get; init; }
+    public required decimal Amount { get; init; }
+    /// <summary>UNCL5189 code for an allowance (e.g. "95" discount) or UNCL7161 for a charge (e.g. "FC" freight).</summary>
+    public string? ReasonCode { get; init; }
+    /// <summary>Free-text reason. EN16931 needs a code or a text (BR-33, BR-38).</summary>
+    public string? Reason { get; init; }
+    public string VatCategory { get; init; } = "S";
+    public required decimal VatPercent { get; init; }
+    public string? VatExemptionReasonCode { get; init; }
+    public string? VatExemptionReason { get; init; }
 }
 
 public sealed record Party

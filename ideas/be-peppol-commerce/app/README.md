@@ -10,7 +10,7 @@ ever talked to a real Access Point or a real Optimizely Configured Commerce inst
 - parses an order from JSON (`BePeppolCommerce.Core.Model.OrderJson`), rejecting null or empty
   required values
 - builds a UBL 2.1 Invoice XML with the Peppol BIS 3.0 `CustomizationID`/`ProfileID`,
-  seller/buyer parties (Belgian `0208` endpoint scheme), per-rate VAT breakdown, totals and lines
+  seller/buyer parties (Belgian `0208` endpoint scheme), per-rate VAT breakdown, document-level allowances and charges (`Order.AllowancesCharges`: discounts, freight), totals and lines
   (`BePeppolCommerce.Core.Ubl.PeppolInvoiceBuilder`)
 - validates an invoice or credit note (`BePeppolCommerce.Core.Validation.PeppolValidator`) against
   the UBL 2.1 XSD and the official EN16931 (CEN 1.3.15) and Peppol BIS Billing 3.0.20 Schematron
@@ -68,10 +68,12 @@ ever talked to a real Access Point or a real Optimizely Configured Commerce inst
 It does **not** yet do the following:
 
 - emit an order reference, payment terms or payment means (IBAN, structured communication), or
-  document- or line-level allowances and charges (discounts, freight). Orders with no buyer
+  line-level allowances and charges (BG-27/28). Document-level ones work (`Order.AllowancesCharges`:
+  `isCharge`, a positive `amount` excluding VAT, `reasonCode` or `reason`, `vatCategory`,
+  `vatPercent`), so hosts must send discounts and freight that way. Orders with no buyer
   reference or no due date are built, but the validator then reports PEPPOL-EN16931-R003 or
   BR-CO-25, and a negative-price discount line fails BR-27, so they are caught before sending. An order whose
-  total is negative is refused before building (`BEPC-BUILD`), because it needs a credit note,
+  total (lines minus allowances plus charges) is negative is refused before building (`BEPC-BUILD`), because it needs a credit note,
   which v1 does not build.
   VAT categories S, Z, E, AE, K and O do validate when the order carries what EN16931 asks for:
   `vatExemptionReasonCode` (or `vatExemptionReason`) on the lines for E, AE, K and O,
@@ -150,8 +152,9 @@ From this directory (`ideas/be-peppol-commerce/app`):
 dotnet test
 ```
 
-The first run takes about a minute (restore, jar download, IKVM compiling the jars). All 279 tests
-should pass (197 in `BePeppolCommerce.Core.Tests`, 82 in `BePeppolCommerce.Api.Tests`). If a download fails (Maven Central sometimes rate-limits with HTTP 429), or a file fails its
+The first run takes about a minute (restore, jar download, IKVM compiling the jars). IKVM and
+obsolete-API build warnings (IKVM0100, IKVM0117, CS0612) are expected. All 286 tests
+should pass (204 in `BePeppolCommerce.Core.Tests`, 82 in `BePeppolCommerce.Api.Tests`). If a download fails (Maven Central sometimes rate-limits with HTTP 429), or a file fails its
 SHA-256 check (the file is then deleted), wait a minute and run `dotnet test` again.
 
 ## Run the API host
@@ -164,7 +167,7 @@ It listens on http://localhost:5080 in the Development environment (set by
 `Properties/launchSettings.json`). `GET /health` answers `{"status":"ok"}`. Without an Access Point
 API key, `POST /webhooks/inbound` answers 503 and a startup warning names the selected provider.
 To point it at a provider, set configuration (environment variables shown; see
-`src/BePeppolCommerce.Api/.env.example`, placeholders only). The settings bind to typed options
+`src/BePeppolCommerce.Api/.env.example`, placeholders only; do not export the file wholesale, because its placeholder `Storecove__LegalEntityId=0` is invalid and stops the host at startup). The settings bind to typed options
 (`AccessPointOptions`, `StorecoveSection`, `RecommandSection` in `AccessPointConfig.cs`). Once the
 selected provider has an API key, every invalid value in its section stops the host at startup with
 an `OptionsValidationException` that names each bad setting (for example

@@ -70,12 +70,27 @@ public sealed class OutboundInvoiceSender
 
         // A negative total passes EN16931 validation but would go out as a commercial invoice (380);
         // it needs a credit note, which v1 does not build (review day 037, M5).
-        if (order.Lines.Sum(l => l.LineExtensionAmount) < 0)
+        var docAcs = order.AllowancesCharges ?? [];
+        if (order.Lines.Sum(l => l.LineExtensionAmount)
+            - docAcs.Where(a => !a.IsCharge).Sum(a => a.Amount) + docAcs.Where(a => a.IsCharge).Sum(a => a.Amount) < 0)
             return new OutboundResult(OutboundStatus.ValidationFailed, null,
                 new ValidationResult([new ValidationFinding("BePeppolCommerce", BuildRuleId, "fatal",
                     "The order total is negative; send a credit note instead (not supported in v1).", "/")]), null);
 
-        var xml = Serialize(PeppolInvoiceBuilder.Build(order));
+        // A character that XML 1.0 cannot carry (e.g. a pasted vertical tab) makes serialisation throw.
+        // That is bad order data and retrying cannot fix it, so report it as a permanent build failure
+        // (review day 037, M2).
+        string xml;
+        try
+        {
+            xml = Serialize(PeppolInvoiceBuilder.Build(order));
+        }
+        catch (Exception ex) when (ex is System.Xml.XmlException or ArgumentException and not ArgumentNullException)
+        {
+            return new OutboundResult(OutboundStatus.ValidationFailed, null,
+                new ValidationResult([new ValidationFinding("BePeppolCommerce", BuildRuleId, "fatal",
+                    "The order contains a character that XML cannot carry (for example a control character).", "/")]), null);
+        }
 
         // Validate the exact string that would be sent, not the in-memory tree.
         var validation = PeppolValidator.Validate(xml);
