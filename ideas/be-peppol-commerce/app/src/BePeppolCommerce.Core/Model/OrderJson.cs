@@ -18,11 +18,22 @@ public static class OrderJson
         if (order.Seller?.Address is null || order.Buyer?.Address is null || order.Lines is null
             || order.Lines.Any(l => l is null) || (order.AllowancesCharges?.Any(a => a is null) ?? false))
             throw new JsonException("Order JSON is missing seller, buyer, an address, or lines.");
-        order = order with { Seller = Normalise(order.Seller), Buyer = Normalise(order.Buyer) };
+        order = order with { Seller = Normalise(order.Seller), Buyer = Normalise(order.Buyer), Payment = NormalisePayment(order.Payment) };
         var missing = MissingRequiredStrings(order).FirstOrDefault();
         if (missing is not null)
             throw new JsonException($"Order JSON has a null or empty required value: {missing}.");
         return order;
+    }
+
+    private static PaymentInstruction? NormalisePayment(PaymentInstruction? p)
+    {
+        if (p is null) return null;
+        var iban = PaymentReferences.NormaliseIban(p.Iban)
+            ?? throw new JsonException("Order JSON has an invalid payment.iban (failed the IBAN checksum).");
+        var ogm = p.StructuredCommunication is null ? null
+            : PaymentReferences.NormaliseStructuredCommunication(p.StructuredCommunication)
+                ?? throw new JsonException("Order JSON has an invalid payment.structuredCommunication (needs 12 digits with a valid modulo-97 check).");
+        return p with { Iban = iban, StructuredCommunication = ogm };
     }
 
     // A Belgian enterprise number is often written 0403.170.701 or "0403 170 701"; Peppol wants digits only

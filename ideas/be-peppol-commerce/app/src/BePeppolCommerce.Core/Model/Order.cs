@@ -12,6 +12,15 @@ public sealed record Order
     public DateOnly? DueDate { get; init; }
     public required string CurrencyCode { get; init; }
     public string? BuyerReference { get; init; }
+    /// <summary>
+    /// Buyer's purchase order number (BT-13). Peppol requires a <see cref="BuyerReference"/> or an order
+    /// reference (PEPPOL-EN16931-R003); a missing both makes the invoice invalid.
+    /// </summary>
+    public string? OrderReference { get; init; }
+    /// <summary>Payment terms text (BT-20), e.g. "Net 30 days". With no <see cref="DueDate"/> this satisfies BR-CO-25.</summary>
+    public string? PaymentTerms { get; init; }
+    /// <summary>Where to pay (credit transfer). Without it the invoice is valid but the buyer cannot tell where to pay.</summary>
+    public PaymentInstruction? Payment { get; init; }
     /// <summary>Actual delivery date (BT-72). Required by EN16931 when any line is category K (intra-EU).</summary>
     public DateOnly? DeliveryDate { get; init; }
     /// <summary>Deliver-to country, ISO 3166-1 alpha-2 (BT-80). Required when any line is category K.</summary>
@@ -21,6 +30,18 @@ public sealed record Order
     public required IReadOnlyList<OrderLine> Lines { get; init; }
     /// <summary>Document-level discounts and charges (BG-20/BG-21), e.g. a promotion or freight.</summary>
     public IReadOnlyList<DocumentAllowanceCharge>? AllowancesCharges { get; init; }
+}
+
+/// <summary>Credit-transfer payment details (BG-16/BG-17). Parsed values are normalised and checked, see <see cref="PaymentReferences"/>.</summary>
+public sealed record PaymentInstruction
+{
+    /// <summary>IBAN of the seller's account (BT-84), without spaces, upper case, mod-97 checked at parse.</summary>
+    public required string Iban { get; init; }
+    /// <summary>
+    /// Belgian structured communication ("OGM/VCS", BT-83), for example "+++123/4567/89002+++". Optional;
+    /// checked at parse (12 digits, the last two being the first ten modulo 97).
+    /// </summary>
+    public string? StructuredCommunication { get; init; }
 }
 
 /// <summary>

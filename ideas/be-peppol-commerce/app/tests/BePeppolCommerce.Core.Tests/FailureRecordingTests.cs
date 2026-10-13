@@ -204,3 +204,16 @@ public class FailureRecordingTests
         Assert.Throws<ArgumentOutOfRangeException>(() => new InMemoryFailedDocumentLog(0));
     }
 }
+
+public class AccessPointErrorTests
+{
+    [Fact]
+    public void LongProviderText_IsTruncated_ShortTextUntouched()
+    {
+        var long300 = new string('x', 5000);
+        var error = new BePeppolCommerce.Core.AccessPoint.AccessPointError("provider", long300);
+        Assert.Equal(BePeppolCommerce.Core.AccessPoint.AccessPointError.MaxDetailsLength + 3, error.Details.Length);
+        Assert.EndsWith("...", error.Details);
+        Assert.Equal("short", new BePeppolCommerce.Core.AccessPoint.AccessPointError("s", "short").Details);
+    }
+}

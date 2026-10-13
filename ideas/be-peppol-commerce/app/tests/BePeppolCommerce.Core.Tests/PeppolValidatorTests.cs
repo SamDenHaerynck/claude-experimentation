@@ -190,6 +190,79 @@ public class PeppolValidatorTests
         Assert.StartsWith("line ", Assert.Single(fromString.Errors, e => e.RuleSet == "UBL-2.1-XSD").Location);
     }
 
+    // Review day 038 (M3/M4): payment means and fallbacks, each checked by the official rules.
+    [Fact]
+    public void PaymentWithIban_IsValid_AndWritesPaymentMeansInSchemaOrder()
+    {
+        var order = LoadSample() with { Payment = new PaymentInstruction { Iban = "BE68539007547034" } };
+        AssertValid(order);
+        var root = PeppolInvoiceBuilder.Build(order).Root!;
+        var means = root.Element(Cac + "PaymentMeans")!;
+        Assert.Equal("30", means.Element(Cbc + "PaymentMeansCode")!.Value);
+        Assert.Equal("BE68539007547034", means.Element(Cac + "PayeeFinancialAccount")!.Element(Cbc + "ID")!.Value);
+        Assert.Null(means.Element(Cbc + "PaymentID"));
+    }
+
+    [Fact]
+    public void PaymentWithStructuredCommunication_IsValid_AndCarriesItAsPaymentId()
+    {
+        var order = LoadSample() with
+        {
+            Payment = new PaymentInstruction { Iban = "BE68539007547034", StructuredCommunication = "+++123/4567/89002+++" },
+        };
+        AssertValid(order);
+        Assert.Equal("+++123/4567/89002+++",
+            PeppolInvoiceBuilder.Build(order).Root!.Element(Cac + "PaymentMeans")!.Element(Cbc + "PaymentID")!.Value);
+    }
+
+    [Fact]
+    public void OrderReferenceInsteadOfBuyerReference_AndPaymentTermsInsteadOfDueDate_AreValid()
+    {
+        var order = LoadSample() with { BuyerReference = null, OrderReference = "PO-777", DueDate = null, PaymentTerms = "Net 30 days" };
+        AssertValid(order);
+        var root = PeppolInvoiceBuilder.Build(order).Root!;
+        Assert.Equal("PO-777", root.Element(Cac + "OrderReference")!.Element(Cbc + "ID")!.Value);
+        Assert.Equal("Net 30 days", root.Element(Cac + "PaymentTerms")!.Element(Cbc + "Note")!.Value);
+    }
+
+    [Fact]
+    public void OrderWithNoDueDateAndNoPaymentTerms_FailsBrCo25()
+    {
+        var result = PeppolValidator.Validate(PeppolInvoiceBuilder.Build(LoadSample() with { DueDate = null }));
+        Assert.Contains("BR-CO-25", ErrorIds(result));
+    }
+
+    [Theory]
+    [InlineData("""{ "iban": "BE68539007547035" }""")]
+    [InlineData("""{ "iban": "not an iban" }""")]
+    [InlineData("""{ "iban": "BE68539007547034", "structuredCommunication": "+++123/4567/89003+++" }""")]
+    [InlineData("""{ "iban": "BE68539007547034", "structuredCommunication": "12345" }""")]
+    public void InvalidPaymentDetails_AreRejectedAtParse(string payment)
+    {
+        var json = File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "Fixtures", "sample-order.json"));
+        json = json.Insert(json.LastIndexOf('}'), $", \"payment\": {payment}");
+        Assert.Throws<System.Text.Json.JsonException>(() => OrderJson.Parse(json));
+    }
+
+    [Fact]
+    public void PaymentDetails_AreNormalisedAtParse()
+    {
+        var json = File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "Fixtures", "sample-order.json"));
+        json = json.Insert(json.LastIndexOf('}'),
+            ", \"payment\": { \"iban\": \"be68 5390 0754 7034\", \"structuredCommunication\": \"123 4567 89002\" }");
+        var payment = OrderJson.Parse(json).Payment!;
+        Assert.Equal("BE68539007547034", payment.Iban);
+        Assert.Equal("+++123/4567/89002+++", payment.StructuredCommunication);
+    }
+
+    [Fact]
+    public void StructuredCommunication_ZeroRemainderUsesCheckDigits97()
+    {
+        // 9999999999 mod 97 = 48 and 0000000097 has remainder 0 -> check digits 97.
+        Assert.Equal("+++000/0000/09797+++", PaymentReferences.NormaliseStructuredCommunication("000000009797"));
+        Assert.Null(PaymentReferences.NormaliseStructuredCommunication("000000009700"));
+    }
+
     [Fact]
     public void OrderWithoutBuyerReference_FailsPeppolR003()
     {

@@ -25,7 +25,20 @@ public sealed record AccessPointResult<T>(bool Success, T? Value, int? HttpStatu
 }
 
 /// <summary>One error reported by the provider, or by the client when the response was unusable.</summary>
-public sealed record AccessPointError(string Source, string Details);
+public sealed record AccessPointError
+{
+    /// <summary>Provider text is cut to this length: error bodies can echo invoice data into logs and failure records.</summary>
+    public const int MaxDetailsLength = 300;
+
+    public AccessPointError(string source, string details)
+    {
+        Source = source;
+        Details = details.Length <= MaxDetailsLength ? details : details[..MaxDetailsLength] + "...";
+    }
+
+    public string Source { get; init; }
+    public string Details { get; init; }
+}
 
 /// <summary>
 /// A client of an existing accredited Peppol Access Point provider. This library never acts as an

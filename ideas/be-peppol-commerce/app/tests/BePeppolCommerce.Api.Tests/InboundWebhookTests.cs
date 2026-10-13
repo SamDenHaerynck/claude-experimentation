@@ -73,7 +73,7 @@ public class InboundWebhookTests
     [Theory]
     [InlineData("guid")]
     [InlineData("document_guid")]
-    public async Task Webhook_FetchesParsesAndReturnsInvoice(string property)
+    public async Task Webhook_FetchesParsesAndAcknowledgesWithoutInvoiceData(string property)
     {
         var fake = Returning(SampleInvoiceXml());
 
@@ -84,13 +84,12 @@ public class InboundWebhookTests
         using var body = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
         var root = body.RootElement;
         Assert.Equal(DocumentGuid, root.GetProperty("providerDocumentId").GetString());
-        var invoice = root.GetProperty("invoice");
-        Assert.Equal("INV-2026-0001", invoice.GetProperty("invoiceNumber").GetString());
-        Assert.Equal("2026-09-28", invoice.GetProperty("issueDate").GetString());
-        Assert.Equal("EUR", invoice.GetProperty("currency").GetString());
-        Assert.Equal("0000000097", invoice.GetProperty("seller").GetProperty("endpoint").GetProperty("id").GetString());
-        Assert.Equal(3, invoice.GetProperty("lineCount").GetInt32());
-        Assert.Equal(268.63m, invoice.GetProperty("payableAmount").GetDecimal());
+        Assert.Equal("accepted", root.GetProperty("status").GetString());
+        // Acknowledgement only: no party or amount data in the response.
+        Assert.Equal(["providerDocumentId", "status"], root.EnumerateObject().Select(p => p.Name).Order().ToArray());
+        var raw = root.GetRawText();
+        Assert.DoesNotContain("INV-2026-0001", raw);
+        Assert.DoesNotContain("268.63", raw);
     }
 
     [Theory]

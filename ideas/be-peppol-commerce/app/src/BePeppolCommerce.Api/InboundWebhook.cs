@@ -32,8 +32,11 @@ public sealed class InboundWebhookOptions
     public string? SigningSecret { get; set; }
 }
 
-/// <summary>Response body for a received invoice.</summary>
-public sealed record InboundWebhookResponse(string ProviderDocumentId, InboundInvoice Invoice);
+/// <summary>
+/// Acknowledgement only. It carries no invoice data, so a leaked webhook secret does not expose invoices.
+/// Where the parsed invoice goes is the host's concern (no sink exists in v1).
+/// </summary>
+public sealed record InboundWebhookResponse(string ProviderDocumentId, string Status);
 
 /// <summary>
 /// Webhook for "a document was received". Storecove's public OpenAPI spec does not define the webhook
@@ -42,7 +45,7 @@ public sealed record InboundWebhookResponse(string ProviderDocumentId, InboundIn
 /// GUID, or as <c>documentId</c>, whose value is a GUID or a Recommand-style id (letters, digits,
 /// '_' and '-', for example "doc_01JQ..."). All three names are this project's convention: neither
 /// provider's real webhook delivery is parsed yet. The handler fetches the document from the Access
-/// Point, parses it and returns the normalized invoice.
+/// Point, parses it and validates it by parsing it and answers with an acknowledgement.
 /// </summary>
 public static partial class InboundWebhook
 {
@@ -130,7 +133,7 @@ public static partial class InboundWebhook
             return Results.Problem(parsed.Error, statusCode: StatusCodes.Status422UnprocessableEntity);
         }
 
-        return Results.Ok(new InboundWebhookResponse(fetched.Value.ProviderDocumentId, parsed.Invoice!));
+        return Results.Ok(new InboundWebhookResponse(fetched.Value.ProviderDocumentId, "accepted"));
     }
 
     private static IResult Unauthorized(ILogger log)
