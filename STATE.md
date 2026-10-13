@@ -1,24 +1,19 @@
 # State
-Day: 038
+Day: 039
 Idea: be-peppol-commerce
 Phase: 4 Review
-Slice: n/a (11 of 11 build slices complete); Review round 1 complete (waves one and two), all 3 highs fixed (H2 at document level)
-Next action: Finish round 1 mediums in `ideas/be-peppol-commerce/REVIEW.md`, then start Phase 5. In
-order: (1) M4+M3: add `PaymentMeans` (IBAN, optional Belgian structured communication/OGM as
-`PaymentID`) and `OrderReference`/`PaymentTerms` text to `Order` and `PeppolInvoiceBuilder`
-(UBL order: after `Delivery`, `PaymentMeans` then `PaymentTerms`, before header `AllowanceCharge`),
-with validator-backed tests (valid with IBAN, valid with OGM, invalid IBAN rejected at parse);
-(2) M7: make `POST /webhooks/inbound` return an acknowledgement only (no invoice data) and update
-the Api tests and README; (3) M11: truncate provider error text in logs/failure details.
-Everything else open stays a HANDOFF.md gap. Then write `DEPLOYMENT.md`, `MONETIZATION.md`,
-`HANDOFF.md` (Phase 5; may be the following session). No second review round is needed unless a
-fix is large; if run, max one more (OWNER spec: two rounds).
+Slice: n/a (11 of 11 build slices complete); Review round 1 complete, highs and the chosen mediums (M3, M4, M7, M11) fixed day 039
+Next action: Phase 5. Write `ideas/be-peppol-commerce/DEPLOYMENT.md`, `MONETIZATION.md` and `HANDOFF.md`
+(see the routine spec for contents). HANDOFF.md gaps come from the open items in REVIEW.md (M5 credit
+notes, M6 no inbound sink, M9/M10 Recommand retry and replay, M12 mapping table, H2 line-level
+allowances, Storecove scheme names unconfirmed) and the Notes for owner below. Pricing in
+MONETIZATION.md needs real fetched competitor prices (see VALIDATION.md for ones already cited).
+Then check the handoff bar and `git mv ideas/be-peppol-commerce shipped/be-peppol-commerce` if all pass.
 Setup: install the .NET 8 SDK (`RUNBOOK.md` "Build environment"); `timeout 400 dotnet test
---blame-hang-timeout 120s` in `ideas/be-peppol-commerce/app` (286 should pass; a first restore can hit
+--blame-hang-timeout 120s` in `ideas/be-peppol-commerce/app` (297 should pass; a first restore can hit
 Maven 429, wait 30s and retry) and `dotnet run --project samples/BePeppolCommerce.Walkthrough` (exit 0).
-Read first: OWNER.md, RUNBOOK.md, ideas/be-peppol-commerce/REVIEW.md,
-ideas/be-peppol-commerce/app/src/BePeppolCommerce.Core/Ubl/PeppolInvoiceBuilder.cs,
-ideas/be-peppol-commerce/app/src/BePeppolCommerce.Core/Model/Order.cs, the v1 gap notes below.
+Read first: OWNER.md, RUNBOOK.md, ideas/be-peppol-commerce/REVIEW.md, VALIDATION.md, PLAN.md,
+ideas/be-peppol-commerce/app/README.md, the v1 gap notes below.
 Notes for owner:
 - (Owner) Licensing of the Peppol rules (day 028). OpenPEPPOL's BIS guide
   (`guide/bis/introduction.adoc` in peppol-bis-invoice-3) says OpenPeppol AISBL holds the copyright,
@@ -80,9 +75,8 @@ Notes for owner:
   could be repeated. A cap needs an attempt count in the host's `IOrderInvoiceSource`.
 - (Owner) Day 038: review round 1 is complete. All 3 highs fixed (VAT categories K/AE/E/O; Storecove
   scheme map; document-level allowances/charges, line-level ones remain a gap). Wave two (README run
-  from a clean clone) found every documented command working; stale counts and docs were fixed. Open mediums that will become HANDOFF.md
-  gaps unless fixed: no IBAN/structured communication, no credit notes, inbound invoices have no
-  sink, webhook replay. Full list in `ideas/be-peppol-commerce/REVIEW.md`. If you know Storecove's
+  from a clean clone) found every documented command working; stale counts and docs were fixed. Day 039 fixed IBAN/OGM, order reference, payment terms, ack-only webhook, error truncation. Open and
+  bound for HANDOFF.md: no credit notes, inbound invoices have no sink, webhook replay. Full list in `ideas/be-peppol-commerce/REVIEW.md`. If you know Storecove's
   scheme names for 0208/9925, a line in `SIGNALS.md` settles H3's remaining unknown.
 - (Owner) Day 037 reading of the 12-session cap: the routine treats fixing Phase 4 review highs as
   review work, not as build slices (build used 11). H2 (allowances/charges) is feature-sized, so
@@ -90,4 +84,4 @@ Notes for owner:
   cap is reached after H2 and the rest must go to HANDOFF.md as gaps; say so in `SIGNALS.md`.
 Tournament round: 1 (won)
 Kills before 2026-09-23 rewrite: 14
-Last session: 2026-10-12, ended clean
+Last session: 2026-10-13, ended clean

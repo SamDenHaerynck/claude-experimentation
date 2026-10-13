@@ -48,9 +48,9 @@ ever talked to a real Access Point or a real Optimizely Configured Commerce inst
 
 - receives invoices (`BePeppolCommerce.Api`, an ASP.NET Core minimal API). `POST /webhooks/inbound`
   takes a small JSON body naming a received document, fetches that document from the Access Point
-  with `GetInboundAsync`, and returns a normalized `InboundInvoice` (invoice number, issue date,
-  currency, seller and buyer name and Peppol endpoint, line count, payable amount), parsed by
-  `BePeppolCommerce.Core.Inbound.InboundInvoiceParser`. **The webhook body is this project's own
+  with `GetInboundAsync`, checks that `BePeppolCommerce.Core.Inbound.InboundInvoiceParser` can parse
+  it, and answers with an acknowledgement only (`providerDocumentId`, `status`), never invoice data.
+  The parsed `InboundInvoice` is not stored anywhere in v1: there is no inbound sink. **The webhook body is this project's own
   minimal shape**, `{ "guid": "<document id>" }` (or `document_guid`, the property name Storecove's
   spec mentions), because Storecove's public spec does not define its webhook body. For Recommand ids
   (`doc_...`), which are not GUIDs, use `{ "documentId": "<id>" }`. Recommand's real webhook
@@ -67,12 +67,12 @@ ever talked to a real Access Point or a real Optimizely Configured Commerce inst
 
 It does **not** yet do the following:
 
-- emit an order reference, payment terms or payment means (IBAN, structured communication), or
-  line-level allowances and charges (BG-27/28). Document-level ones work (`Order.AllowancesCharges`:
+- emit line-level allowances and charges (BG-27/28). Document-level ones work (`Order.AllowancesCharges`:
   `isCharge`, a positive `amount` excluding VAT, `reasonCode` or `reason`, `vatCategory`,
-  `vatPercent`), so hosts must send discounts and freight that way. Orders with no buyer
-  reference or no due date are built, but the validator then reports PEPPOL-EN16931-R003 or
-  BR-CO-25, and a negative-price discount line fails BR-27, so they are caught before sending. An order whose
+  `vatPercent`), so hosts must send discounts and freight that way. Payment means (`payment`: `iban`, optional Belgian
+  `structuredCommunication`, both checksum-checked at parse), `orderReference` and `paymentTerms` are
+  supported. Orders with neither buyer reference nor order reference, or neither due date nor payment terms, are built, but
+  the validator then reports PEPPOL-EN16931-R003 or BR-CO-25, and a negative-price discount line fails BR-27, so they are caught before sending. An order whose
   total (lines minus allowances plus charges) is negative is refused before building (`BEPC-BUILD`), because it needs a credit note,
   which v1 does not build.
   VAT categories S, Z, E, AE, K and O do validate when the order carries what EN16931 asks for:
@@ -153,7 +153,7 @@ dotnet test
 ```
 
 The first run takes about a minute (restore, jar download, IKVM compiling the jars). IKVM and
-obsolete-API build warnings (IKVM0100, IKVM0117, CS0612) are expected. All 286 tests
+obsolete-API build warnings (IKVM0100, IKVM0117, CS0612) are expected. All 297 tests
 should pass (204 in `BePeppolCommerce.Core.Tests`, 82 in `BePeppolCommerce.Api.Tests`). If a download fails (Maven Central sometimes rate-limits with HTTP 429), or a file fails its
 SHA-256 check (the file is then deleted), wait a minute and run `dotnet test` again.
 
@@ -208,7 +208,7 @@ curl -X POST http://localhost:5080/webhooks/inbound -H "Content-Type: applicatio
   -d '{"guid":"0b6f2a3c-1d4e-4f5a-8b9c-0d1e2f3a4b5c"}'
 ```
 
-Responses: 200 with `{ providerDocumentId, invoice }`; 400 if the body is not a JSON object whose
+Responses: 200 with `{ providerDocumentId, status: "accepted" }`; 400 if the body is not a JSON object whose
 `guid`/`document_guid` is a GUID string or whose `documentId` is a GUID or a Recommand-style id (with Storecove configured, a non-GUID `documentId` passes this check but the client refuses it, so the answer is 502); 401 on a wrong or missing secret or signature (when configured); 413
 above 16 KB; 502 if the Access Point fetch failed (details are logged, not returned); 422 if the
 fetched document is not a parseable UBL Invoice (credit notes are not handled yet); 503 if no

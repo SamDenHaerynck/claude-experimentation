@@ -65,6 +65,8 @@ public static class PeppolInvoiceBuilder
             new XElement(Cbc + "InvoiceTypeCode", InvoiceTypeCodeCommercial),
             new XElement(Cbc + "DocumentCurrencyCode", currency),
             order.BuyerReference is { } br ? new XElement(Cbc + "BuyerReference", br) : null,
+            string.IsNullOrWhiteSpace(order.OrderReference) ? null
+                : new XElement(Cac + "OrderReference", new XElement(Cbc + "ID", order.OrderReference)),
             PartyElement("AccountingSupplierParty", order.Seller),
             PartyElement("AccountingCustomerParty", order.Buyer),
             order.DeliveryDate is not null || order.DeliveryCountryCode is not null
@@ -76,6 +78,14 @@ public static class PeppolInvoiceBuilder
                                 new XElement(Cac + "Country", new XElement(Cbc + "IdentificationCode", dc))))
                         : null)
                 : null,
+            order.Payment is { } pay
+                ? new XElement(Cac + "PaymentMeans",
+                    new XElement(Cbc + "PaymentMeansCode", "30"), // 30 = credit transfer
+                    pay.StructuredCommunication is { } ogm ? new XElement(Cbc + "PaymentID", ogm) : null,
+                    new XElement(Cac + "PayeeFinancialAccount", new XElement(Cbc + "ID", pay.Iban)))
+                : null,
+            string.IsNullOrWhiteSpace(order.PaymentTerms) ? null
+                : new XElement(Cac + "PaymentTerms", new XElement(Cbc + "Note", order.PaymentTerms)),
             docAcs.Select(a => new XElement(Cac + "AllowanceCharge",
                 new XElement(Cbc + "ChargeIndicator", a.IsCharge ? "true" : "false"),
                 a.ReasonCode is null ? null : new XElement(Cbc + "AllowanceChargeReasonCode", a.ReasonCode),
