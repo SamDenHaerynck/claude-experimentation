@@ -51,7 +51,7 @@ shortlist eligibility regardless of score, per `OWNER.md`.
 
 | # | Idea | Demand | WTP | Wedge | Owner fit | Build | Total | Hard disq. | Status |
 |---|---|---|---|---|---|---|---|---|---|
-| 1 | **be-peppol-commerce** (Deep Checked day 024) | 4 | 4 | 4 | 5 | 3 | **20** | none — H2 and H3 confirmed clear | **WON round 1 — moved to `ideas/`, Phase 2 Plan** |
+| 1 | **be-peppol-commerce** (Deep Checked day 024) | 4 | 4 | 4 | 5 | 3 | **20** | none — H2 and H3 confirmed clear | **WON round 1 — built, handed off day 040, now `shipped/be-peppol-commerce/`** |
 | 2 | **CMS12-UpgradeAssist** (Deep Checked day 024) | 4 | 3 | 3 | 5 | 3 | **18** | none | Runner-up — top of backlog for round 2 |
 | 3 | ci-migration-rollback-gate (revived, was killed/) | 4 | 3 | 2 | 3 | 4 | 16 | none | Runner-up — top of backlog for round 2 |
 | 5 | **ADO-MultiOrg** (Deep Checked day 024) | 3 | 2 | 1 | 5 | 4 | **15** | none | Deep-Checked, not picked — see below |

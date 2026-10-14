@@ -4,7 +4,7 @@ A .NET 8 library that turns an order record into a Peppol BIS Billing 3.0 UBL in
 built as the engine for a future Optimizely Configured Commerce connector for Belgian e-invoicing.
 The idea and its evidence are in `../VALIDATION.md`, and the full plan is in `../PLAN.md`.
 
-**Status: all 11 build slices done (1, 2a, 2b and 3 to 10); Phase 4 review round 1 in progress (findings in `../REVIEW.md`).** Nothing here has
+**Status: all 11 build slices done (1, 2a, 2b and 3 to 10); review round 1 complete (findings in `../REVIEW.md`), handed off day 040 (`../HANDOFF.md`).** Nothing here has
 ever talked to a real Access Point or a real Optimizely Configured Commerce install. Right now it:
 
 - parses an order from JSON (`BePeppolCommerce.Core.Model.OrderJson`), rejecting null or empty
@@ -154,7 +154,7 @@ dotnet test
 
 The first run takes about a minute (restore, jar download, IKVM compiling the jars). IKVM and
 obsolete-API build warnings (IKVM0100, IKVM0117, CS0612) are expected. All 297 tests
-should pass (204 in `BePeppolCommerce.Core.Tests`, 82 in `BePeppolCommerce.Api.Tests`). If a download fails (Maven Central sometimes rate-limits with HTTP 429), or a file fails its
+should pass (215 in `BePeppolCommerce.Core.Tests`, 82 in `BePeppolCommerce.Api.Tests`). If a download fails (Maven Central sometimes rate-limits with HTTP 429), or a file fails its
 SHA-256 check (the file is then deleted), wait a minute and run `dotnet test` again.
 
 ## Run the API host
