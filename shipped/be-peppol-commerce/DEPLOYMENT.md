@@ -57,7 +57,7 @@ From `app/src/BePeppolCommerce.Api/.env.example` (placeholders only; do not sour
 ## Steps
 
 1. Install the .NET 8 SDK (`app/README.md`, Prerequisites). Verify locally first:
-   `cd ideas/be-peppol-commerce/app && dotnet test` (297 tests) and
+   `cd shipped/be-peppol-commerce/app && dotnet test` (297 tests) and
    `dotnet run --project samples/BePeppolCommerce.Walkthrough` (exit 0).
 2. Publish: `dotnet publish src/BePeppolCommerce.Api -p:PublishProfile=linux-x64`. Output is about
    92 MB, framework-dependent, in `src/BePeppolCommerce.Api/bin/publish/linux-x64/`. The published

@@ -5,7 +5,7 @@
 Wave one: three adversarial `general-purpose` subagents in parallel, each writing only to its own
 scratch directory: (a) correctness and tests, (b) security and input handling, (c) product quality
 against the core flow and done criteria. Wave two (docs: follow `app/README.md` literally from a
-clean clone) has not run yet.
+clean clone) ran day 038 and found every documented command working; open items are carried into HANDOFF.md.
 
 Findings merged and de-duplicated by the main session. Where two reviewers raised the same defect at
 different severities, the higher one is kept and both sources are named. Status: **fixed** (day
@@ -52,7 +52,7 @@ different severities, the higher one is kept and both sources are named. Status:
 | L10 | security | No minimum secret length, no rate limiting, TLS left to the host. | Open; DEPLOYMENT.md to require a TLS proxy. |
 | L11 | security | Webhook auth is off whenever the environment is `Development`. | Accepted for now: documented local-run behaviour; DEPLOYMENT.md must say never to run Production as Development. Revisit if time allows. |
 | L12 | product | Non-EUR invoices omit the EUR VAT total (TaxCurrencyCode). | Accepted: v1 is Belgian EUR; HANDOFF.md gap. |
-| L13 | product | `HANDOFF.md` does not exist, so the last done criterion does not hold yet. | Expected: written in Phase 5. |
+| L13 | product | `HANDOFF.md` did not exist. | **Fixed (day 040):** HANDOFF.md written; it lists every open item above as a gap. |
 
 Security reviewer also confirmed as sound: XXE/DTD handling, embedded-only XSD/Schematron resolvers,
 constant-time secret and HMAC comparison, the 16 KB webhook body limit, id regexes, and the

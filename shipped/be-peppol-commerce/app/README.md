@@ -114,7 +114,7 @@ the input was a string, and an empty `Location` for an `XDocument` built in memo
 
 ## See it work in one command (the walkthrough)
 
-From this directory (`ideas/be-peppol-commerce/app`):
+From this directory (`shipped/be-peppol-commerce/app`):
 
 ```
 dotnet run --project samples/BePeppolCommerce.Walkthrough
@@ -146,7 +146,7 @@ The fake Access Point is `samples/BePeppolCommerce.Walkthrough/FakeAccessPoint.c
 
 ## Run the tests
 
-From this directory (`ideas/be-peppol-commerce/app`):
+From this directory (`shipped/be-peppol-commerce/app`):
 
 ```
 dotnet test
