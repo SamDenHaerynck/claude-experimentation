@@ -1,20 +1,13 @@
 # State
-Day: 039
-Idea: be-peppol-commerce
-Phase: 4 Review
-Slice: n/a (11 of 11 build slices complete); Review round 1 complete, highs and the chosen mediums (M3, M4, M7, M11) fixed day 039
-Next action: Phase 5. Write `ideas/be-peppol-commerce/DEPLOYMENT.md`, `MONETIZATION.md` and `HANDOFF.md`
-(see the routine spec for contents). HANDOFF.md gaps come from the open items in REVIEW.md (M5 credit
-notes, M6 no inbound sink, M9/M10 Recommand retry and replay, M12 mapping table, H2 line-level
-allowances, Storecove scheme names unconfirmed) and the Notes for owner below. Pricing in
-MONETIZATION.md needs real fetched competitor prices (see VALIDATION.md for ones already cited).
-Then check the handoff bar and `git mv ideas/be-peppol-commerce shipped/be-peppol-commerce` if all pass.
-Setup: install the .NET 8 SDK (`RUNBOOK.md` "Build environment"); `timeout 400 dotnet test
---blame-hang-timeout 120s` in `ideas/be-peppol-commerce/app` (297 should pass; a first restore can hit
-Maven 429, wait 30s and retry) and `dotnet run --project samples/BePeppolCommerce.Walkthrough` (exit 0).
-Read first: OWNER.md, RUNBOOK.md, ideas/be-peppol-commerce/REVIEW.md, VALIDATION.md, PLAN.md,
-ideas/be-peppol-commerce/app/README.md, the v1 gap notes below.
+Day: 040
+Idea: none (be-peppol-commerce shipped day 040)
+Phase: 0 Select
+Slice: n/a
+Next action: Tournament round 2, per OWNER.md. Screen `INBOX.md` first (empty on day 040), then take the runners-up from `BACKLOG.md`: `cms12-upgradeassist` (18/25, `ideas/cms12-upgradeassist/VALIDATION.md`) and `ci-migration-rollback-gate` (16/25, not Deep Checked), plus up to 8 new candidates from the owner-fit channels (Optimizely, Azure DevOps, Belgian/EU gaps). Score 8 to 12, mark the top 3, write the scored list to `BACKLOG.md`. One session. Also check `shipped/be-peppol-commerce/SIGNALS.md` for owner notes.
+Setup if building later: see RUNBOOK.md "Build environment".
+Read first: OWNER.md, RUNBOOK.md, INBOX.md, BACKLOG.md, ideas/cms12-upgradeassist/VALIDATION.md.
 Notes for owner:
+- (Owner) Day 040: `be-peppol-commerce` is SHIPPED to `shipped/be-peppol-commerce/`. Read `HANDOFF.md` there first (gaps and your first three actions), then `DEPLOYMENT.md` and `MONETIZATION.md`. Nothing has touched a real Access Point or Configured Commerce install. The routine cannot contact anyone, so running the validation kit is still yours. Paths below that say `ideas/be-peppol-commerce/` now mean `shipped/be-peppol-commerce/`.
 - (Owner) Licensing of the Peppol rules (day 028). OpenPEPPOL's BIS guide
   (`guide/bis/introduction.adoc` in peppol-bis-invoice-3) says OpenPeppol AISBL holds the copyright,
   and that the Peppol BIS document may not be redistributed without its consent. So the repo
@@ -82,6 +75,6 @@ Notes for owner:
   review work, not as build slices (build used 11). H2 (allowances/charges) is feature-sized, so
   the pre-merge reviewer asked that this reading be yours to confirm. If you count it as build, the
   cap is reached after H2 and the rest must go to HANDOFF.md as gaps; say so in `SIGNALS.md`.
-Tournament round: 1 (won)
+Tournament round: 1 (won, shipped); round 2 not started
 Kills before 2026-09-23 rewrite: 14
-Last session: 2026-10-13, ended clean
+Last session: 2026-10-14, ended clean

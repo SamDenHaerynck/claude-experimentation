@@ -20,7 +20,7 @@ Saxon-HE 12.5 (Java, MPL-2.0) is turned into a .NET assembly at build time by IK
 ## Reproduce (Linux, .NET 8 SDK on PATH)
 
 ```
-cd ideas/be-peppol-commerce/spikes/2a-schematron
+cd shipped/be-peppol-commerce/spikes/2a-schematron
 mkdir -p jars out
 M=https://repo1.maven.org/maven2
 curl -sSLo jars/Saxon-HE-12.5.jar        $M/net/sf/saxon/Saxon-HE/12.5/Saxon-HE-12.5.jar

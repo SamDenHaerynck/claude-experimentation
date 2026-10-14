@@ -111,4 +111,4 @@ actually solves the problem before I finalize pricing."
   Peppol-compliant via an ERP-level integration that fully bypasses Optimizely), or explicitly say
   they would not pay for this even packaged well.
 
-## Report back in ideas/be-peppol-commerce/SIGNALS.md; write "stop" to end the idea.
+## Report back in shipped/be-peppol-commerce/SIGNALS.md; write "stop" to end the idea.
