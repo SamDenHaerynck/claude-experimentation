@@ -4,6 +4,36 @@ Ranked pool of candidate ideas not yet started, scored under the tournament rubr
 (rewritten 2026-09-23). Phase 1 Deep Check runs on the top 3 (the shortlist below); the highest
 scorer with no hard disqualifier and 12/25+ wins per `OWNER.md`'s Pick rule.
 
+## 2026-10-15 (day 041) tournament round 2: Screen
+
+INBOX.md was empty. Candidates: the two runners-up (`CMS12-UpgradeAssist` 18, Deep Checked day 024;
+`ci-migration-rollback-gate` 16, not re-checked) plus 8 new ones from a research subagent. Evidence
+is thin for the new eight: the subagent fetched only 8 pages (Optimizely World, feedback boards,
+Marketplace reviews and developercommunity were not reached; neutral, listed as Unreachable). Demand
+was scored on what was reachable, so "no evidence found" scores low but never counts as H4. No hard
+disqualifier found for any, but H3 is only partly checked for Forms-DSAR, EAA-Evidence and
+ADO-PipelineSpend (native features partly overlap), so the Deep Check must settle it.
+
+| Idea | Demand | WTP | Wedge | Fit | Build | Total | Notes |
+|---|---|---|---|---|---|---|---|
+| CMS12-UpgradeAssist | 4 | 3 | 3 | 5 | 3 | 18 | Deep Checked day 024. SHORTLIST |
+| ConsentBridge13 | 2 | 3 | 4 | 5 | 4 | 18 | Existing CookieInformation.Optimizely NuGet package is unlisted, says not actively maintained, and caps EPiServer.CMS.UI.Core below 13.0.0 (https://packages.nuget.org/packages/CookieInformation.Optimizely). Needs a Cookie Information account, price not shown. SHORTLIST (ties on 18, same fit) |
+| ADO-ClientReleaseNotes (NL/FR) | 2 | 2 | 3 | 5 | 4 | 16 | Free extension by Fennell generates notes from Handlebars templates; the post notes per-build output is too granular for clients/auditors and mentions no localisation (https://blogs.blackmarble.co.uk/rfennell/how-can-i-automatically-create-azure-devops-release-notes-and-how-can-i-publish-them/). SHORTLIST (wins the 16-point tie on owner fit 5) |
+| EAA-Evidence | 3 | 3 | 3 | 4 | 3 | 16 | Belgian EAA duties and fines in https://www.craftzing.com/what-we-think/insights/european-accessibility-act-in-belgium-compliance-complaints-penalties; only Belgian statement generator found is a free beta, no monitoring (https://www.elevenways.be/en/articles/accessibility-statement-generator). Backlog |
+| ci-migration-rollback-gate | 4 | 3 | 2 | 3 | 4 | 16 | Unchanged from day 024, not re-checked. Backlog |
+| Forms-DSAR | 2 | 2 | 3 | 5 | 3 | 15 | Wedge from search summary only, not fetched. Backlog |
+| ADO-PipelineSpend | 2 | 2 | 2 | 5 | 4 | 15 | Parallel job prices from https://azure.microsoft.com/en-us/pricing/details/devops/azure-devops-services/; overlaps ADO-MultiOrg in spirit. Backlog |
+| OCP-Watch | 2 | 2 | 3 | 5 | 2 | 14 | OCP docs show logs only via CLI, 24h default, and no alerting (https://docs.optimizely.com/optimizely-connect-platform/docs/app-logs-and-troubleshooting-ocp2); feasibility of reading logs unverified. Backlog |
+| ADO-TimeInvoice | 2 | 3 | 1 | 5 | 3 | 14 | 7pace/TimeCamp entrenched, features unverified. Backlog |
+| DXP-Sync-Scheduler | 1 | 2 | 2 | 5 | 3 | 13 | Free MIT Epinova tasks cover most of it (https://github.com/Epinova/epinova-dxp-deployment). Backlog |
+
+Dropped without scoring: Optimizely Graph synonyms/pinned results (search-only evidence that an
+admin-UI package and a native beta portal exist). Unreachable: Optimizely World, feedback.optimizely.com,
+Marketplace reviews, developercommunity, GitHub issue threads.
+
+Next: Deep Check the three shortlisted ideas (CMS12 needs only a refresh of H3 and competitors),
+then Pick per OWNER.md.
+
 ## 2026-09-25 (day 023) inbox screen
 
 Per `OWNER.md`'s Phase 0 rule, `INBOX.md`'s new line (owner-submitted 2026-09-25, before this

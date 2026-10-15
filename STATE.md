@@ -1,11 +1,11 @@
 # State
-Day: 040
-Idea: none (be-peppol-commerce shipped day 040)
+Day: 041
+Idea: none (round 2 screened day 041)
 Phase: 0 Select
 Slice: n/a
-Next action: Tournament round 2, per OWNER.md. Screen `INBOX.md` first (empty on day 040), then take the runners-up from `BACKLOG.md`: `cms12-upgradeassist` (18/25, `ideas/cms12-upgradeassist/VALIDATION.md`) and `ci-migration-rollback-gate` (16/25, not Deep Checked), plus up to 8 new candidates from the owner-fit channels (Optimizely, Azure DevOps, Belgian/EU gaps). Score 8 to 12, mark the top 3, write the scored list to `BACKLOG.md`. One session. Also check `shipped/be-peppol-commerce/SIGNALS.md` for owner notes.
+Next action: Tournament round 2, session 2 (Deep Check + Pick, combined if time allows). Deep Check the shortlist in `BACKLOG.md` (day 041 section): `CMS12-UpgradeAssist` (refresh H3 and competitors only), `ConsentBridge13` (check H3: does CMS 13 or Optimizely ship consent management natively? find Cookie Information and CookieTractor prices and 2 to 5 cited sources, find real demand), `ADO-ClientReleaseNotes` (competitor prices, H3, demand). Write `ideas/<slug>/VALIDATION.md` for each. Pick the highest total, 12/25 or more, no hard disqualifier, ties to owner fit. If a winner is picked, write its `VALIDATION_KIT.md` and notify the owner.
 Setup if building later: see RUNBOOK.md "Build environment".
-Read first: OWNER.md, RUNBOOK.md, INBOX.md, BACKLOG.md, ideas/cms12-upgradeassist/VALIDATION.md.
+Read first: OWNER.md, RUNBOOK.md, INBOX.md, BACKLOG.md (day 041 section), ideas/cms12-upgradeassist/VALIDATION.md.
 Notes for owner:
 - (Owner) Day 040: `be-peppol-commerce` is SHIPPED to `shipped/be-peppol-commerce/`. Read `HANDOFF.md` there first (gaps and your first three actions), then `DEPLOYMENT.md` and `MONETIZATION.md`. Nothing has touched a real Access Point or Configured Commerce install. The routine cannot contact anyone, so running the validation kit is still yours. Paths below that say `ideas/be-peppol-commerce/` now mean `shipped/be-peppol-commerce/`.
 - (Owner) Licensing of the Peppol rules (day 028). OpenPEPPOL's BIS guide
@@ -75,6 +75,6 @@ Notes for owner:
   review work, not as build slices (build used 11). H2 (allowances/charges) is feature-sized, so
   the pre-merge reviewer asked that this reading be yours to confirm. If you count it as build, the
   cap is reached after H2 and the rest must go to HANDOFF.md as gaps; say so in `SIGNALS.md`.
-Tournament round: 1 (won, shipped); round 2 not started
+Tournament round: 1 (won, shipped); round 2 screened day 041, Deep Check next
 Kills before 2026-09-23 rewrite: 14
-Last session: 2026-10-14, ended clean
+Last session: 2026-10-15, ended clean
