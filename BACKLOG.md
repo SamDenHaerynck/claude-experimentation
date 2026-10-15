@@ -18,17 +18,17 @@ ADO-PipelineSpend (native features partly overlap), so the Deep Check must settl
 |---|---|---|---|---|---|---|---|
 | CMS12-UpgradeAssist | 4 | 3 | 3 | 5 | 3 | 18 | Deep Checked day 024. SHORTLIST |
 | ConsentBridge13 | 2 | 3 | 4 | 5 | 4 | 18 | Existing CookieInformation.Optimizely NuGet package is unlisted, says not actively maintained, and caps EPiServer.CMS.UI.Core below 13.0.0 (https://packages.nuget.org/packages/CookieInformation.Optimizely). Needs a Cookie Information account, price not shown. SHORTLIST (ties on 18, same fit) |
-| ADO-ClientReleaseNotes (NL/FR) | 2 | 2 | 3 | 5 | 4 | 16 | Free extension by Fennell generates notes from Handlebars templates; the post notes per-build output is too granular for clients/auditors and mentions no localisation (https://blogs.blackmarble.co.uk/rfennell/how-can-i-automatically-create-azure-devops-release-notes-and-how-can-i-publish-them/). SHORTLIST (wins the 16-point tie on owner fit 5) |
+| ADO-ClientReleaseNotes (NL/FR) | 2 | 2 | 3 | 5 | 4 | 16 | Fennell's extension (price not retrieved) generates notes from Handlebars templates; the post notes per-build output is too granular for clients/auditors and mentions no localisation (https://blogs.blackmarble.co.uk/rfennell/how-can-i-automatically-create-azure-devops-release-notes-and-how-can-i-publish-them/). SHORTLIST (wins the 16-point tie on owner fit 5) |
 | EAA-Evidence | 3 | 3 | 3 | 4 | 3 | 16 | Belgian EAA duties and fines in https://www.craftzing.com/what-we-think/insights/european-accessibility-act-in-belgium-compliance-complaints-penalties; only Belgian statement generator found is a free beta, no monitoring (https://www.elevenways.be/en/articles/accessibility-statement-generator). Backlog |
 | ci-migration-rollback-gate | 4 | 3 | 2 | 3 | 4 | 16 | Unchanged from day 024, not re-checked. Backlog |
 | Forms-DSAR | 2 | 2 | 3 | 5 | 3 | 15 | Wedge from search summary only, not fetched. Backlog |
 | ADO-PipelineSpend | 2 | 2 | 2 | 5 | 4 | 15 | Parallel job prices from https://azure.microsoft.com/en-us/pricing/details/devops/azure-devops-services/; overlaps ADO-MultiOrg in spirit. Backlog |
-| OCP-Watch | 2 | 2 | 3 | 5 | 2 | 14 | OCP docs show logs only via CLI, 24h default, and no alerting (https://docs.optimizely.com/optimizely-connect-platform/docs/app-logs-and-troubleshooting-ocp2); feasibility of reading logs unverified. Backlog |
+| OCP-Watch | 2 | 2 | 2 | 5 | 2 | 13 | OCP docs show a 24h default log window, no alerting, logs viewable by customers in the app's Troubleshooting tab and by developers via CLI (wedge lowered to 2 after review) (https://docs.optimizely.com/optimizely-connect-platform/docs/app-logs-and-troubleshooting-ocp2); feasibility of reading logs unverified. Backlog |
 | ADO-TimeInvoice | 2 | 3 | 1 | 5 | 3 | 14 | 7pace/TimeCamp entrenched, features unverified. Backlog |
 | DXP-Sync-Scheduler | 1 | 2 | 2 | 5 | 3 | 13 | Free MIT Epinova tasks cover most of it (https://github.com/Epinova/epinova-dxp-deployment). Backlog |
 
-Dropped without scoring: Optimizely Graph synonyms/pinned results (search-only evidence that an
-admin-UI package and a native beta portal exist). Unreachable: Optimizely World, feedback.optimizely.com,
+Unscored, evidence thin, kept in the pool (not a kill): Optimizely Graph synonyms/pinned results (search-only evidence that an
+admin-UI package and a native beta portal exist, so H3 may apply). Unreachable: Optimizely World, feedback.optimizely.com,
 Marketplace reviews, developercommunity, GitHub issue threads.
 
 Next: Deep Check the three shortlisted ideas (CMS12 needs only a refresh of H3 and competitors),
