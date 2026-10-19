@@ -4,6 +4,10 @@ Ranked pool of candidate ideas not yet started, scored under the tournament rubr
 (rewritten 2026-09-23). Phase 1 Deep Check runs on the top 3 (the shortlist below); the highest
 scorer with no hard disqualifier and 12/25+ wins per `OWNER.md`'s Pick rule.
 
+## 2026-10-19 (day 042) round 2 Deep Check and Pick
+
+Winner: CMS12-UpgradeAssist, 17/25 (refresh: Demand 4, WTP 2, Wedge 2, Fit 5, Build 4), no hard disqualifier. Runners-up (stay at top of pool): ConsentBridge13 16/25 (Demand 2, WTP 2, Wedge 3, Fit 5, Build 4), ADO-ClientReleaseNotes 16/25 (2, 2, 3, 5, 4). Evidence: `ideas/cms12-upgradeassist/REFRESH.md`, `ideas/consentbridge13/VALIDATION.md`, `ideas/ado-clientreleasenotes/VALIDATION.md`. Ties on 16 are not material to the pick.
+
 ## 2026-10-15 (day 041) tournament round 2: Screen
 
 INBOX.md was empty. Candidates: the two runners-up (`CMS12-UpgradeAssist` 18, Deep Checked day 024;
