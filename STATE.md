@@ -1,11 +1,11 @@
 # State
-Day: 041
-Idea: none (round 2 screened day 041)
-Phase: 0 Select
+Day: 042
+Idea: cms12-upgradeassist
+Phase: 2 Plan
 Slice: n/a
-Next action: Tournament round 2, session 2 (Deep Check + Pick, combined if time allows). Deep Check the shortlist in `BACKLOG.md` (day 041 section): `CMS12-UpgradeAssist` (refresh H3 and competitors only), `ConsentBridge13` (check H3: does CMS 13 or Optimizely ship consent management natively? find Cookie Information and CookieTractor prices and 2 to 5 cited sources, find real demand), `ADO-ClientReleaseNotes` (competitor prices, H3, demand). Write `ideas/<slug>/VALIDATION.md` for each. Pick the highest total, 12/25 or more, no hard disqualifier, ties to owner fit. If a winner is picked, write its `VALIDATION_KIT.md` and notify the owner.
+Next action: Write `ideas/cms12-upgradeassist/PLAN.md` (spec Phase 2). Read `REFRESH.md` first: a free MIT CMS 12 to 13 scanner exists (adnanzameer/OptimizelyCms13ReadinessScanner), so scope v1 around what it does not do: CMS 11 to 12 (no scanner found), admin-feature gaps (removed Modules screen, GuiPlugIn/shell module manifests), package-compatibility matrix, and a ranked estimate-ready report. One core flow: point CLI at a solution folder, get a prioritised Markdown/JSON report. Stack: .NET (Roslyn) CLI; ask in PLAN whether to build rules or extend the community scanner. 5 to 10 slices, slice 1 walking skeleton. Have a critic subagent attack the plan. Check `ideas/cms12-upgradeassist/SIGNALS.md` first if the owner wrote it.
 Setup if building later: see RUNBOOK.md "Build environment".
-Read first: OWNER.md, RUNBOOK.md, INBOX.md, BACKLOG.md (day 041 section), ideas/cms12-upgradeassist/VALIDATION.md.
+Read first: OWNER.md, RUNBOOK.md, INBOX.md, ideas/cms12-upgradeassist/{VALIDATION,REFRESH,VALIDATION_KIT}.md, templates/.
 Notes for owner:
 - (Owner) Day 040: `be-peppol-commerce` is SHIPPED to `shipped/be-peppol-commerce/`. Read `HANDOFF.md` there first (gaps and your first three actions), then `DEPLOYMENT.md` and `MONETIZATION.md`. Nothing has touched a real Access Point or Configured Commerce install. The routine cannot contact anyone, so running the validation kit is still yours. Paths below that say `ideas/be-peppol-commerce/` now mean `shipped/be-peppol-commerce/`.
 - (Owner) Licensing of the Peppol rules (day 028). OpenPEPPOL's BIS guide
@@ -75,6 +75,8 @@ Notes for owner:
   review work, not as build slices (build used 11). H2 (allowances/charges) is feature-sized, so
   the pre-merge reviewer asked that this reading be yours to confirm. If you count it as build, the
   cap is reached after H2 and the rest must go to HANDOFF.md as gaps; say so in `SIGNALS.md`.
-Tournament round: 1 (won, shipped); round 2 screened day 041, Deep Check next
+- (Owner) Day 042: round 2 picked `cms12-upgradeassist` (17/25; ConsentBridge13 and ADO-ClientReleaseNotes 16 each, runners-up). Validation kit ready at `ideas/cms12-upgradeassist/VALIDATION_KIT.md`. Key risk: a free MIT scanner for CMS 12 to 13 appeared 2026-10-08, and no one was found paying for a scanner. The kit asks first which upgrade hurts and what the free scanner misses. The routine cannot contact anyone. Write results or "stop" in `ideas/cms12-upgradeassist/SIGNALS.md`; if you stop it, ConsentBridge13 is next.
+
+Tournament round: 2 (won day 042: cms12-upgradeassist)
 Kills before 2026-09-23 rewrite: 14
-Last session: 2026-10-15, ended clean
+Last session: 2026-10-19, ended clean
