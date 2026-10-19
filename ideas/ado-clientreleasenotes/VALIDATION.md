@@ -1,6 +1,6 @@
 # ADO-ClientReleaseNotes - Deep Check (2026-10-19)
 
-All claims below cite pages fetched this session. Anything else is marked "no evidence found".
+Claims cite pages fetched this session except where marked as search snippet or third-party list (for example Octopus and the changelog SaaS price list). Anything else is marked "no evidence found".
 
 ## 1. Competitors
 

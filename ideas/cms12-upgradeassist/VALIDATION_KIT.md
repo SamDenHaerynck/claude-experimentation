@@ -9,8 +9,8 @@ An upgrade copilot for Optimizely CMS codebases: scans for breaking changes, mis
 
 ## Who to talk to
 - Optimizely developers and tech leads at agencies and partners in Belgium, NL, DACH, Nordics; your own colleagues who have run a CMS 11 to 12 or 12 to 13 upgrade.
-- In-house teams still on CMS 11 (out of support since 2026-04-10 per Optimizely).
-- Find 10 via: your consultancy's Optimizely projects, Optimizely World forum threads on CMS 13 upgrades, the Optimizely Slack/Discord communities, LinkedIn "Optimizely" + "upgrade" posts.
+- In-house teams still on CMS 11 (Optimizely announced end of support 2026-04-10, per search results, not re-verified).
+- Find 10 via: your consultancy's Optimizely projects, Optimizely World forum threads on CMS 13 upgrades, Optimizely community channels you already use, LinkedIn "Optimizely" + "upgrade" posts.
 
 ## Landing page copy
 - Headline: Know what your Optimizely upgrade will break before you quote it.
@@ -27,7 +27,7 @@ No comparable price found. The only priced anchor is zero (free MIT scanner for 
 2. Warm (EN): Hey <name>, you did the <client> upgrade. What took the longest to find out, and what would you have wanted a tool to tell you on day one?
    Warm (NL): Hey <naam>, jij deed de upgrade van <klant>. Wat kostte het meeste tijd om uit te zoeken, en wat had je op dag één door een tool willen laten vertellen?
 3. Community post (EN): For those who have upgraded to CMS 12 or 13: how do you estimate the work up front? Do you use the Copilot agent, the community readiness scanner, or a manual checklist? What did none of them catch?
-   (NL): Voor wie al naar CMS 12 of 13 is geupgrade: hoe schatten jullie het werk vooraf in? Copilot, de community scanner of een handmatige checklist? Wat vingen ze alle drie niet op?
+   (NL): Voor wie al naar CMS 12 of 13 is geüpgraded: hoe schatten jullie het werk vooraf in? Copilot, de community scanner of een handmatige checklist? Wat vingen ze alle drie niet op?
 4. Follow-up (EN): Hi <name>, following up on my note. Even a one line answer helps: what is the biggest upgrade blocker you hit?
    (NL): Hallo <naam>, even opvolgen. Een antwoord van een zin helpt al: wat was de grootste upgradeblokkade?
 5. Free pilot (EN): I'll scan one of your solutions for free and send the report in exchange for 20 minutes of feedback. Code stays on your machine.

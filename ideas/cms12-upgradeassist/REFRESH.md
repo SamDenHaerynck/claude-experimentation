@@ -1,6 +1,6 @@
 # Refresh: CMS12-UpgradeAssist (2026-10-19)
 
-Refresh of VALIDATION.md (old score 18/25). Every claim below cites a page fetched this session; otherwise "no evidence found".
+Refresh of VALIDATION.md (old score 18/25). Claims cite a page fetched this session except where marked as search snippet or not fetched; otherwise "no evidence found".
 
 ## 1. H3 refresh (does the platform ship the deliverable free?)
 
